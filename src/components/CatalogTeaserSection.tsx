@@ -37,10 +37,11 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Wheel & Gesture states
+  // Wheel & Gesture states with transition lock
   const lastWheelTime = useRef<number>(0);
-  const dragStartX = useRef<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const isTransitioning = useRef(false);
+  const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Auto slide rotation
   useEffect(() => {
@@ -54,102 +55,91 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
     };
   }, [isAutoPlaying, carouselItems.length]);
 
-  const handlePrev = useCallback(() => {
+  // Clean up transition timer on unmount
+  useEffect(() => {
+    return () => {
+      if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    };
+  }, []);
+
+  // Safe slide transition: locks rapid consecutive calls so exactly 1 card moves per gesture
+  const safeSlide = useCallback((direction: 'next' | 'prev') => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
     setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
+
+    if (direction === 'next') {
+      setActiveIndex((prev) => (prev + 1) % carouselItems.length);
+    } else {
+      setActiveIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
+    }
+
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = setTimeout(() => {
+      isTransitioning.current = false;
+    }, 550);
   }, [carouselItems.length]);
+
+  const handlePrev = useCallback(() => {
+    safeSlide('prev');
+  }, [safeSlide]);
 
   const handleNext = useCallback(() => {
-    setIsAutoPlaying(false);
-    setActiveIndex((prev) => (prev + 1) % carouselItems.length);
-  }, [carouselItems.length]);
+    safeSlide('next');
+  }, [safeSlide]);
 
-  const handleSelectCard = (index: number) => {
+  const handleSelectCard = useCallback((index: number) => {
+    if (isTransitioning.current || index === activeIndex) return;
+    isTransitioning.current = true;
     setIsAutoPlaying(false);
     setActiveIndex(index);
-  };
 
-  // Wheel / Trackpad horizontal & vertical scroll handling with smooth damping throttle
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = setTimeout(() => {
+      isTransitioning.current = false;
+    }, 550);
+  }, [activeIndex]);
+
+  // Wheel / Trackpad horizontal scroll handling with momentum inertia protection
   const handleWheel = (e: React.WheelEvent) => {
+    // Ignore vertical scrolling so page scroll works normally
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+
+    // Ignore tiny trackpad jitter
+    if (Math.abs(e.deltaX) < 25) return;
+
     const now = Date.now();
-    // Throttle wheel events to prevent rapid multiple index jumps
-    if (now - lastWheelTime.current < 550) return;
+    // 650ms cooldown prevents trackpad momentum inertia from triggering a second jump
+    if (now - lastWheelTime.current < 650) return;
+    lastWheelTime.current = now;
 
-    // Detect significant horizontal or vertical delta
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-
-    if (Math.abs(delta) > 20) {
-      lastWheelTime.current = now;
-      if (delta > 0) {
-        handleNext();
-      } else {
-        handlePrev();
-      }
+    if (e.deltaX > 0) {
+      handleNext();
+    } else {
+      handlePrev();
     }
   };
 
-  // Touch Swipe handlers for mobile & desktop
+  // Touch Swipe handlers for mobile container
   const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsAutoPlaying(false);
     touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const diffX = touchStartX.current - e.touches[0].clientX;
-    const diffY = touchStartY.current - e.touches[0].clientY;
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-      // Horizontal swipe intent
-    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
-    const endX = e.changedTouches[0].clientX;
-    const diff = touchStartX.current - endX;
-
-    // Refined threshold 30px
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) {
-        handleNext();
-      } else {
-        handlePrev();
-      }
-    }
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
     touchStartX.current = null;
-    touchStartY.current = null;
-  };
 
-  // Mouse Drag handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsAutoPlaying(false);
-    setIsDragging(true);
-    dragStartX.current = e.clientX;
-  };
-
-  const handleMouseMove = () => {
-    // handled on mouse up
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (!isDragging || dragStartX.current === null) {
-      setIsDragging(false);
-      return;
-    }
-    const diff = dragStartX.current - e.clientX;
-    if (Math.abs(diff) > 30) {
+    if (Math.abs(diff) > 40) {
       if (diff > 0) {
         handleNext();
       } else {
         handlePrev();
       }
     }
-    setIsDragging(false);
-    dragStartX.current = null;
   };
 
   const currentUnit = carouselItems[activeIndex];
@@ -237,11 +227,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
           className="relative py-2 my-2 select-none touch-pan-y"
           onWheel={handleWheel}
           onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
         >
 
           {/* Main 3D Stage Container */}
@@ -314,11 +300,13 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                   onClick={() => handleSelectCard(idx)}
                   drag={isActive ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
+                  dragElastic={0.25}
+                  onDragStart={() => setIsDragging(true)}
                   onDragEnd={(_, info) => {
-                    if (info.offset.x < -40 || info.velocity.x < -300) {
+                    setIsDragging(false);
+                    if (info.offset.x < -40 || info.velocity.x < -250) {
                       handleNext();
-                    } else if (info.offset.x > 40 || info.velocity.x > 300) {
+                    } else if (info.offset.x > 40 || info.velocity.x > 250) {
                       handlePrev();
                     }
                   }}

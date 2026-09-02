@@ -66,7 +66,10 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const container = scrollContainerRef.current;
-    const cardWidth = container.clientWidth > 768 ? 380 : 310;
+    const firstCard = container.querySelector('div[class*="shrink-0"]');
+    const cardWidth = firstCard
+      ? firstCard.getBoundingClientRect().width + 24
+      : (container.clientWidth > 768 ? 394 : 330);
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
@@ -83,7 +86,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
     if (!isDragging || !scrollContainerRef.current) return;
     e.preventDefault();
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5; // Drag sensitivity
+    const walk = x - startX; // 1:1 direct scroll
     scrollContainerRef.current.scrollLeft = scrollLeftState - walk;
   };
 

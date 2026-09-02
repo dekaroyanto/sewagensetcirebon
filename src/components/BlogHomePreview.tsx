@@ -64,7 +64,10 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     const container = scrollContainerRef.current;
-    const cardWidth = container.clientWidth > 768 ? 380 : 310;
+    const firstArticle = container.querySelector('article');
+    const cardWidth = firstArticle
+      ? firstArticle.getBoundingClientRect().width + 24
+      : (container.clientWidth > 768 ? 394 : 330);
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
@@ -81,7 +84,7 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
     if (!isDragging || !scrollContainerRef.current) return;
     e.preventDefault();
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 1.5;
+    const walk = x - startX;
     scrollContainerRef.current.scrollLeft = scrollLeftState - walk;
   };
 

@@ -30,92 +30,103 @@ export const GallerySection: React.FC = () => {
 
   const totalItems = GALLERY_ITEMS.length;
 
-  const handleNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % totalItems);
+  // Wheel & Gesture states with transition lock
+  const lastWheelTime = useRef<number>(0);
+  const isTransitioning = useRef(false);
+  const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Safe slide transition: locks rapid consecutive calls so exactly 1 card moves per gesture
+  const safeSlide = useCallback((direction: 'next' | 'prev') => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+    setIsAutoPlaying(false);
+
+    if (direction === 'next') {
+      setActiveIndex((prev) => (prev + 1) % totalItems);
+    } else {
+      setActiveIndex((prev) => (prev - 1 + totalItems) % totalItems);
+    }
+
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = setTimeout(() => {
+      isTransitioning.current = false;
+    }, 550);
   }, [totalItems]);
 
   const handlePrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + totalItems) % totalItems);
-  }, [totalItems]);
+    safeSlide('prev');
+  }, [safeSlide]);
 
-  const handleSelectCard = (index: number) => {
+  const handleNext = useCallback(() => {
+    safeSlide('next');
+  }, [safeSlide]);
+
+  const handleSelectCard = useCallback((index: number) => {
+    if (isTransitioning.current || index === activeIndex) return;
+    isTransitioning.current = true;
     setIsAutoPlaying(false);
     setActiveIndex(index);
-  };
+
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    transitionTimeout.current = setTimeout(() => {
+      isTransitioning.current = false;
+    }, 550);
+  }, [activeIndex]);
 
   // Auto-play timer (every 5.5 seconds)
   useEffect(() => {
     if (isAutoPlaying) {
       autoPlayTimerRef.current = setInterval(() => {
-        handleNext();
+        setActiveIndex((prev) => (prev + 1) % totalItems);
       }, 5500);
     }
     return () => {
       if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
     };
-  }, [isAutoPlaying, handleNext]);
+  }, [isAutoPlaying, totalItems]);
 
-  // Touch / Pointer Swipe Handlers for mobile & desktop
+  // Clean up transition timer on unmount
+  useEffect(() => {
+    return () => {
+      if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+    };
+  }, []);
+
+  // Wheel horizontal scroll with momentum inertia protection
+  const handleWheel = (e: React.WheelEvent) => {
+    // Ignore vertical scrolling so page scroll works normally
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) return;
+
+    // Ignore tiny trackpad jitter
+    if (Math.abs(e.deltaX) < 25) return;
+
+    const now = Date.now();
+    // 650ms cooldown prevents trackpad momentum inertia from triggering a second jump
+    if (now - lastWheelTime.current < 650) return;
+    lastWheelTime.current = now;
+
+    if (e.deltaX > 0) {
+      handleNext();
+    } else {
+      handlePrev();
+    }
+  };
+
+  // Touch / Pointer Swipe Handlers for mobile
   const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsAutoPlaying(false);
     touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStartX.current === null || touchStartY.current === null) return;
-    const diffX = touchStartX.current - e.touches[0].clientX;
-    const diffY = touchStartY.current - e.touches[0].clientY;
-    // If horizontal swipe is dominant, prevent accidental scroll lock
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-      // Horizontal intent
-    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX.current === null) return;
     const diffX = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diffX) > 30) {
-      if (diffX > 0) handleNext();
-      else handlePrev();
-    }
     touchStartX.current = null;
-    touchStartY.current = null;
-  };
 
-  // Mouse Drag
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsAutoPlaying(false);
-    setIsDragging(true);
-    dragStartX.current = e.clientX;
-  };
-
-  const handleMouseUp = (e: React.MouseEvent) => {
-    if (!isDragging || dragStartX.current === null) {
-      setIsDragging(false);
-      return;
-    }
-    const diff = dragStartX.current - e.clientX;
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) handleNext();
-      else handlePrev();
-    }
-    setIsDragging(false);
-    dragStartX.current = null;
-  };
-
-  // Wheel horizontal scroll with refined damping throttle
-  const lastWheelTime = useRef<number>(0);
-  const handleWheel = (e: React.WheelEvent) => {
-    const now = Date.now();
-    if (now - lastWheelTime.current < 550) return;
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(delta) > 20) {
-      lastWheelTime.current = now;
-      if (delta > 0) handleNext();
+    if (Math.abs(diffX) > 40) {
+      if (diffX > 0) handleNext();
       else handlePrev();
     }
   };
@@ -201,10 +212,7 @@ export const GallerySection: React.FC = () => {
           className="relative py-4 my-2 select-none touch-pan-y"
           onWheel={handleWheel}
           onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
         >
           <div className={`relative h-[400px] sm:h-[460px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}>
@@ -276,11 +284,13 @@ export const GallerySection: React.FC = () => {
                   onClick={() => handleSelectCard(idx)}
                   drag={isActive ? "x" : false}
                   dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
+                  dragElastic={0.25}
+                  onDragStart={() => setIsDragging(true)}
                   onDragEnd={(_, info) => {
-                    if (info.offset.x < -40 || info.velocity.x < -300) {
+                    setIsDragging(false);
+                    if (info.offset.x < -40 || info.velocity.x < -250) {
                       handleNext();
-                    } else if (info.offset.x > 40 || info.velocity.x > 300) {
+                    } else if (info.offset.x > 40 || info.velocity.x > 250) {
                       handlePrev();
                     }
                   }}
