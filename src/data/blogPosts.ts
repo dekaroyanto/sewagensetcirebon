@@ -95,7 +95,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: '25 Januari 2026',
     readTime: '5 Menit Baca',
     author: 'Tim Maintenance SGC',
-    image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=800&q=80',
+    image: 'https://plus.unsplash.com/premium_photo-1661761538618-af050f9ef244?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     tags: ['Hemat Solar', 'BBM Genset', 'Maintenance', 'Efisiensi Energi'],
     content: [
       'Biaya operasional sewa genset sangat dipengaruhi oleh pemakaian bahan bakar solar. Banyak penyewa mengalami pemborosan BBM karena salah perhitungan kapasitas mesin atau instalasi kabel yang kurang tepat.',
