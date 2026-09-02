@@ -186,7 +186,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               Pilihan Unit Genset Silent &amp; AC Standing
             </h2>
             <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Jelajahi unit prima kami dalam tampilan 3D Carousel. <strong>Scroll atau geser kartu</strong> langsung untuk melihat spesifikasi detail dan kapasitas ideal acara Anda.
+              <strong>Scroll atau geser kartu</strong> langsung untuk melihat spesifikasi detail dan kapasitas ideal acara Anda.
             </p>
           </div>
 

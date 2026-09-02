@@ -75,7 +75,7 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       'Gratis Setting & Pengujian Jalur Listrik'
     ],
     startingPriceEstimate: 'Mulai Rp 750.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80'
+    image: 'https://d3ciiv7axt9x6p.cloudfront.net/blog/original/661f43445b8b6_ori.jpg'
   },
   {
     id: 'genset-30kva',
@@ -189,7 +189,7 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       'Panel COS Manual / ATS Opsional'
     ],
     startingPriceEstimate: 'Mulai Rp 1.500.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=800&q=80'
+    image: 'https://images.unsplash.com/photo-1705051278299-7e64ba21437a?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
   },
   {
     id: 'genset-100kva',
@@ -265,7 +265,7 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       'Mobilisasi Truk Crane & Pengawasan Ahli'
     ],
     startingPriceEstimate: 'Mulai Rp 3.000.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+    image: 'https://www.truck1.id/img/xxl/3897/CAT-DE150GC-150-kVA-Stand-by-Generator-DPX-18209-Belanda_3897_6953988329778.jpg'
   },
   {
     id: 'genset-250kva',
@@ -341,7 +341,7 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       'Mobil Crane Pengangkat & Pengawalan Logistik'
     ],
     startingPriceEstimate: 'Hubungi WhatsApp untuk Penawaran Khusus',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80'
+    image: 'https://hartechsby.co.id/wp-content/uploads/genset40hdeIMG20240108105645-1024x768.jpg'
   },
   {
     id: 'ac-standing-5pk',
@@ -377,7 +377,7 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       'Teknisi Khusus Instalasi & Standby Suhu Acara'
     ],
     startingPriceEstimate: 'Mulai Rp 750.000 / Unit / Hari',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80'
+    image: 'https://www.oscarliving.co.id/cdn/shop/files/ac-air-conditioner-ac-standing-gree-gvc-18sts-2pk-gree-shopname-4242700.png?v=1770723613'
   },
   {
     id: 'ac-standing-3pk',
@@ -485,6 +485,6 @@ export const GENSET_PRODUCTS: GensetProduct[] = [
       '2 Orang Teknisi Listrik & Teknisi AC Standby Sepanjang Acara'
     ],
     startingPriceEstimate: 'Hubungi WA untuk Harga Paket Spesial',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO2I6LEgUQOJf13Yjx7_HTY61XEUAJzahfmxSvy4KnEDzyVZtY5gvoUcSy&s=10'
   }
 ];
