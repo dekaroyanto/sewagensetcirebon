@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="sgcOrangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="50%" stop-color="#EA580C"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+    <linearGradient id="sgcBoltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDBA74"/>
+      <stop offset="30%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#EA580C"/>
+    </linearGradient>
+    <!-- Filter for slight crispness -->
+    <filter id="crispShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Main Emblem Group (Gear + Bolt + SGC + INDONESIA) -->
+  <g transform="translate(250, 190)">
+    <!-- Gear / Roda Gigi Industri -->
+    <path d="
+      M -20 -115 L 20 -115 L 24 -92 
+      A 95 95 0 0 1 67 -78 L 88 -88 L 112 -54 L 95 -37 
+      A 95 95 0 0 1 104 10 L 126 22 L 116 60 L 93 60 
+      A 95 95 0 0 1 67 98 L 76 120 L 42 135 L 25 119 
+      A 95 95 0 0 1 -25 119 L -42 135 L -76 120 L -67 98 
+      A 95 95 0 0 1 -93 60 L -116 60 L -126 22 L -104 10 
+      A 95 95 0 0 1 -95 -37 L -112 -54 L -88 -88 L -67 -78 
+      A 95 95 0 0 1 -24 -92 Z
+      
+      M 0 -68 
+      A 68 68 0 1 0 0 68 
+      A 68 68 0 1 0 0 -68 Z
+    " fill="#111827" fill-rule="evenodd"/>
+
+    <!-- Lightning Bolt (Petir Listrik) -->
+    <polygon points="-5,-140 18,-140 2,-75 24,-75 -15,5 3,-60 -18,-60" fill="url(#sgcBoltGrad)" filter="url(#crispShadow)"/>
+
+    <!-- Dynamic SGC Lettering -->
+    <!-- Stylized 'S' in Orange -->
+    <path d="
+      M -105 -22 
+      L -35 -22 
+      L -45 5 
+      L -85 5 
+      L -88 18 
+      L -38 18 
+      L -48 48 
+      L -120 48 
+      L -110 20 
+      L -70 20 
+      L -67 7 
+      L -115 7 Z
+    " fill="url(#sgcOrangeGrad)"/>
+
+    <!-- Stylized 'G' in Black & Orange Outline/Shape -->
+    <path d="
+      M -40 -22 
+      L 35 -22 
+      L 25 2 
+      L -10 2 
+      L -14 18 
+      L 20 18 
+      L 15 32 
+      L -5 32 
+      L -8 48 
+      L 45 48 
+      L 55 10 
+      L 58 -5 
+      L -28 -5 
+      L -24 -14 
+      L 40 -14 
+      L 48 -35 
+      L -45 -35 Z
+    " fill="#111827"/>
+    <!-- Orange Accent inside G -->
+    <polygon points="-15,10 18,10 14,24 -19,24" fill="url(#sgcOrangeGrad)"/>
+
+    <!-- Stylized 'C' in Black -->
+    <path d="
+      M 30 -22 
+      L 105 -22 
+      L 95 2 
+      L 60 2 
+      L 55 20 
+      L 90 20 
+      L 80 48 
+      L 12 48 
+      L 20 15 
+      L 25 -5 Z
+    " fill="#111827"/>
+
+    <!-- INDONESIA inside Gear under SGC -->
+    <text x="0" y="66" 
+          font-family="'Plus Jakarta Sans', 'Outfit', 'Montserrat', 'Arial Black', sans-serif" 
+          font-size="14" 
+          font-weight="900" 
+          letter-spacing="5.5" 
+          fill="#EA580C" 
+          text-anchor="middle">
+      INDONESIA
+    </text>
+  </g>
+
+  <!-- Typography: SEWA GENSET CIREBON -->
+  <text x="250" y="375" 
+        font-family="'Outfit', 'Plus Jakarta Sans', 'Montserrat', sans-serif" 
+        font-size="25" 
+        font-weight="900" 
+        letter-spacing="1.5" 
+        fill="#0F172A" 
+        text-anchor="middle">
+    SEWA GENSET CIREBON
+  </text>
+
+  <!-- Bottom Line with INDONESIA -->
+  <g transform="translate(0, 405)">
+    <!-- Left Orange Rule -->
+    <line x1="45" y1="0" x2="160" y2="0" stroke="#EA580C" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Centered INDONESIA in Orange -->
+    <text x="250" y="5" 
+          font-family="'Outfit', 'Plus Jakarta Sans', 'Montserrat', sans-serif" 
+          font-size="19" 
+          font-weight="900" 
+          letter-spacing="4.5" 
+          fill="#EA580C" 
+          text-anchor="middle">
+      INDONESIA
+    </text>
+    
+    <!-- Right Orange Rule -->
+    <line x1="340" y1="0" x2="455" y2="0" stroke="#EA580C" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

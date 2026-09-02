@@ -1,0 +1,7 @@
+{
+  "name": "Sewa Genset Cirebon (SGC)",
+  "description": "Layanan sewa dan rental genset silent profesional serta AC standing (3-5 PK) dan misty fan di Kota Cirebon dan sekitarnya oleh Sewa Genset Cirebon (SGC). Unit lengkap, formulir booking instan via WhatsApp, testimoni, FAQ, dan portal artikel.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
