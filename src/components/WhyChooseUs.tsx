@@ -71,57 +71,50 @@ export const WhyChooseUs: React.FC = () => {
     },
   };
 
+  const isDraggingRef = useRef(false);
+  const lastActionTime = useRef<number>(0);
+  const COOLDOWN_MS = 420;
+
   const handleNextCard = () => {
-    setSwipeDirection('right');
+    const now = Date.now();
+    if (now - lastActionTime.current < COOLDOWN_MS) return;
+    lastActionTime.current = now;
+    setSwipeDirection('left');
     setActiveIdx((prev) => (prev + 1) % totalCards);
   };
 
   const handlePrevCard = () => {
-    setSwipeDirection('left');
+    const now = Date.now();
+    if (now - lastActionTime.current < COOLDOWN_MS) return;
+    lastActionTime.current = now;
+    setSwipeDirection('right');
     setActiveIdx((prev) => (prev - 1 + totalCards) % totalCards);
   };
 
   const handleSelectCard = (index: number) => {
-    setSwipeDirection(index > activeIdx ? 'right' : 'left');
+    if (index === activeIdx) return;
+    const now = Date.now();
+    if (now - lastActionTime.current < COOLDOWN_MS) return;
+    lastActionTime.current = now;
+    setSwipeDirection(index > activeIdx ? 'left' : 'right');
     setActiveIdx(index);
   };
 
   // Wheel horizontal / vertical scroll
-  const lastWheelTime = useRef<number>(0);
   const handleWheel = (e: React.WheelEvent) => {
-    const now = Date.now();
-    if (now - lastWheelTime.current < 500) return;
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(delta) > 20) {
-      lastWheelTime.current = now;
+    if (Math.abs(delta) > 25) {
       if (delta > 0) handleNextCard();
       else handlePrevCard();
     }
   };
 
-  // Touch swipe support for mobile
-  const touchStartX = useRef<number | null>(null);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsAutoPlay(false);
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current === null) return;
-    const diff = touchStartX.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 30) {
-      if (diff > 0) handleNextCard();
-      else handlePrevCard();
-    }
-    touchStartX.current = null;
-  };
-
-  // Auto cycle cards every 4.5s if not hovered
+  // Auto cycle cards every 5s if not hovered or interacting
   useEffect(() => {
     if (!isAutoPlay) return;
     const timer = setInterval(() => {
       handleNextCard();
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
   }, [isAutoPlay, activeIdx]);
 
@@ -172,7 +165,10 @@ export const WhyChooseUs: React.FC = () => {
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={handlePrevCard}
+                  onClick={() => {
+                    setIsAutoPlay(false);
+                    handlePrevCard();
+                  }}
                   aria-label="Kartu Sebelumnya"
                   className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-800 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
                 >
@@ -184,7 +180,10 @@ export const WhyChooseUs: React.FC = () => {
                 </span>
 
                 <button
-                  onClick={handleNextCard}
+                  onClick={() => {
+                    setIsAutoPlay(false);
+                    handleNextCard();
+                  }}
                   aria-label="Kartu Berikutnya"
                   className="w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-800 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
                 >
@@ -195,86 +194,111 @@ export const WhyChooseUs: React.FC = () => {
 
             {/* 3D Stack Stage Container with Depth & Visible Layering */}
             <div
-              className="relative w-full max-w-md h-[380px] sm:h-[400px] flex items-center justify-center perspective-[1200px] touch-pan-y"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
+              className="relative w-full max-w-md h-[380px] sm:h-[400px] flex items-center justify-center perspective-[1200px]"
             >
 
               {/* Stack Underlay Shadows to emphasize card thickness */}
               <div className="absolute w-[86%] h-[320px] rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 translate-y-10 scale-90 blur-[1px] pointer-events-none" />
 
-              {COMPANY_INFO.advantages.map((adv, index) => {
-                const position = (index - activeIdx + totalCards) % totalCards;
-                const isTop = position === 0;
-                const isVisible = position < 4;
+              <AnimatePresence initial={false}>
+                {COMPANY_INFO.advantages.map((adv, index) => {
+                  const position = (index - activeIdx + totalCards) % totalCards;
+                  const isTop = position === 0;
+                  const isVisible = position < 4;
 
-                if (!isVisible) return null;
+                  if (!isVisible) return null;
 
-                const yOffset = position * 18;
-                const scale = 1 - position * 0.06;
-                const xOffset = position === 0 ? 0 : position === 1 ? 8 : position === 2 ? -8 : 4;
-                const rotation = position === 0 ? 0 : position === 1 ? 4.5 : position === 2 ? -4.5 : 2;
-                const zIndex = totalCards - position;
-                const opacity = position === 0 ? 1 : position === 1 ? 0.9 : position === 2 ? 0.7 : 0.45;
+                  const yOffset = position * 18;
+                  const scale = 1 - position * 0.06;
+                  const xOffset = position === 0 ? 0 : position === 1 ? 8 : position === 2 ? -8 : 4;
+                  const rotation = position === 0 ? 0 : position === 1 ? 4.5 : position === 2 ? -4.5 : 2;
+                  const zIndex = totalCards - position;
+                  const opacity = position === 0 ? 1 : position === 1 ? 0.9 : position === 2 ? 0.7 : 0.45;
 
-                const styleConfig = iconMap[adv.icon] || {
-                  icon: <Zap className="w-6 h-6" />,
-                  bg: 'bg-amber-100 dark:bg-amber-950/60',
-                  border: 'border-amber-300 dark:border-amber-800',
-                  text: 'text-amber-700 dark:text-amber-400',
-                  tag: 'Standar Terbaik'
-                };
+                  const styleConfig = iconMap[adv.icon] || {
+                    icon: <Zap className="w-6 h-6" />,
+                    bg: 'bg-amber-100 dark:bg-amber-950/60',
+                    border: 'border-amber-300 dark:border-amber-800',
+                    text: 'text-amber-700 dark:text-amber-400',
+                    tag: 'Standar Terbaik'
+                  };
 
-                return (
-                  <motion.div
-                    key={adv.title}
-                    id={`stacked-card-${index}`}
-                    style={{
-                      zIndex,
-                      transformOrigin: 'bottom center',
-                      willChange: 'transform, opacity'
-                    }}
-                    initial={{
-                      scale: 0.8,
-                      y: 60,
-                      opacity: 0,
-                    }}
-                    animate={{
-                      x: xOffset,
-                      y: yOffset,
-                      scale,
-                      rotate: rotation,
-                      opacity,
-                    }}
-                    exit={{
-                      x: swipeDirection === 'right' ? 380 : -380,
-                      rotate: swipeDirection === 'right' ? 25 : -25,
-                      opacity: 0,
-                      transition: { duration: 0.35, ease: 'easeInOut' }
-                    }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 260,
-                      damping: 24,
-                      mass: 0.8,
-                    }}
-                    drag={isTop ? 'x' : false}
-                    dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.8}
-                    whileDrag={{
-                      scale: 1.02,
-                      cursor: 'grabbing',
-                    }}
-                    onDragEnd={(_, info) => {
-                      if (info.offset.x > 35 || info.velocity.x > 180) {
-                        handlePrevCard();
-                      } else if (info.offset.x < -35 || info.velocity.x < -180) {
-                        handleNextCard();
+                  return (
+                    <motion.div
+                      key={adv.title}
+                      id={`stacked-card-${index}`}
+                      style={{
+                        zIndex: isTop ? 10 : zIndex,
+                        transformOrigin: 'bottom center',
+                        willChange: 'transform, opacity',
+                        touchAction: isTop ? 'pan-y' : 'auto',
+                      }}
+                      initial={{
+                        scale: 0.8,
+                        y: 60,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        x: xOffset,
+                        y: yOffset,
+                        scale,
+                        rotate: rotation,
+                        opacity,
+                      }}
+                      exit={
+                        isTop
+                          ? {
+                              x: swipeDirection === 'left' ? -380 : 380,
+                              rotate: swipeDirection === 'left' ? -15 : 15,
+                              opacity: 0,
+                              zIndex: 20,
+                              transition: { duration: 0.35, ease: 'easeOut' }
+                            }
+                          : {
+                              opacity: 0,
+                              scale: 0.75,
+                              y: 70,
+                              transition: { duration: 0.25 }
+                            }
                       }
-                    }}
-                    onClick={() => {
-                      if (!isTop) handleSelectCard(index);
-                    }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 280,
+                        damping: 26,
+                        mass: 0.8,
+                      }}
+                      drag={isTop ? 'x' : false}
+                      dragConstraints={{ left: 0, right: 0 }}
+                      dragElastic={0.65}
+                      dragDirectionLock={true}
+                      whileDrag={{
+                        scale: 1.02,
+                        cursor: 'grabbing',
+                      }}
+                      onDragStart={() => {
+                        isDraggingRef.current = true;
+                        setIsAutoPlay(false);
+                      }}
+                      onDragEnd={(_, info) => {
+                        const threshold = 45;
+                        const velocityThreshold = 220;
+                        if (info.offset.x < -threshold || info.velocity.x < -velocityThreshold) {
+                          handleNextCard();
+                        } else if (info.offset.x > threshold || info.velocity.x > velocityThreshold) {
+                          handlePrevCard();
+                        }
+                        // Reset dragging after timeout to eliminate ghost clicks on cards below
+                        setTimeout(() => {
+                          isDraggingRef.current = false;
+                        }, 200);
+                      }}
+                      onClick={() => {
+                        if (isDraggingRef.current) return;
+                        if (!isTop) {
+                          setIsAutoPlay(false);
+                          handleSelectCard(index);
+                        }
+                      }}
                     className={`absolute inset-x-0 mx-auto w-full h-[330px] sm:h-[350px] rounded-3xl p-6 sm:p-7 flex flex-col justify-between border transition-shadow duration-300 select-none ${isTop
                       ? 'bg-white dark:bg-slate-900 border-amber-500 shadow-xl cursor-grab active:cursor-grabbing ring-1 ring-amber-400/40'
                       : 'bg-slate-50 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-md cursor-pointer hover:border-slate-300 dark:hover:border-slate-700'
@@ -323,6 +347,7 @@ export const WhyChooseUs: React.FC = () => {
                   </motion.div>
                 );
               })}
+              </AnimatePresence>
             </div>
 
           </div>
