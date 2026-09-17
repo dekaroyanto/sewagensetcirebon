@@ -4,7 +4,7 @@ import {
   ChevronDown,
   MessageSquare
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { FAQ_LIST } from '../data/faqs';
 import { COMPANY_INFO } from '../data/company';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
@@ -36,7 +36,7 @@ export const FAQSection: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* FAQ Accordion List (Clean Direct List with Motion) */}
+        {/* FAQ Accordion List (Animated Smooth Expansion) */}
         <div className="space-y-3">
           {FAQ_LIST.map((faq, idx) => {
             const isOpen = openFaqId === faq.id;
@@ -47,26 +47,64 @@ export const FAQSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.15 }}
                 transition={{ duration: 0.35, delay: idx * 0.05 }}
-                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs transition-colors"
+                className={`bg-white dark:bg-slate-900 rounded-2xl border transition-all duration-300 overflow-hidden shadow-xs ${
+                  isOpen
+                    ? 'border-amber-400 dark:border-amber-500/60 ring-1 ring-amber-400/30'
+                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
+                }`}
               >
                 <button
                   onClick={() => toggleFaq(faq.id)}
-                  className="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors"
+                  aria-expanded={isOpen}
+                  className="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors select-none"
                 >
-                  <span className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug">
+                  <span className={`font-bold text-sm sm:text-base leading-snug transition-colors ${
+                    isOpen ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-white'
+                  }`}>
                     {faq.question}
                   </span>
-                  <div className={`w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180 bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400' : ''
-                    }`}>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors duration-200 ${
+                      isOpen
+                        ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                    }`}
+                  >
                     <ChevronDown className="w-4 h-4" />
-                  </div>
+                  </motion.div>
                 </button>
 
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 animate-in fade-in duration-150">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      key="faq-content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{
+                        height: 'auto',
+                        opacity: 1,
+                        transition: {
+                          height: { duration: 0.32, ease: [0.04, 0.62, 0.23, 0.98] },
+                          opacity: { duration: 0.22, delay: 0.06 }
+                        }
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0,
+                        transition: {
+                          height: { duration: 0.24, ease: [0.04, 0.62, 0.23, 0.98] },
+                          opacity: { duration: 0.15 }
+                        }
+                      }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800">
+                        <p>{faq.answer}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             );
           })}

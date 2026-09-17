@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   MapPin,
   Truck,
@@ -8,54 +8,99 @@ import {
   Navigation,
   ChevronLeft,
   ChevronRight,
-  MoveHorizontal
-} from 'lucide-react';
-import { motion } from 'motion/react';
-import { COMPANY_INFO } from '../data/company';
-import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
+  MoveHorizontal,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { COMPANY_INFO } from "../data/company";
+import { getGeneralWhatsAppUrl } from "../utils/whatsapp";
 
 export const ServiceAreas: React.FC = () => {
   const areas = [
     {
-      title: 'Kota Cirebon',
-      type: 'Wilayah Utama (Prioritas 1)',
-      districts: ['Kejaksan', 'Kesambi', 'Lemahwungkuk', 'Harjamukti', 'Pekalipan'],
-      deliveryTime: '30 - 60 Menit Siap Tiba',
-      popularUsage: 'Pernikahan Gedung/Tenda, Hotel, Kantor, Cafe, Hajatan Warga',
-      featured: true
+      title: "Kota Cirebon",
+      type: "Wilayah Utama (Prioritas 1)",
+      districts: [
+        "Kejaksan",
+        "Kesambi",
+        "Lemahwungkuk",
+        "Harjamukti",
+        "Pekalipan",
+      ],
+      deliveryTime: "30 - 60 Menit Siap Tiba",
+      popularUsage:
+        "Pernikahan Gedung/Tenda, Hotel, Kantor, Cafe, Hajatan Warga",
+      featured: true,
     },
     {
-      title: 'Kabupaten Cirebon',
-      type: 'Cakupan Lengkap',
-      districts: ['Sumber', 'Kedawung', 'Weru', 'Plered', 'Palimanan', 'Arjawinangun', 'Klangenan', 'Losari', 'Ciledug', 'Mundu', 'Beber'],
-      deliveryTime: '45 - 90 Menit Siap Tiba',
-      popularUsage: 'Pabrik Rotan, Proyek Jalan, Pabrik Manufaktur, Pesta Perumahan',
-      featured: true
+      title: "Kabupaten Cirebon",
+      type: "Cakupan Lengkap",
+      districts: [
+        "Sumber",
+        "Kedawung",
+        "Weru",
+        "Plered",
+        "Palimanan",
+        "Arjawinangun",
+        "Klangenan",
+        "Losari",
+        "Ciledug",
+        "Mundu",
+        "Beber",
+      ],
+      deliveryTime: "45 - 90 Menit Siap Tiba",
+      popularUsage:
+        "Pabrik Rotan, Proyek Jalan, Pabrik Manufaktur, Pesta Perumahan",
+      featured: true,
     },
     {
-      title: 'Kabupaten Kuningan',
-      type: 'Wilayah Penyangga',
-      districts: ['Kuningan Kota', 'Cilimus', 'Cigugur', 'Jalaksana', 'Kramatmulya', 'Mandirancan', 'Luragung'],
-      deliveryTime: '60 - 120 Menit Siap Tiba',
-      popularUsage: 'Villa Wisata, Resepsi Outdoor Pegunungan, Resort, Proyek Wisata',
-      featured: false
+      title: "Kabupaten Kuningan",
+      type: "Wilayah Penyangga",
+      districts: [
+        "Kuningan Kota",
+        "Cilimus",
+        "Cigugur",
+        "Jalaksana",
+        "Kramatmulya",
+        "Mandirancan",
+        "Luragung",
+      ],
+      deliveryTime: "60 - 120 Menit Siap Tiba",
+      popularUsage:
+        "Villa Wisata, Resepsi Outdoor Pegunungan, Resort, Proyek Wisata",
+      featured: false,
     },
     {
-      title: 'Kabupaten Majalengka',
-      type: 'Kawasan Industri & Bandara',
-      districts: ['Kertajati (BIJB)', 'Jatiwangi', 'Kadipaten', 'Majalengka Kota', 'Dawuan', 'Sumberjaya'],
-      deliveryTime: '60 - 120 Menit Siap Tiba',
-      popularUsage: 'Kawasan Industri Pabrik Garmen, Proyek Bandara, Konser Panggung',
-      featured: false
+      title: "Kabupaten Majalengka",
+      type: "Kawasan Industri & Bandara",
+      districts: [
+        "Kertajati (BIJB)",
+        "Jatiwangi",
+        "Kadipaten",
+        "Majalengka Kota",
+        "Dawuan",
+        "Sumberjaya",
+      ],
+      deliveryTime: "60 - 120 Menit Siap Tiba",
+      popularUsage:
+        "Kawasan Industri Pabrik Garmen, Proyek Bandara, Konser Panggung",
+      featured: false,
     },
     {
-      title: 'Kabupaten Indramayu',
-      type: 'Kawasan Pesisir & Migas',
-      districts: ['Jatibarang', 'Karangampel', 'Indramayu Kota', 'Balongan', 'Krangkeng', 'Lohbener'],
-      deliveryTime: '60 - 120 Menit Siap Tiba',
-      popularUsage: 'Proyek Infrastruktur Pesisir, Hajatan Besar, Cold Storage, Pabrik',
-      featured: false
-    }
+      title: "Kabupaten Indramayu",
+      type: "Kawasan Pesisir & Migas",
+      districts: [
+        "Jatibarang",
+        "Karangampel",
+        "Indramayu Kota",
+        "Balongan",
+        "Krangkeng",
+        "Lohbener",
+      ],
+      deliveryTime: "60 - 120 Menit Siap Tiba",
+      popularUsage:
+        "Proyek Infrastruktur Pesisir, Hajatan Besar, Cold Storage, Pabrik",
+      featured: false,
+    },
   ];
 
   // Scroll Container Ref & State for Horizontal Navigation
@@ -77,20 +122,20 @@ export const ServiceAreas: React.FC = () => {
     const el = scrollContainerRef.current;
     if (!el) return;
     checkScroll();
-    el.addEventListener('scroll', checkScroll);
-    window.addEventListener('resize', checkScroll);
+    el.addEventListener("scroll", checkScroll);
+    window.addEventListener("resize", checkScroll);
     return () => {
-      el.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('resize', checkScroll);
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
     };
   }, [checkScroll]);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return;
     const container = scrollContainerRef.current;
     const cardWidth = container.clientWidth > 768 ? 370 : 300;
-    const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
+    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
   // Mouse Drag to Scroll Handlers
@@ -114,9 +159,11 @@ export const ServiceAreas: React.FC = () => {
   };
 
   return (
-    <section id="cakupan" className="py-16 sm:py-20 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
+    <section
+      id="cakupan"
+      className="py-16 sm:py-20 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative overflow-hidden border-b border-slate-200 dark:border-slate-800 transition-colors duration-200"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Section Header with Motion */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -130,32 +177,36 @@ export const ServiceAreas: React.FC = () => {
               Melayani Kota Cirebon &amp; Se-Wilayah Ciayumajakuning
             </h2>
             <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Didukung armada towing dan truk pengangkut pribadi siap memobilisasi genset tepat waktu langsung ke titik lokasi acara Anda.
+              Didukung armada towing dan truk pengangkut pribadi siap
+              memobilisasi genset tepat waktu langsung ke titik lokasi acara
+              Anda.
             </p>
           </div>
 
           {/* Left / Right Scroll Buttons */}
           <div className="flex items-center gap-2 shrink-0 self-start md:self-auto">
             <button
-              onClick={() => scroll('left')}
+              onClick={() => scroll("left")}
               disabled={!canScrollLeft}
               aria-label="Scroll Area ke Kiri"
-              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollLeft
-                ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                }`}
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                canScrollLeft
+                  ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+              }`}
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
 
             <button
-              onClick={() => scroll('right')}
+              onClick={() => scroll("right")}
               disabled={!canScrollRight}
               aria-label="Scroll Area ke Kanan"
-              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollRight
-                ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                }`}
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                canScrollRight
+                  ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+              }`}
             >
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -166,7 +217,9 @@ export const ServiceAreas: React.FC = () => {
         <div className="flex items-center justify-between mb-4 px-1">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="font-medium">Geser kartu ke kanan dan kiri untuk melihat 5 wilayah cakupan</span>
+            <span className="font-medium">
+              Geser kartu ke kanan dan kiri untuk melihat wilayah cakupan
+            </span>
           </div>
         </div>
 
@@ -177,13 +230,14 @@ export const ServiceAreas: React.FC = () => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
+          className={`flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
           style={{
-            scrollBehavior: isDragging ? 'auto' : 'smooth',
-            WebkitOverflowScrolling: 'touch',
-            scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
-            scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
+            scrollBehavior: isDragging ? "auto" : "smooth",
+            WebkitOverflowScrolling: "touch",
+            scrollPaddingLeft: "calc((100vw - 84vw) / 2)",
+            scrollPaddingRight: "calc((100vw - 84vw) / 2)",
           }}
         >
           {areas.map((area, idx) => (
@@ -193,23 +247,28 @@ export const ServiceAreas: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.15 }}
               transition={{ duration: 0.45, delay: idx * 0.08 }}
-              className={`w-[84vw] sm:w-[350px] md:w-[360px] shrink-0 snap-center sm:snap-start rounded-2xl p-5 sm:p-6 border transition-all flex flex-col justify-between ${area.featured
-                ? 'bg-white dark:bg-slate-900 border-amber-400 dark:border-amber-600/60 shadow-lg shadow-amber-500/5'
-                : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700'
-                }`}
+              className={`w-[84vw] sm:w-[350px] md:w-[360px] shrink-0 snap-center sm:snap-start rounded-2xl p-5 sm:p-6 border transition-all flex flex-col justify-between ${
+                area.featured
+                  ? "bg-white dark:bg-slate-900 border-amber-400 dark:border-amber-600/60 shadow-lg shadow-amber-500/5"
+                  : "bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700"
+              }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${area.featured
-                    ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
-                    }`}>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                      area.featured
+                        ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                    }`}
+                  >
                     {area.type}
                   </span>
 
                   <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                     <Clock className="w-3.5 h-3.5" />
-                    {area.deliveryTime.split(' ')[0]} {area.deliveryTime.split(' ')[1]}
+                    {area.deliveryTime.split(" ")[0]}{" "}
+                    {area.deliveryTime.split(" ")[1]}
                   </span>
                 </div>
 
@@ -251,7 +310,9 @@ export const ServiceAreas: React.FC = () => {
                 </span>
 
                 <a
-                  href={getGeneralWhatsAppUrl(`Halo Admin SGC, saya mau tanya sewa genset untuk lokasi di wilayah ${area.title}`)}
+                  href={getGeneralWhatsAppUrl(
+                    `Halo Admin SGC, saya mau tanya sewa genset untuk lokasi di wilayah ${area.title}`,
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 cursor-pointer"
@@ -262,7 +323,6 @@ export const ServiceAreas: React.FC = () => {
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );

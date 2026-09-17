@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Zap,
   ArrowRight,
@@ -8,11 +8,11 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Cpu,
-  MoveHorizontal
-} from 'lucide-react';
-import { motion } from 'motion/react';
-import { GENSET_PRODUCTS } from '../data/gensets';
-import { GensetProduct } from '../types';
+  MoveHorizontal,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { GENSET_PRODUCTS } from "../data/gensets";
+import { GensetProduct } from "../types";
 
 interface CatalogTeaserSectionProps {
   onOpenCatalog: () => void;
@@ -21,15 +21,17 @@ interface CatalogTeaserSectionProps {
 
 export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   onOpenCatalog,
-  onGoToBooking
+  onGoToBooking,
 }) => {
   // Curated spotlight units
   const carouselItems = [
     GENSET_PRODUCTS[1], // 20 kVA
     GENSET_PRODUCTS[4], // 60 kVA
     GENSET_PRODUCTS[6], // 100 kVA
-    GENSET_PRODUCTS.find(p => p.id === 'ac-standing-5pk') || GENSET_PRODUCTS[2],
-    GENSET_PRODUCTS.find(p => p.id === 'paket-wedding-genset-ac') || GENSET_PRODUCTS[5],
+    GENSET_PRODUCTS.find((p) => p.id === "ac-standing-5pk") ||
+      GENSET_PRODUCTS[2],
+    GENSET_PRODUCTS.find((p) => p.id === "paket-wedding-genset-ac") ||
+      GENSET_PRODUCTS[5],
     GENSET_PRODUCTS[8] || GENSET_PRODUCTS[0], // 250 kVA
   ];
 
@@ -63,42 +65,50 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   }, []);
 
   // Safe slide transition: locks rapid consecutive calls so exactly 1 card moves per gesture
-  const safeSlide = useCallback((direction: 'next' | 'prev') => {
-    if (isTransitioning.current) return;
-    isTransitioning.current = true;
-    setIsAutoPlaying(false);
+  const safeSlide = useCallback(
+    (direction: "next" | "prev") => {
+      if (isTransitioning.current) return;
+      isTransitioning.current = true;
+      setIsAutoPlaying(false);
 
-    if (direction === 'next') {
-      setActiveIndex((prev) => (prev + 1) % carouselItems.length);
-    } else {
-      setActiveIndex((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
-    }
+      if (direction === "next") {
+        setActiveIndex((prev) => (prev + 1) % carouselItems.length);
+      } else {
+        setActiveIndex(
+          (prev) => (prev - 1 + carouselItems.length) % carouselItems.length,
+        );
+      }
 
-    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
-    transitionTimeout.current = setTimeout(() => {
-      isTransitioning.current = false;
-    }, 550);
-  }, [carouselItems.length]);
+      if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+      transitionTimeout.current = setTimeout(() => {
+        isTransitioning.current = false;
+      }, 550);
+    },
+    [carouselItems.length],
+  );
 
   const handlePrev = useCallback(() => {
-    safeSlide('prev');
+    safeSlide("prev");
   }, [safeSlide]);
 
   const handleNext = useCallback(() => {
-    safeSlide('next');
+    safeSlide("next");
   }, [safeSlide]);
 
-  const handleSelectCard = useCallback((index: number) => {
-    if (isTransitioning.current || index === activeIndex) return;
-    isTransitioning.current = true;
-    setIsAutoPlaying(false);
-    setActiveIndex(index);
+  const handleSelectCard = useCallback(
+    (index: number) => {
+      if (isTransitioning.current || index === activeIndex) return;
+      isTransitioning.current = true;
+      setIsAutoPlaying(false);
+      setActiveIndex(index);
 
-    if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
-    transitionTimeout.current = setTimeout(() => {
-      isTransitioning.current = false;
-    }, 550);
-  }, [activeIndex]);
+      if (transitionTimeout.current) clearTimeout(transitionTimeout.current);
+      transitionTimeout.current = setTimeout(() => {
+        isTransitioning.current = false;
+      }, 550);
+    },
+    [activeIndex],
+  );
 
   // Wheel / Trackpad horizontal scroll handling with momentum inertia protection
   const handleWheel = (e: React.WheelEvent) => {
@@ -163,12 +173,11 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.04] pointer-events-none"
         style={{
           backgroundImage: `radial-gradient(currentColor 1px, transparent 1px)`,
-          backgroundSize: '24px 24px'
+          backgroundSize: "24px 24px",
         }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
         {/* Header Block */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <div className="max-w-2xl text-left">
@@ -176,7 +185,8 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               Pilihan Unit Genset Silent &amp; AC Standing
             </h2>
             <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              <strong>Scroll atau geser kartu</strong> langsung untuk melihat spesifikasi detail dan kapasitas ideal acara Anda.
+              <strong>Scroll atau geser kartu</strong> langsung untuk melihat
+              spesifikasi detail dan kapasitas ideal acara Anda.
             </p>
           </div>
 
@@ -192,7 +202,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                 <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
               </button>
               <div className="px-3 text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
-                0{activeIndex + 1} <span className="text-slate-400 dark:text-slate-500">/ 0{carouselItems.length}</span>
+                0{activeIndex + 1}{" "}
+                <span className="text-slate-400 dark:text-slate-500">
+                  / 0{carouselItems.length}
+                </span>
               </div>
               <button
                 onClick={handleNext}
@@ -210,16 +223,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md hover:shadow-amber-500/25 transition-all flex items-center gap-2 cursor-pointer group"
             >
               <Zap className="w-4 h-4 fill-slate-950" />
-              <span>Semua Unit</span>
+              <span>Lihat Katalog</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
-        </div>
-
-        {/* Swipe / Scroll Hint */}
-        <div className="flex items-center justify-center gap-2 mb-2 text-xs font-medium text-slate-500 dark:text-slate-400 select-none">
-          <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
-          <span>Scroll trackpad / geser kartu untuk mengganti unit</span>
         </div>
 
         {/* 3D Carousel Interactive Stage (Supports Wheel, Touch Swipe & Mouse Drag) */}
@@ -229,10 +236,12 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-
           {/* Main 3D Stage Container */}
-          <div className={`relative h-[430px] sm:h-[470px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}>
+          <div
+            className={`relative h-[430px] sm:h-[470px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${
+              isDragging ? "cursor-grabbing" : "cursor-grab"
+            }`}
+          >
             {carouselItems.map((item, idx) => {
               // Calculate relative offset from active item
               let offset = idx - activeIndex;
@@ -250,7 +259,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               if (!isVisible) return null;
 
               // 3D positioning styles
-              let translateX = '0%';
+              let translateX = "0%";
               let translateZ = 0;
               let rotateY = 0;
               let scale = 1;
@@ -258,35 +267,35 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               let zIndex = 10;
 
               if (isActive) {
-                translateX = '0%';
+                translateX = "0%";
                 translateZ = 70;
                 rotateY = 0;
                 scale = 1;
                 opacity = 1;
                 zIndex = 30;
               } else if (isPrev) {
-                translateX = '-66%';
+                translateX = "-66%";
                 translateZ = -80;
                 rotateY = 22;
                 scale = 0.86;
                 opacity = 0.82;
                 zIndex = 20;
               } else if (isNext) {
-                translateX = '66%';
+                translateX = "66%";
                 translateZ = -80;
                 rotateY = -22;
                 scale = 0.86;
                 opacity = 0.82;
                 zIndex = 20;
               } else if (offset === -2) {
-                translateX = '-116%';
+                translateX = "-116%";
                 translateZ = -180;
                 rotateY = 32;
                 scale = 0.72;
                 opacity = 0.38;
                 zIndex = 10;
               } else if (offset === 2) {
-                translateX = '116%';
+                translateX = "116%";
                 translateZ = -180;
                 rotateY = -32;
                 scale = 0.72;
@@ -321,39 +330,43 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                     type: "spring",
                     stiffness: 280,
                     damping: 26,
-                    mass: 0.8
+                    mass: 0.8,
                   }}
                   style={{
                     zIndex,
-                    transformStyle: 'preserve-3d',
-                    willChange: 'transform, opacity',
+                    transformStyle: "preserve-3d",
+                    willChange: "transform, opacity",
                   }}
-                  className={`absolute w-[290px] sm:w-[350px] md:w-[410px] h-[400px] sm:h-[440px] md:h-[470px] rounded-3xl cursor-pointer select-none ${isActive
-                    ? 'shadow-2xl shadow-amber-500/20 ring-2 ring-amber-500 dark:ring-amber-400 bg-white dark:bg-slate-800'
-                    : 'shadow-lg shadow-slate-300/50 dark:shadow-black/50 bg-slate-100 dark:bg-slate-850'
-                    }`}
+                  className={`absolute w-[290px] sm:w-[350px] md:w-[410px] h-[400px] sm:h-[440px] md:h-[470px] rounded-3xl cursor-pointer select-none ${
+                    isActive
+                      ? "shadow-2xl shadow-amber-500/20 ring-2 ring-amber-500 dark:ring-amber-400 bg-white dark:bg-slate-800"
+                      : "shadow-lg shadow-slate-300/50 dark:shadow-black/50 bg-slate-100 dark:bg-slate-850"
+                  }`}
                 >
                   <div className="relative w-full h-full rounded-3xl overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800/95 dark:via-slate-850 dark:to-slate-900 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between p-5 sm:p-6 backdrop-blur-xl">
-
                     {/* Card Top: Tags & Category Badge */}
                     <div className="flex items-center justify-between gap-2 z-10">
-                      <span className={`px-3 py-1 rounded-xl font-black text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5 ${item.category === 'ac'
-                        ? 'bg-cyan-500 text-slate-950 font-bold'
-                        : item.category === 'paket'
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                          : 'bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950'
-                        }`}>
+                      <span
+                        className={`px-3 py-1 rounded-xl font-black text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5 ${
+                          item.category === "ac"
+                            ? "bg-cyan-500 text-slate-950 font-bold"
+                            : item.category === "paket"
+                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                              : "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950"
+                        }`}
+                      >
                         <Zap className="w-3 h-3 fill-current" />
-                        {item.category === 'ac'
-                          ? `${item.pk ? `${item.pk} PK` : 'AC Standing'}`
-                          : item.category === 'paket'
-                            ? 'Paket Wedding'
+                        {item.category === "ac"
+                          ? `${item.pk ? `${item.pk} PK` : "AC Standing"}`
+                          : item.category === "paket"
+                            ? "Paket Wedding"
                             : `${item.kva} kVA`}
                       </span>
 
                       <span className="px-2.5 py-1 rounded-lg bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1 backdrop-blur-md shadow-2xs">
                         <Volume2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        {item.noiseLevel.split('@')[0] || item.noiseLevel.split('(')[0]}
+                        {item.noiseLevel.split("@")[0] ||
+                          item.noiseLevel.split("(")[0]}
                       </span>
                     </div>
 
@@ -391,11 +404,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                           {item.name}
                         </h3>
                         <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
-                          {item.idealFor[0] || 'Cocok untuk event & industri'}
+                          {item.idealFor[0] || "Cocok untuk event & industri"}
                         </p>
                       </div>
                     </div>
-
                   </div>
                 </motion.div>
               );
@@ -409,14 +421,14 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                 key={idx}
                 onClick={() => handleSelectCard(idx)}
                 aria-label={`Go to slide ${idx + 1}`}
-                className={`h-2 rounded-full transition-all duration-500 ease-out cursor-pointer ${activeIndex === idx
-                  ? 'w-8 bg-amber-500 dark:bg-amber-400 shadow-sm shadow-amber-500/50'
-                  : 'w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-500'
-                  }`}
+                className={`h-2 rounded-full transition-all duration-500 ease-out cursor-pointer ${
+                  activeIndex === idx
+                    ? "w-8 bg-amber-500 dark:bg-amber-400 shadow-sm shadow-amber-500/50"
+                    : "w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-500"
+                }`}
               />
             ))}
           </div>
-
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   VolumeX,
   UserCheck,
@@ -14,60 +14,71 @@ import {
   MoveHorizontal,
   ChevronLeft,
   ChevronRight,
-  RotateCcw
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { COMPANY_INFO } from '../data/company';
+  RotateCcw,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { COMPANY_INFO } from "../data/company";
 
 export const WhyChooseUs: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState(0);
-  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right'>('right');
+  const [swipeDirection, setSwipeDirection] = useState<"left" | "right">(
+    "right",
+  );
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
   const totalCards = COMPANY_INFO.advantages.length;
 
-  const iconMap: Record<string, { icon: React.ReactNode; bg: string; border: string; text: string; tag: string }> = {
+  const iconMap: Record<
+    string,
+    {
+      icon: React.ReactNode;
+      bg: string;
+      border: string;
+      text: string;
+      tag: string;
+    }
+  > = {
     VolumeX: {
       icon: <VolumeX className="w-6 h-6" />,
-      bg: 'bg-amber-100 dark:bg-amber-950/60',
-      border: 'border-amber-300 dark:border-amber-800',
-      text: 'text-amber-700 dark:text-amber-400',
-      tag: '< 65 dB Super Silent'
+      bg: "bg-amber-100 dark:bg-amber-950/60",
+      border: "border-amber-300 dark:border-amber-800",
+      text: "text-amber-700 dark:text-amber-400",
+      tag: "< 65 dB Super Silent",
     },
     UserCheck: {
       icon: <UserCheck className="w-6 h-6" />,
-      bg: 'bg-emerald-100 dark:bg-emerald-950/60',
-      border: 'border-emerald-300 dark:border-emerald-800',
-      text: 'text-emerald-700 dark:text-emerald-400',
-      tag: 'Teknisi Sertifikasi'
+      bg: "bg-emerald-100 dark:bg-emerald-950/60",
+      border: "border-emerald-300 dark:border-emerald-800",
+      text: "text-emerald-700 dark:text-emerald-400",
+      tag: "Teknisi Sertifikasi",
     },
     Truck: {
       icon: <Truck className="w-6 h-6" />,
-      bg: 'bg-blue-100 dark:bg-blue-950/60',
-      border: 'border-blue-300 dark:border-blue-800',
-      text: 'text-blue-700 dark:text-blue-400',
-      tag: 'Pengiriman Cepat'
+      bg: "bg-blue-100 dark:bg-blue-950/60",
+      border: "border-blue-300 dark:border-blue-800",
+      text: "text-blue-700 dark:text-blue-400",
+      tag: "Pengiriman Cepat",
     },
     Zap: {
       icon: <Zap className="w-6 h-6" />,
-      bg: 'bg-yellow-100 dark:bg-yellow-950/60',
-      border: 'border-yellow-300 dark:border-yellow-800',
-      text: 'text-yellow-700 dark:text-yellow-400',
-      tag: 'Kabel 50m & ATS'
+      bg: "bg-yellow-100 dark:bg-yellow-950/60",
+      border: "border-yellow-300 dark:border-yellow-800",
+      text: "text-yellow-700 dark:text-yellow-400",
+      tag: "Kabel 50m & ATS",
     },
     Wrench: {
       icon: <Wrench className="w-6 h-6" />,
-      bg: 'bg-purple-100 dark:bg-purple-950/60',
-      border: 'border-purple-300 dark:border-purple-800',
-      text: 'text-purple-700 dark:text-purple-400',
-      tag: 'Load Bank Test 100%'
+      bg: "bg-purple-100 dark:bg-purple-950/60",
+      border: "border-purple-300 dark:border-purple-800",
+      text: "text-purple-700 dark:text-purple-400",
+      tag: "Load Bank Test 100%",
     },
     ShieldCheck: {
       icon: <ShieldCheck className="w-6 h-6" />,
-      bg: 'bg-rose-100 dark:bg-rose-950/60',
-      border: 'border-rose-300 dark:border-rose-800',
-      text: 'text-rose-700 dark:text-rose-400',
-      tag: 'Garansi Unit Backup'
+      bg: "bg-rose-100 dark:bg-rose-950/60",
+      border: "border-rose-300 dark:border-rose-800",
+      text: "text-rose-700 dark:text-rose-400",
+      tag: "Garansi Unit Backup",
     },
   };
 
@@ -79,7 +90,7 @@ export const WhyChooseUs: React.FC = () => {
     const now = Date.now();
     if (now - lastActionTime.current < COOLDOWN_MS) return;
     lastActionTime.current = now;
-    setSwipeDirection('left');
+    setSwipeDirection("left");
     setActiveIdx((prev) => (prev + 1) % totalCards);
   };
 
@@ -87,7 +98,7 @@ export const WhyChooseUs: React.FC = () => {
     const now = Date.now();
     if (now - lastActionTime.current < COOLDOWN_MS) return;
     lastActionTime.current = now;
-    setSwipeDirection('right');
+    setSwipeDirection("right");
     setActiveIdx((prev) => (prev - 1 + totalCards) % totalCards);
   };
 
@@ -96,7 +107,7 @@ export const WhyChooseUs: React.FC = () => {
     const now = Date.now();
     if (now - lastActionTime.current < COOLDOWN_MS) return;
     lastActionTime.current = now;
-    setSwipeDirection(index > activeIdx ? 'left' : 'right');
+    setSwipeDirection(index > activeIdx ? "left" : "right");
     setActiveIdx(index);
   };
 
@@ -130,7 +141,6 @@ export const WhyChooseUs: React.FC = () => {
       <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-blue-100/60 dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -143,19 +153,18 @@ export const WhyChooseUs: React.FC = () => {
             Mengapa Memilih Sewa Genset Cirebon (SGC)?
           </h2>
           <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Buka &amp; geser kartu di bawah untuk melihat standar mutu genset, respon teknisi, dan garansi operasional tanpa padam.
+            Buka &amp; geser kartu di bawah untuk melihat standar mutu genset,
+            respon teknisi, dan garansi operasional tanpa padam.
           </p>
         </motion.div>
 
         {/* Stacked Cards Interactive Stage */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center max-w-6xl mx-auto">
-
           {/* Left Column: 3D Stacked Deck Canvas with Explicit Movement */}
           <div
             className="lg:col-span-7 flex flex-col items-center"
             onWheel={handleWheel}
           >
-
             {/* Gesture Hint & Controls Header */}
             <div className="w-full max-w-md flex items-center justify-between mb-4 px-1 text-xs text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1.5 font-medium text-amber-700 dark:text-amber-400">
@@ -193,16 +202,14 @@ export const WhyChooseUs: React.FC = () => {
             </div>
 
             {/* 3D Stack Stage Container with Depth & Visible Layering */}
-            <div
-              className="relative w-full max-w-md h-[380px] sm:h-[400px] flex items-center justify-center perspective-[1200px]"
-            >
-
+            <div className="relative w-full max-w-md h-[380px] sm:h-[400px] flex items-center justify-center perspective-[1200px]">
               {/* Stack Underlay Shadows to emphasize card thickness */}
               <div className="absolute w-[86%] h-[320px] rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 translate-y-10 scale-90 blur-[1px] pointer-events-none" />
 
               <AnimatePresence initial={false}>
                 {COMPANY_INFO.advantages.map((adv, index) => {
-                  const position = (index - activeIdx + totalCards) % totalCards;
+                  const position =
+                    (index - activeIdx + totalCards) % totalCards;
                   const isTop = position === 0;
                   const isVisible = position < 4;
 
@@ -210,17 +217,38 @@ export const WhyChooseUs: React.FC = () => {
 
                   const yOffset = position * 18;
                   const scale = 1 - position * 0.06;
-                  const xOffset = position === 0 ? 0 : position === 1 ? 8 : position === 2 ? -8 : 4;
-                  const rotation = position === 0 ? 0 : position === 1 ? 4.5 : position === 2 ? -4.5 : 2;
+                  const xOffset =
+                    position === 0
+                      ? 0
+                      : position === 1
+                        ? 8
+                        : position === 2
+                          ? -8
+                          : 4;
+                  const rotation =
+                    position === 0
+                      ? 0
+                      : position === 1
+                        ? 4.5
+                        : position === 2
+                          ? -4.5
+                          : 2;
                   const zIndex = totalCards - position;
-                  const opacity = position === 0 ? 1 : position === 1 ? 0.9 : position === 2 ? 0.7 : 0.45;
+                  const opacity =
+                    position === 0
+                      ? 1
+                      : position === 1
+                        ? 0.9
+                        : position === 2
+                          ? 0.7
+                          : 0.45;
 
                   const styleConfig = iconMap[adv.icon] || {
                     icon: <Zap className="w-6 h-6" />,
-                    bg: 'bg-amber-100 dark:bg-amber-950/60',
-                    border: 'border-amber-300 dark:border-amber-800',
-                    text: 'text-amber-700 dark:text-amber-400',
-                    tag: 'Standar Terbaik'
+                    bg: "bg-amber-100 dark:bg-amber-950/60",
+                    border: "border-amber-300 dark:border-amber-800",
+                    text: "text-amber-700 dark:text-amber-400",
+                    tag: "Standar Terbaik",
                   };
 
                   return (
@@ -229,9 +257,9 @@ export const WhyChooseUs: React.FC = () => {
                       id={`stacked-card-${index}`}
                       style={{
                         zIndex: isTop ? 10 : zIndex,
-                        transformOrigin: 'bottom center',
-                        willChange: 'transform, opacity',
-                        touchAction: isTop ? 'pan-y' : 'auto',
+                        transformOrigin: "bottom center",
+                        willChange: "transform, opacity",
+                        touchAction: isTop ? "pan-y" : "auto",
                       }}
                       initial={{
                         scale: 0.8,
@@ -248,32 +276,32 @@ export const WhyChooseUs: React.FC = () => {
                       exit={
                         isTop
                           ? {
-                              x: swipeDirection === 'left' ? -380 : 380,
-                              rotate: swipeDirection === 'left' ? -15 : 15,
+                              x: swipeDirection === "left" ? -380 : 380,
+                              rotate: swipeDirection === "left" ? -15 : 15,
                               opacity: 0,
                               zIndex: 20,
-                              transition: { duration: 0.35, ease: 'easeOut' }
+                              transition: { duration: 0.35, ease: "easeOut" },
                             }
                           : {
                               opacity: 0,
                               scale: 0.75,
                               y: 70,
-                              transition: { duration: 0.25 }
+                              transition: { duration: 0.25 },
                             }
                       }
                       transition={{
-                        type: 'spring',
+                        type: "spring",
                         stiffness: 280,
                         damping: 26,
                         mass: 0.8,
                       }}
-                      drag={isTop ? 'x' : false}
+                      drag={isTop ? "x" : false}
                       dragConstraints={{ left: 0, right: 0 }}
                       dragElastic={0.65}
                       dragDirectionLock={true}
                       whileDrag={{
                         scale: 1.02,
-                        cursor: 'grabbing',
+                        cursor: "grabbing",
                       }}
                       onDragStart={() => {
                         isDraggingRef.current = true;
@@ -282,9 +310,15 @@ export const WhyChooseUs: React.FC = () => {
                       onDragEnd={(_, info) => {
                         const threshold = 45;
                         const velocityThreshold = 220;
-                        if (info.offset.x < -threshold || info.velocity.x < -velocityThreshold) {
+                        if (
+                          info.offset.x < -threshold ||
+                          info.velocity.x < -velocityThreshold
+                        ) {
                           handleNextCard();
-                        } else if (info.offset.x > threshold || info.velocity.x > velocityThreshold) {
+                        } else if (
+                          info.offset.x > threshold ||
+                          info.velocity.x > velocityThreshold
+                        ) {
                           handlePrevCard();
                         }
                         // Reset dragging after timeout to eliminate ghost clicks on cards below
@@ -299,57 +333,67 @@ export const WhyChooseUs: React.FC = () => {
                           handleSelectCard(index);
                         }
                       }}
-                    className={`absolute inset-x-0 mx-auto w-full h-[330px] sm:h-[350px] rounded-3xl p-6 sm:p-7 flex flex-col justify-between border transition-shadow duration-300 select-none ${isTop
-                      ? 'bg-white dark:bg-slate-900 border-amber-500 shadow-xl cursor-grab active:cursor-grabbing ring-1 ring-amber-400/40'
-                      : 'bg-slate-50 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-md cursor-pointer hover:border-slate-300 dark:hover:border-slate-700'
+                      className={`absolute inset-x-0 mx-auto w-full h-[330px] sm:h-[350px] rounded-3xl p-6 sm:p-7 flex flex-col justify-between border transition-shadow duration-300 select-none ${
+                        isTop
+                          ? "bg-white dark:bg-slate-900 border-amber-500 shadow-xl cursor-grab active:cursor-grabbing ring-1 ring-amber-400/40"
+                          : "bg-slate-50 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-md cursor-pointer hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
-                  >
-                    <div>
-                      {/* Top Header of Card */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-2xs ${styleConfig.bg} ${styleConfig.border} ${styleConfig.text}`}>
-                          {styleConfig.icon}
+                    >
+                      <div>
+                        {/* Top Header of Card */}
+                        <div className="flex items-center justify-between mb-4">
+                          <div
+                            className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-2xs ${styleConfig.bg} ${styleConfig.border} ${styleConfig.text}`}
+                          >
+                            {styleConfig.icon}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`px-2.5 py-1 rounded-full border text-[11px] font-bold ${
+                                isTop
+                                  ? "bg-amber-100 dark:bg-amber-950/80 border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300"
+                                  : "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400"
+                              }`}
+                            >
+                              {styleConfig.tag}
+                            </span>
+                            <span className="text-sm font-mono font-extrabold text-slate-400 dark:text-slate-500">
+                              0{index + 1}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2.5 py-1 rounded-full border text-[11px] font-bold ${isTop
-                            ? 'bg-amber-100 dark:bg-amber-950/80 border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-300'
-                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
-                            }`}>
-                            {styleConfig.tag}
-                          </span>
-                          <span className="text-sm font-mono font-extrabold text-slate-400 dark:text-slate-500">
-                            0{index + 1}
-                          </span>
+                        {/* Card Title & Main Content */}
+                        <h3 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white mb-2.5 tracking-tight">
+                          {adv.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-4">
+                          {adv.description}
+                        </p>
+                      </div>
+
+                      {/* Card Bottom Meta Bar */}
+                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                          <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                          <span>SGC Certified Quality</span>
                         </div>
+                        <span
+                          className={`text-[11px] font-bold transition-colors ${
+                            isTop
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-slate-400 dark:text-slate-500"
+                          }`}
+                        >
+                          {isTop ? "Kartu Aktif" : "Klik Bawa ke Depan"}
+                        </span>
                       </div>
-
-                      {/* Card Title & Main Content */}
-                      <h3 className="text-xl sm:text-2xl font-display font-black text-slate-900 dark:text-white mb-2.5 tracking-tight">
-                        {adv.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-4">
-                        {adv.description}
-                      </p>
-                    </div>
-
-                    {/* Card Bottom Meta Bar */}
-                    <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-                      <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                        <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                        <span>SGC Certified Quality</span>
-                      </div>
-                      <span className={`text-[11px] font-bold transition-colors ${isTop ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'
-                        }`}>
-                        {isTop ? 'Kartu Aktif' : 'Klik Bawa ke Depan'}
-                      </span>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    </motion.div>
+                  );
+                })}
               </AnimatePresence>
             </div>
-
           </div>
 
           {/* Right Column: Interactive Benefit List Selector */}
@@ -372,10 +416,10 @@ export const WhyChooseUs: React.FC = () => {
               const isActive = idx === activeIdx;
               const styleConfig = iconMap[item.icon] || {
                 icon: <Zap className="w-4 h-4" />,
-                bg: 'bg-amber-100 dark:bg-amber-950/60',
-                border: 'border-amber-300 dark:border-amber-800',
-                text: 'text-amber-700 dark:text-amber-400',
-                tag: ''
+                bg: "bg-amber-100 dark:bg-amber-950/60",
+                border: "border-amber-300 dark:border-amber-800",
+                text: "text-amber-700 dark:text-amber-400",
+                tag: "",
               };
 
               return (
@@ -383,21 +427,30 @@ export const WhyChooseUs: React.FC = () => {
                   key={idx}
                   onClick={() => handleSelectCard(idx)}
                   id={`stacked-selector-${idx}`}
-                  className={`w-full text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center justify-between group ${isActive
-                    ? 'bg-amber-50/70 dark:bg-amber-950/40 border-amber-500 shadow-sm translate-x-2'
-                    : 'bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700'
-                    }`}
+                  className={`w-full text-left p-3.5 sm:p-4 rounded-2xl border transition-all duration-300 cursor-pointer flex items-center justify-between group ${
+                    isActive
+                      ? "bg-amber-50/70 dark:bg-amber-950/40 border-amber-500 shadow-sm translate-x-2"
+                      : "bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700"
+                  }`}
                 >
                   <div className="flex items-center gap-3.5">
-                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center border text-xs shrink-0 transition-transform group-hover:scale-105 ${isActive
-                      ? `${styleConfig.bg} ${styleConfig.border} ${styleConfig.text} shadow-2xs`
-                      : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
-                      }`}>
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center border text-xs shrink-0 transition-transform group-hover:scale-105 ${
+                        isActive
+                          ? `${styleConfig.bg} ${styleConfig.border} ${styleConfig.text} shadow-2xs`
+                          : "bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400"
+                      }`}
+                    >
                       {styleConfig.icon}
                     </div>
                     <div>
-                      <div className={`text-sm font-bold transition-colors ${isActive ? 'text-amber-700 dark:text-amber-400' : 'text-slate-900 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400'
-                        }`}>
+                      <div
+                        className={`text-sm font-bold transition-colors ${
+                          isActive
+                            ? "text-amber-700 dark:text-amber-400"
+                            : "text-slate-900 dark:text-slate-200 group-hover:text-amber-600 dark:group-hover:text-amber-400"
+                        }`}
+                      >
                         {item.title}
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
@@ -410,8 +463,13 @@ export const WhyChooseUs: React.FC = () => {
                     {isActive && (
                       <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
                     )}
-                    <span className={`text-xs font-mono font-bold ${isActive ? 'text-amber-600 dark:text-amber-400 font-extrabold' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
-                      }`}>
+                    <span
+                      className={`text-xs font-mono font-bold ${
+                        isActive
+                          ? "text-amber-600 dark:text-amber-400 font-extrabold"
+                          : "text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300"
+                      }`}
+                    >
                       0{idx + 1}
                     </span>
                   </div>
@@ -419,7 +477,6 @@ export const WhyChooseUs: React.FC = () => {
               );
             })}
           </div>
-
         </div>
       </div>
     </section>

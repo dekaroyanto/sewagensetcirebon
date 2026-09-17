@@ -15,7 +15,8 @@ import {
   Clock,
   ShieldCheck,
   Truck,
-  UserCheck
+  UserCheck,
+  CheckCircle2
 } from 'lucide-react';
 import { GENSET_PRODUCTS } from '../data/gensets';
 import { GensetProduct } from '../types';
@@ -365,132 +366,254 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       {/* Modal Detail Spec Sheet */}
       {activeModalGenset && (
         <div 
-          className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in"
+          className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in"
           onClick={() => setActiveModalGenset(null)}
         >
           <div 
-            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] flex flex-col"
+            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl sm:max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
-            <div className="relative aspect-16/9 bg-slate-900">
-              <img
-                src={activeModalGenset.image}
-                alt={activeModalGenset.name}
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex items-end justify-between p-6 text-white">
-                <div>
-                  <span className="px-2.5 py-0.5 rounded bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider inline-block mb-1.5">
+            {/* Modal Header (Compact & Clean) */}
+            <div className="flex items-start justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-xs shrink-0">
+              <div className="flex-1 pr-3">
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                    activeModalGenset.category === 'ac'
+                      ? 'bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-800'
+                      : activeModalGenset.category === 'paket'
+                      ? 'bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-300 dark:border-purple-800'
+                      : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800'
+                  }`}>
                     {activeModalGenset.tag || activeModalGenset.categoryLabel}
                   </span>
-                  <h2 className="text-xl sm:text-2xl font-display font-extrabold leading-tight">
-                    {activeModalGenset.name}
-                  </h2>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    Spesifikasi Lengkap Unit
+                  </span>
                 </div>
-                <button
-                  onClick={() => setActiveModalGenset(null)}
-                  className="p-2 rounded-full bg-slate-900/80 text-white hover:bg-slate-900 cursor-pointer absolute top-4 right-4"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <h2 className="text-base sm:text-xl font-display font-bold text-slate-900 dark:text-white leading-snug">
+                  {activeModalGenset.name}
+                </h2>
               </div>
+              <button
+                onClick={() => setActiveModalGenset(null)}
+                aria-label="Tutup Rincian"
+                className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-6 text-xs sm:text-sm">
+            {/* Modal Body (Scrollable with ample space for specs & description) */}
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs sm:text-sm flex-1">
               
-              {/* Specs Table */}
+              {/* Compact Product Snapshot Card (Image is thumbnail, not dominating!) */}
+              <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-700/80 flex flex-row items-center gap-3.5 sm:gap-5">
+                {/* Restrained Thumbnail Image */}
+                <div className="relative w-24 h-24 sm:w-32 sm:h-28 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs">
+                  <img
+                    src={activeModalGenset.image}
+                    alt={activeModalGenset.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-slate-950/85 text-white text-[9px] font-bold">
+                    {activeModalGenset.phase.split(' ')[0]} Phase
+                  </span>
+                </div>
+
+                {/* Quick Highlights Next to Thumbnail */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-2">
+                    {activeModalGenset.category === 'ac' ? (
+                      <span className="text-xl sm:text-2xl font-display font-black text-cyan-600 dark:text-cyan-400">
+                        {activeModalGenset.pk ? `${activeModalGenset.pk} PK` : 'Blower'}
+                        {activeModalGenset.btu && (
+                          <span className="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 ml-1.5">
+                            ({activeModalGenset.btu})
+                          </span>
+                        )}
+                      </span>
+                    ) : activeModalGenset.category === 'paket' ? (
+                      <span className="text-lg sm:text-xl font-display font-black text-purple-600 dark:text-purple-400">
+                        Paket Wedding Lengkap
+                      </span>
+                    ) : (
+                      <span className="text-xl sm:text-2xl font-display font-black text-amber-600 dark:text-amber-400">
+                        {activeModalGenset.kva} kVA
+                        <span className="text-xs sm:text-sm font-normal text-slate-500 dark:text-slate-400 ml-1.5">
+                          ({activeModalGenset.kw} kW)
+                        </span>
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200 dark:border-emerald-900">
+                      <VolumeX className="w-3.5 h-3.5" />
+                      {activeModalGenset.noiseLevel.split('(')[0]}
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-200/70 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 font-medium">
+                      {activeModalGenset.engineBrand.split('/')[0]}
+                    </span>
+                  </div>
+
+                  <div className="mt-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Tarif Mulai: <span className="font-extrabold text-amber-600 dark:text-amber-400">{activeModalGenset.startingPriceEstimate}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Technical Specs Table */}
               <div>
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-3">Spesifikasi & Rincian Teknis:</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm mb-2.5 flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-amber-500" />
+                  <span>Spesifikasi &amp; Rincian Teknis Unit</span>
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                   {activeModalGenset.kva && (
-                    <div>
-                      <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Kapasitas Genset:</span>
-                      <strong className="text-slate-900 dark:text-white">{activeModalGenset.kva} kVA ({activeModalGenset.kw} kW)</strong>
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Kapasitas Daya</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.kva} kVA / {activeModalGenset.kw} kW</strong>
                     </div>
                   )}
                   {activeModalGenset.pk && (
-                    <div>
-                      <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Kapasitas Pendingin:</span>
-                      <strong className="text-slate-900 dark:text-white">{activeModalGenset.pk} PK ({activeModalGenset.btu || '-'})</strong>
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Kapasitas Pendingin</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.pk} PK ({activeModalGenset.btu || '-'})</strong>
                     </div>
                   )}
-                  <div>
-                    <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Tipe Phase:</span>
-                    <strong className="text-slate-900 dark:text-white">{activeModalGenset.phase}</strong>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Voltase &amp; Phase</span>
+                    <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.phase}</strong>
                   </div>
-                  <div>
-                    <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Merk / Tipe:</span>
-                    <strong className="text-slate-900 dark:text-white">{activeModalGenset.engineBrand}</strong>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Merk / Tipe Mesin</span>
+                    <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.engineBrand}</strong>
                   </div>
                   {activeModalGenset.alternatorBrand && (
-                    <div>
-                      <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Alternator:</span>
-                      <strong className="text-slate-900 dark:text-white">{activeModalGenset.alternatorBrand}</strong>
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Alternator / Generator</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.alternatorBrand}</strong>
                     </div>
                   )}
-                  <div>
-                    <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Tingkat Kebisingan:</span>
-                    <strong className="text-slate-900 dark:text-white">{activeModalGenset.noiseLevel}</strong>
+                  {activeModalGenset.fuelType && (
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Jenis Bahan Bakar</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.fuelType}</strong>
+                    </div>
+                  )}
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Tingkat Kebisingan</span>
+                    <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.noiseLevel}</strong>
                   </div>
                   {activeModalGenset.fuelConsumption && (
-                    <div>
-                      <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Konsumsi BBM:</span>
-                      <strong className="text-slate-900 dark:text-white">{activeModalGenset.fuelConsumption}</strong>
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Konsumsi BBM</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.fuelConsumption}</strong>
                     </div>
                   )}
-                  <div>
-                    <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Dimensi Unit:</span>
-                    <strong className="text-slate-900 dark:text-white">{activeModalGenset.dimensions}</strong>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Berat Unit:</span>
-                    <strong className="text-slate-900 dark:text-white">{activeModalGenset.weight}</strong>
-                  </div>
                   {activeModalGenset.tankCapacity && (
-                    <div>
-                      <span className="text-slate-400 dark:text-slate-500 block text-[11px]">Kapasitas Tangki:</span>
-                      <strong className="text-slate-900 dark:text-white">{activeModalGenset.tankCapacity}</strong>
+                    <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Kapasitas Tangki BBM</span>
+                      <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.tankCapacity}</strong>
                     </div>
                   )}
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Dimensi Fisik</span>
+                    <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.dimensions}</strong>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/70 dark:border-slate-700/70">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block uppercase font-medium">Berat Unit</span>
+                    <strong className="text-slate-900 dark:text-white text-xs sm:text-sm">{activeModalGenset.weight}</strong>
+                  </div>
                 </div>
               </div>
 
-              {/* Included Items */}
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-white text-sm mb-2">Kelengkapan Paket yang Didapat:</h4>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-700 dark:text-slate-300">
-                  {activeModalGenset.includedItems.map((inc, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      <span>{inc}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {/* Ideal Applications (Sangat Cocok Untuk) */}
+              {activeModalGenset.idealFor && activeModalGenset.idealFor.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm mb-2.5 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <span>Rekomendasi Penggunaan / Sangat Cocok Untuk:</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    {activeModalGenset.idealFor.map((item, i) => (
+                      <div key={i} className="flex items-start gap-2 p-2.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 text-slate-700 dark:text-slate-300">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                        <span className="leading-snug">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Included Items in Rental */}
+              {activeModalGenset.includedItems && activeModalGenset.includedItems.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm mb-2.5 flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-blue-500" />
+                    <span>Paket Sewa Sudah Termasuk (All-In Free):</span>
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    {activeModalGenset.includedItems.map((inc, i) => (
+                      <div key={i} className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
+                        <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                        <span className="leading-snug">{inc}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Features list if available */}
+              {activeModalGenset.features && activeModalGenset.features.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm mb-2 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span>Fitur Keunggulan Unit:</span>
+                  </h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activeModalGenset.features.map((feat, i) => (
+                      <span key={i} className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200/60 dark:border-slate-700">
+                        ✓ {feat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
             </div>
 
-            {/* Modal Footer */}
-            <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between gap-3">
-              <div>
-                <span className="text-[11px] text-slate-400 block">Tarif Sewa Harian:</span>
-                <span className="font-extrabold text-sm text-slate-900 dark:text-white">{activeModalGenset.startingPriceEstimate}</span>
+            {/* Modal Footer (Clean & Ergonomic Action Bar) */}
+            <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+              <div className="text-center sm:text-left">
+                <span className="text-[10px] text-slate-400 block uppercase font-semibold">Estimasi Tarif Sewa:</span>
+                <span className="font-extrabold text-sm sm:text-base text-amber-600 dark:text-amber-400">
+                  {activeModalGenset.startingPriceEstimate}
+                </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <a
+                  href={getProductWhatsAppUrl(activeModalGenset)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-xs"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Chat WA Unit</span>
+                </a>
+
                 <button
                   onClick={() => {
                     const g = activeModalGenset;
                     setActiveModalGenset(null);
                     setBookingModalProduct(g);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
                 >
-                  <Zap className="w-4 h-4 fill-slate-950" />
-                  <span>Sewa Sekarang</span>
+                  <Zap className="w-3.5 h-3.5 fill-slate-950" />
+                  <span>Pilih &amp; Sewa</span>
                 </button>
               </div>
             </div>
