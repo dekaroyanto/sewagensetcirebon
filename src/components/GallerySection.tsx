@@ -20,7 +20,11 @@ import { GALLERY_ITEMS } from '../data/gallery';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 
-export const GallerySection: React.FC = () => {
+interface GallerySectionProps {
+  onOpenPortfolio?: () => void;
+}
+
+export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio }) => {
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [selectedZoomPhoto, setSelectedZoomPhoto] = useState<GalleryItem | null>(null);
@@ -371,6 +375,18 @@ export const GallerySection: React.FC = () => {
               />
             ))}
           </div>
+
+          {onOpenPortfolio && (
+            <div className="mt-8 text-center">
+              <button
+                onClick={onOpenPortfolio}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white dark:bg-slate-800 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs sm:text-sm shadow-xs transition-all duration-200 cursor-pointer group"
+              >
+                <span>Lihat Semua Portofolio Acara &amp; Proyek SGC</span>
+                <ChevronRight className="w-4 h-4 text-amber-500 group-hover:text-slate-950 group-hover:translate-x-0.5 transition-all" />
+              </button>
+            </div>
+          )}
 
         </div>
 

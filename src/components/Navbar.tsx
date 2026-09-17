@@ -12,7 +12,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { SGCLogo } from './SGCLogo';
 
 interface NavbarProps {
-  currentPage: 'home' | 'katalog' | 'artikel';
+  currentPage: 'home' | 'katalog' | 'artikel' | 'portofolio';
   activeSection: string;
   onNavigate: (target: string) => void;
 }
@@ -67,6 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, activeSection, onNa
             {navLinks.map((link) => {
               const isActive = (currentPage === 'katalog' && link.id === 'katalog') ||
                 (currentPage === 'artikel' && link.id === 'artikel') ||
+                (currentPage === 'portofolio' && link.id === 'portofolio') ||
                 (currentPage === 'home' && activeSection === link.id);
               return (
                 <button
@@ -110,6 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, activeSection, onNa
               {navLinks.map((link) => {
                 const isActive = (currentPage === 'katalog' && link.id === 'katalog') ||
                   (currentPage === 'artikel' && link.id === 'artikel') ||
+                  (currentPage === 'portofolio' && link.id === 'portofolio') ||
                   (currentPage === 'home' && activeSection === link.id);
                 return (
                   <button

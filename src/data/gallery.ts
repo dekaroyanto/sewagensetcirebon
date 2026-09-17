@@ -6,14 +6,14 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     title: 'Resepsi Pernikahan Mewah di Ballroom Hotel Cirebon',
     category: 'Wedding & Resepsi',
     location: 'Grage Hotel, Kota Cirebon',
-    gensetUsed: 'Genset Silent 60 kVA + 4 Unit AC 5 PK',
+    gensetUsed: 'Genset Silent 60 kVA + 4 Unit AC Standing 5 PK',
     client: 'Wedding Organizer Harmony & Keluarga Mempelai',
     duration: '2 Hari (Setup & Live Event)',
     peakLoad: '42 kW (Lighting, Sound & Cooling System)',
     equipmentIncluded: ['Kabel Power 4x35mm (50m)', 'Panel Distribusi ATS', '2 Operator Siaga Standby', 'BBM Solar Industri Dex'],
     description: 'Penyediaan pasokan daya listrik utama untuk pesta pernikahan dengan lighting panggung besar, catering buffet, dan 4 unit AC Standing 5 PK. Menjaga tegangan tetap stabil 380V/220V tanpa kedip dan suara unit sangat hening.',
     highlightQuote: 'Tegangan sangat stabil tanpa kedip sama sekali, tamu sangat nyaman karena mesin tidak bersuara bising.',
-    image: 'https://plus.unsplash.com/premium_photo-1661907977530-eb64ddbfb88a?q=80&w=1221&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://plus.unsplash.com/premium_photo-1661907977530-eb64ddbfb88a?q=80&w=1221&auto=format&fit=crop&ixlib=rb-4.1.0'
   },
   {
     id: 'gal-2',
@@ -27,7 +27,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     equipmentIncluded: ['Synchronizing Panel Paralleling', 'Kabel Tembaga Murni 4x70mm', 'Distribusi Box 3-Phase', '4 Tim Teknisi Elektrikal'],
     description: 'Suplai kelistrikan panggung raksasa dengan sistem sinkronisasi otomatis ganda guna mengantisipasi beban lonjakan dari rig lighting moving beam dan sound line array berkekuatan tinggi.',
     highlightQuote: 'Sistem parallel genset SGC berjalan mulus tanpa jeda selama 14 jam konser non-stop.',
-    image: 'https://images.unsplash.com/photo-1563841930606-67e2bce48b78?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://images.unsplash.com/photo-1563841930606-67e2bce48b78?q=80&w=736&auto=format&fit=crop&ixlib=rb-4.1.0'
   },
   {
     id: 'gal-3',
@@ -41,7 +41,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     equipmentIncluded: ['Tangki BBM Solar Tambahan 500L', 'Panel ATS Heavy Duty', 'Maintenance Rutin 250 Jam', 'Kabel Power Tahan Gesek'],
     description: 'Operasional nonstop 24 jam untuk mendukung pengecoran malam hari dan mesin las berat proyek. Dilengkapi program maintenance berkala filter oli dan solar langsung di lokasi tanpa henti kerja.',
     highlightQuote: 'Ketahanan genset sangat teruji pada medan proyek terbuka dengan durabilitas tinggi.',
-    image: 'https://images.unsplash.com/photo-1708786910201-eb908f463782?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://images.unsplash.com/photo-1708786910201-eb908f463782?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
   },
   {
     id: 'gal-4',
@@ -55,11 +55,11 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     equipmentIncluded: ['Panel AMF / ATS Otomatis 5 Detik', 'Instalasi Grounding & Earthing Khusus', 'Fuel Refill System', 'Teknisi Siaga 24 Jam'],
     description: 'Sistem proteksi darurat untuk mencegah kerugian hasil laut bernilai ratusan juta rupiah saat pemeliharaan jaringan transmisi tegangan menengah PLN. Waktu transfer otomatis hanya 5 detik.',
     highlightQuote: 'Otomatisasi ATS sangat cepat, temperatur cold storage terjaga stabil tanpa fluktuasi.',
-    image: 'https://images.unsplash.com/photo-1780445392484-38a4852a1fd8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://images.unsplash.com/photo-1780445392484-38a4852a1fd8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
   },
   {
     id: 'gal-5',
-    title: 'Acara Seminar Komunitas',
+    title: 'Pameran Budaya & Festival UMKM Alun-Alun',
     category: 'Instansi & Pemerintahan',
     location: 'Alun-Alun Kejaksan, Kota Cirebon',
     gensetUsed: 'Genset Silent 100 kVA + 8 Misty Fan Blower',
@@ -69,7 +69,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     equipmentIncluded: ['Panel Pembagi Arus MCB 32A/63A', 'Misty Fan High Velocity', 'Kabel Rubber Fleksibel', 'Tim Safety & Grounding'],
     description: 'Penyaluran daya listrik yang tertata rapi menggunakan cable protector karet di area publik pejalan kaki sehingga aman bagi ribuan pengunjung dan stand UMKM.',
     highlightQuote: 'Instalasi kabel sangat rapi dan aman, jalur pengunjung tetap nyaman dan bebas bahaya tersandung.',
-    image: 'https://images.unsplash.com/photo-1635321101901-7ac6eec3d371?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://images.unsplash.com/photo-1635321101901-7ac6eec3d371?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
   },
   {
     id: 'gal-6',
@@ -83,6 +83,90 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     equipmentIncluded: ['Kabel Power 25m', 'Double Muffler Silencer', '1 Operator Ramah', 'BBM Full Tank'],
     description: 'Penempatan unit genset di gang perumahan padat penduduk dengan teknologi peredam ganda sehingga tetangga sekitar tidak terganggu suara deru mesin sama sekali.',
     highlightQuote: 'Tetangga memuji karena gensetnya betul-betul senyap, acara syukuran berjalan lancar tanpa keluhan suara.',
-    image: 'https://images.unsplash.com/photo-1758810411905-04fb6f9396e1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: 'https://images.unsplash.com/photo-1758810411905-04fb6f9396e1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-7',
+    title: 'Konstruksi & Tiang Pancang Kawasan Industri Aerocity',
+    category: 'Proyek & Pembangunan',
+    location: 'Kertajati Aerocity, Kab. Majalengka',
+    gensetUsed: 'Genset Silent 150 kVA Cummins Heavy Duty',
+    client: 'PT Rekayasa Infrastruktur Utama',
+    duration: 'Kontrak 6 Bulan Non-stop',
+    peakLoad: '108 kW (Rig Boring, Batching Plant & Mobile Office)',
+    equipmentIncluded: ['Mobile Fuel Tanker Support', 'Panel ATS Heavy Duty', 'Program Maintenance 24/7', 'Kabel Tembaga 4x50mm'],
+    description: 'Suplai kelistrikan stabil 24 jam untuk alat berat tiang pancang dan batching plant di area terpencil Kertajati yang belum terjangkau sambungan jaringan listrik tegangan menengah PLN.',
+    highlightQuote: 'Dukungan bahan bakar dan maintenance onsite sangat sigap, proyek selesai lebih cepat dari jadwal.',
+    image: 'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-8',
+    title: 'Garden Wedding & Gala Dinner Villa Linggarjati',
+    category: 'Wedding & Resepsi',
+    location: 'Kawasan Wisata Linggarjati, Kab. Kuningan',
+    gensetUsed: 'Genset Silent 45 kVA + Paket AC Standing 5 PK',
+    client: 'The Highland Wedding Organizer & Keluarga Mempelai',
+    duration: '2 Hari (Resepsi & Dinner)',
+    peakLoad: '34 kW (Full Fairy Lighting, Sound Live Band & Kitchen)',
+    equipmentIncluded: ['Kabel Power 60m Menembus Taman', 'Panel Splitter Tahan Cuaca', 'Operator Berpakaian Rapi', 'AC Standing Dual Blower'],
+    description: 'Pesta pernikahan konsep alam terbuka di kaki Gunung Ciremai. Penempatan genset tersembunyi di balik lanskap taman dengan peredaman suara maksimal tanpa merusak estetika pesta.',
+    highlightQuote: 'Suasana syahdu pernikahan outdoor tetap hening, lampu taman menyala indah tanpa ada drop voltase.',
+    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-9',
+    title: 'Turnamen Sepak Bola & Festival Pesisir Pantai Tirtamaya',
+    category: 'Instansi & Pemerintahan',
+    location: 'Pantai Tirtamaya, Kab. Indramayu',
+    gensetUsed: 'Genset Silent 80 kVA Weatherproof Canopy',
+    client: 'Dispora & Panitia Pekan Olahraga Daerah',
+    duration: '3 Hari Turnamen',
+    peakLoad: '58 kW (Penerangan Lampu Sorot Lapangan & Sound Arena)',
+    equipmentIncluded: ['Canopy Anti-Korosi Udara Laut', 'Lampu Sorot LED Tower 4x1000W', 'Grounding Khusus Pantai', '2 Teknisi Standby'],
+    description: 'Pengoperasian genset di tepi pantai dengan kelembaban dan kadar garam tinggi. Unit dilengkapi pelindung korosi dan instalasi safety grounding terverifikasi guna keselamatan penonton.',
+    highlightQuote: 'Unit sangat handal menghadapi udara laut pesisir Indramayu tanpa kendala mekanik sedikit pun.',
+    image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-10',
+    title: 'Backup Kelistrikan Darurat Fasilitas Rumah Sakit Swasta',
+    category: 'Pabrik & Industri',
+    location: 'Jalan Brigjen Dharsono, Kota Cirebon',
+    gensetUsed: 'Genset Silent 200 kVA Perkins Silent Type',
+    client: 'Manajemen RS Medika Cirebon',
+    duration: 'Siaga 48 Jam (Pemadaman Terjadwal PLN)',
+    peakLoad: '160 kW (ICU, Ruang Operasi & Ruang Rawat Inap)',
+    equipmentIncluded: ['Automatic Transfer Switch (ATS) 1000A', 'Sistem Pengecekan Gelombang Murni', 'Teknisi Ahli Rumah Sakit Standby', 'BBM Solar Dexlite Murni'],
+    description: 'Penyediaan daya listrik vital untuk peralatan medis medis sensitif (ventilator, monitor anestesi, dan inkubator) saat gardu PLN setempat mengalami penggantian kabel bawah tanah.',
+    highlightQuote: 'Daya listrik yang dihasilkan sangat bersih dan stabil, aman 100% untuk instrumen medis paling kritis.',
+    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-11',
+    title: 'Pameran Otomotif Regional & Launching Kendaraan Baru',
+    category: 'Konser & Musik',
+    location: 'Cirebon Super Block (CSB Mall), Kota Cirebon',
+    gensetUsed: 'Genset Silent 100 kVA + 6 Kipas Misty Fan Jumbo',
+    client: 'Main Dealer Otomotif Jawa Barat',
+    duration: '5 Hari Pameran',
+    peakLoad: '76 kW (Booth Display Mobil, LED Panggung & Lighting Spot)',
+    equipmentIncluded: ['Kabel Pelindung High-Traffic', 'Distribution Box Indoor', 'Misty Fan Air Sejuk', 'Operator Onsite'],
+    description: 'Penyediaan daya tambahan di area outdoor CSB Mall guna menyuplai panggung musik launching produk baru dan tata lampu sorot mobil tanpa membebani daya listrik mall.',
+    highlightQuote: 'Pengunjung betah berlama-lama karena hawa sejuk dari misty fan dan display mobil tampak sangat memukau.',
+    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
+  },
+  {
+    id: 'gal-12',
+    title: 'Wisuda Akbar & Sidang Terbuka Senat Universitas Swasta',
+    category: 'Instansi & Pemerintahan',
+    location: 'Auditorium Kampus Utama, Kota Cirebon',
+    gensetUsed: 'Genset Silent 150 kVA + 8 Unit AC Standing 5 PK',
+    client: 'Panitia Wisuda Universitas & Biro Sarpras',
+    duration: '2 Hari (Gladi Bersih & Prosesi Wisuda)',
+    peakLoad: '120 kW (Pendingin Ruangan 2.500 Orang & Live Streaming)',
+    equipmentIncluded: ['8 Unit AC Standing 5 PK Bersegel Dingin', 'Ducting Fleksibel', 'Kabel Power 4x50mm', '4 Teknisi Elektrikal & Pendingin'],
+    description: 'Pengondisian udara dan pasokan daya gedung auditorium berkapasitas 2.500 wisudawan beserta orang tua. Menjamin ruangan tetap dingin nyaman dan siaran streaming wisuda lancar tanpa gangguan.',
+    highlightQuote: 'Gedung terisi penuh tapi tetap sangat sejuk dan nyaman. Seluruh prosesi wisuda berlangsung khidmat.',
+    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0'
   }
 ];

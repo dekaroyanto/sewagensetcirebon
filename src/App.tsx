@@ -5,6 +5,7 @@ import { Hero } from './components/Hero';
 import { CatalogTeaserSection } from './components/CatalogTeaserSection';
 import { CatalogPage } from './components/CatalogPage';
 import { BlogPage } from './components/BlogPage';
+import { PortfolioPage } from './components/PortfolioPage';
 import { BlogHomePreview } from './components/BlogHomePreview';
 import { BookingForm } from './components/BookingForm';
 import { WhyChooseUs } from './components/WhyChooseUs';
@@ -18,7 +19,7 @@ import { Toast } from './components/Toast';
 import { GensetProduct } from './types';
 
 function MainApp() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel' | 'portofolio'>('home');
   const [activeSection, setActiveSection] = useState<string>('beranda');
   const [selectedGenset, setSelectedGenset] = useState<GensetProduct | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -40,7 +41,13 @@ function MainApp() {
       return;
     }
 
-    // If currently on catalog or article page and user clicks a home section or 'beranda'
+    if (target === 'portofolio') {
+      setCurrentPage('portofolio');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // If currently on catalog, article, or portfolio page and user clicks a home section or 'beranda'
     if (currentPage !== 'home') {
       setCurrentPage('home');
       // Give React a tick to mount the home sections, then scroll
@@ -105,6 +112,14 @@ function MainApp() {
             onGoToBooking={() => handleNavigate('booking')}
             onToast={showToast}
           />
+        ) : currentPage === 'portofolio' ? (
+          /* Dedicated Separate Portfolio & Event Documentation Page */
+          <PortfolioPage
+            onBackToHome={() => handleNavigate('beranda')}
+            onGoToBooking={() => handleNavigate('booking')}
+            onOpenCatalog={() => handleNavigate('katalog')}
+            onToast={showToast}
+          />
         ) : (
           /* Home Page with Clean Layout */
           <>
@@ -138,7 +153,9 @@ function MainApp() {
             <FAQSection />
 
             {/* 6. Portofolio (Event Documentation / Portfolio Gallery) */}
-            <GallerySection />
+            <GallerySection
+              onOpenPortfolio={() => handleNavigate('portofolio')}
+            />
 
             {/* 7. Artikel (News & Blog Section - 3 Latest Posts) */}
             <BlogHomePreview

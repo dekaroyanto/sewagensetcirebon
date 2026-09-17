@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Zap, 
   Search, 
@@ -37,6 +37,24 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalGenset, setActiveModalGenset] = useState<GensetProduct | null>(null);
   const [bookingModalProduct, setBookingModalProduct] = useState<GensetProduct | null>(null);
+
+  // Prevent background scroll when modal is active
+  useEffect(() => {
+    if (activeModalGenset || bookingModalProduct) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPaddingRight = document.body.style.paddingRight;
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.paddingRight = originalPaddingRight;
+      };
+    }
+  }, [activeModalGenset, bookingModalProduct]);
 
   const categories = [
     { id: 'all', label: 'Semua Unit & Paket' },
@@ -347,7 +365,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       {/* Modal Detail Spec Sheet */}
       {activeModalGenset && (
         <div 
-          className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in"
+          className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in"
           onClick={() => setActiveModalGenset(null)}
         >
           <div 

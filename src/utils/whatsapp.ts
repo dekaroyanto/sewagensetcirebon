@@ -93,6 +93,22 @@ export function getGeneralWhatsAppUrl(customTopic?: string): string {
 }
 
 /**
+ * Creates a prefilled WhatsApp inquiry URL for a specific portfolio project.
+ */
+export function getPortfolioWhatsAppUrl(item: { title: string; location: string; gensetUsed: string; category: string }): string {
+  const message = `Halo Admin *${COMPANY_INFO.name}*, saya melihat dokumentasi portofolio acara Anda:
+
+*${item.title}*
+• Lokasi: ${item.location}
+• Unit Digunakan: ${item.gensetUsed}
+• Kategori: ${item.category}
+
+Saya berencana mengadakan acara / memiliki kebutuhan serupa di wilayah Cirebon & sekitarnya. Mohon info rekomendasi unit dan estimasi biayanya. Terima kasih! 🙏`;
+
+  return `https://wa.me/${COMPANY_INFO.whatsappRaw}?text=${encodeURIComponent(message)}`;
+}
+
+/**
  * Copies text to clipboard and returns success boolean.
  */
 export async function copyToClipboard(text: string): Promise<boolean> {
