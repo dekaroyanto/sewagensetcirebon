@@ -1,31 +1,41 @@
-export type ProductCategory = 'genset' | 'ac' | 'paket';
+export type ProductType = 'genset' | 'ac' | 'paket' | 'aksesoris';
+export type ProductCategory = ProductType | 'small' | 'medium' | 'large' | 'heavy';
 
-export interface GensetProduct {
-  id: string;
-  name: string;
-  productType?: 'genset' | 'ac' | 'paket';
+export interface Product {
+  id: string; // UUID (Primary Key)
+  name: string; // VARCHAR(150)
+  product_type: ProductType; // ENUM('genset', 'ac', 'paket', 'aksesoris')
+  price: number; // DECIMAL(12,2)
+  image_url: string; // TEXT
+  description: string; // TEXT (textarea containing specs & full details)
+  created_at?: string; // TIMESTAMP
+  updated_at?: string; // TIMESTAMP
+
+  // Helper & transition aliases for seamless UI compatibility:
+  category?: 'small' | 'medium' | 'large' | 'heavy' | 'ac' | 'paket' | 'aksesoris';
+  categoryLabel?: string;
+  image?: string; // alias to image_url
+  startingPriceEstimate?: string;
+  tag?: string;
   kva?: number;
   kw?: number;
-  pk?: number; // For AC units (e.g. 3 PK, 5 PK)
-  btu?: string; // For AC cooling power (e.g. "45.000 BTU/h")
-  phase: '1 Phase (220V)' | '3 Phase (380V)' | '1 & 3 Phase';
-  engineBrand: string;
+  pk?: number;
+  btu?: string;
+  phase?: string;
+  engineBrand?: string;
   alternatorBrand?: string;
-  fuelType?: 'Solar (Diesel)' | 'Bensin (Gasoline)' | 'Listrik PLN / Genset';
-  fuelConsumption?: string; // e.g. "3.5 - 5 Liter / Jam (Beban 75%)"
-  noiseLevel: string; // e.g. "62 dB (Jarak 7 Meter)"
-  dimensions: string; // e.g. "180 x 85 x 110 cm"
-  weight: string; // e.g. "750 kg"
-  tankCapacity?: string; // e.g. "65 Liter"
-  category: 'small' | 'medium' | 'large' | 'heavy' | 'ac' | 'paket';
-  categoryLabel: string;
-  tag?: string; // e.g. "Paling Laris", "Rekomendasi Wedding", "Heavy Duty"
-  idealFor: string[];
-  features: string[];
-  includedItems: string[];
-  startingPriceEstimate: string; // e.g. "Mulai Rp 600.000 / Hari"
-  image: string;
+  fuelType?: string;
+  fuelConsumption?: string;
+  noiseLevel?: string;
+  dimensions?: string;
+  weight?: string;
+  tankCapacity?: string;
+  idealFor?: string[];
+  features?: string[];
+  includedItems?: string[];
 }
+
+export type GensetProduct = Product;
 
 export interface BookingFormData {
   fullName: string;

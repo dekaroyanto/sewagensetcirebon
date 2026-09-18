@@ -28,11 +28,9 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
     GENSET_PRODUCTS[1], // 20 kVA
     GENSET_PRODUCTS[4], // 60 kVA
     GENSET_PRODUCTS[6], // 100 kVA
-    GENSET_PRODUCTS.find((p) => p.id === "ac-standing-5pk") ||
-      GENSET_PRODUCTS[2],
-    GENSET_PRODUCTS.find((p) => p.id === "paket-wedding-genset-ac") ||
-      GENSET_PRODUCTS[5],
-    GENSET_PRODUCTS[8] || GENSET_PRODUCTS[0], // 250 kVA
+    GENSET_PRODUCTS.find((p) => p.product_type === "ac") || GENSET_PRODUCTS[2],
+    GENSET_PRODUCTS.find((p) => p.product_type === "paket") || GENSET_PRODUCTS[5],
+    GENSET_PRODUCTS[9] || GENSET_PRODUCTS[0], // 250 kVA
   ];
 
   const [activeIndex, setActiveIndex] = useState(1);
@@ -373,7 +371,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                     {/* Card Middle: 3D Product Visual */}
                     <div className="relative my-auto w-full aspect-16/10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-700/50 group shadow-inner">
                       <img
-                        src={item.image}
+                        src={item.image_url || item.image}
                         alt={item.name}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
@@ -386,10 +384,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                       <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] font-medium text-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-lg bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-xs backdrop-blur-md">
                         <span className="flex items-center gap-1 truncate font-semibold">
                           <Cpu className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                          <span className="truncate">{item.engineBrand}</span>
+                          <span className="truncate">{item.engineBrand || item.name}</span>
                         </span>
                         <span className="font-mono text-amber-700 dark:text-amber-400 font-bold shrink-0 ml-2">
-                          {item.kw ? `${item.kw} kW` : item.phase}
+                          {item.kw ? `${item.kw} kW` : (item.phase || '3 Phase')}
                         </span>
                       </div>
                     </div>
@@ -398,13 +396,13 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                     <div className="space-y-3 z-10 pt-1 text-left">
                       <div>
                         <div className="text-[10px] font-mono font-bold tracking-widest text-amber-700 dark:text-amber-400 uppercase">
-                          {item.tag || item.categoryLabel}
+                          {item.tag || item.categoryLabel || item.product_type}
                         </div>
                         <h3 className="font-display font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-tight mt-0.5 line-clamp-1">
                           {item.name}
                         </h3>
                         <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
-                          {item.idealFor[0] || "Cocok untuk event & industri"}
+                          {item.idealFor?.[0] || item.description?.split('\n')?.[0] || "Cocok untuk event & industri"}
                         </p>
                       </div>
                     </div>

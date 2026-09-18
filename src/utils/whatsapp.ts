@@ -57,24 +57,26 @@ export function getWhatsAppBookingUrl(data: BookingFormData): string {
  * Creates a quick WhatsApp URL for a specific genset or AC product.
  */
 export function getProductQuickWhatsAppUrl(product: GensetProduct): string {
-  const isAc = product.category === 'ac';
-  const isPaket = product.category === 'paket';
+  const isAc = product.product_type === 'ac' || product.category === 'ac';
+  const isPaket = product.product_type === 'paket' || product.category === 'paket';
+  const isAksesoris = product.product_type === 'aksesoris' || product.category === 'aksesoris';
 
-  let specLine = `• Kapasitas: ${product.kva} kVA (${product.kw} kW)`;
-  if (isAc) {
-    specLine = `• Kapasitas: ${product.pk ? `${product.pk} PK` : 'Kipas Blower'} ${product.btu ? `(${product.btu})` : ''}`;
-  } else if (isPaket) {
-    specLine = `• Paket: Genset 60 kVA + 4 Unit AC Standing 5 PK`;
-  }
+  let typeLabel = 'Genset Silent';
+  if (isAc) typeLabel = 'AC Standing & Pendingin';
+  if (isPaket) typeLabel = 'Paket Wedding Bundling';
+  if (isAksesoris) typeLabel = 'Aksesoris & Distribusi Listrik';
 
-  const message = `Halo Admin *${COMPANY_INFO.name}*, saya tertarik untuk sewa unit:
+  const priceText = product.price > 0
+    ? `Rp ${new Intl.NumberFormat('id-ID').format(product.price)} / Hari`
+    : (product.startingPriceEstimate || 'Hubungi Admin');
+
+  const message = `Halo Admin *${COMPANY_INFO.name}*, saya tertarik untuk sewa unit berikut:
 
 *${product.name}*
-${specLine}
-• Kategori: ${product.categoryLabel}
-• Estimasi Harga: ${product.startingPriceEstimate}
+• Kategori: ${typeLabel}
+• Estimasi Tarif: ${priceText}
 
-Apakah unit ini tersedia untuk tanggal acara saya di Cirebon? Mohon info rincian ketersediaannya. Terima kasih!`;
+Apakah unit ini tersedia untuk tanggal acara saya di wilayah Cirebon? Mohon info rincian ketersediaan dan penawarannya. Terima kasih! 🙏`;
 
   return `https://wa.me/${COMPANY_INFO.whatsappRaw}?text=${encodeURIComponent(message)}`;
 }

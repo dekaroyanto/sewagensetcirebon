@@ -29,6 +29,7 @@ import {
   getWhatsAppBookingUrl, 
   copyToClipboard 
 } from '../utils/whatsapp';
+import { useBodyScrollLock } from '../utils/scrollLock';
 
 interface BookingModalProps {
   product: GensetProduct | null;
@@ -84,21 +85,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  // Prevent background body scroll while modal is open
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    const originalPaddingRight = document.body.style.paddingRight;
-    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-    if (scrollBarWidth > 0) {
-      document.body.style.paddingRight = `${scrollBarWidth}px`;
-    }
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.paddingRight = originalPaddingRight;
-    };
-  }, []);
+  // Prevent background body scroll while modal is open (reference-counted)
+  useBodyScrollLock(true);
 
   // Handle product select from searchable dropdown
   const handleSelectProduct = (selected: GensetProduct) => {
@@ -228,7 +216,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         </div>
 
         {/* Modal Content Scrollable Area */}
-        <div className="p-5 sm:p-8 overflow-y-auto flex-1 space-y-6">
+        <div className="p-5 sm:p-8 overflow-y-auto flex-1 min-h-0 space-y-6 overscroll-contain">
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             

@@ -158,9 +158,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
   ];
 
   // Grouped products
-  const gensetItems = GENSET_PRODUCTS.filter(p => p.category !== 'ac' && p.category !== 'paket');
-  const acItems = GENSET_PRODUCTS.filter(p => p.category === 'ac');
-  const paketItems = GENSET_PRODUCTS.filter(p => p.category === 'paket');
+  const gensetItems = GENSET_PRODUCTS.filter(p => p.product_type === 'genset' || (p.category !== 'ac' && p.category !== 'paket' && p.category !== 'aksesoris'));
+  const acItems = GENSET_PRODUCTS.filter(p => p.product_type === 'ac' || p.category === 'ac');
+  const paketItems = GENSET_PRODUCTS.filter(p => p.product_type === 'paket' || p.category === 'paket');
+  const aksesorisItems = GENSET_PRODUCTS.filter(p => p.product_type === 'aksesoris' || p.category === 'aksesoris');
 
   return (
     <section id="booking" className="py-16 sm:py-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 relative overflow-hidden transition-colors duration-200">

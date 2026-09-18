@@ -12,6 +12,7 @@ import { GALLERY_ITEMS } from '../data/gallery';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl, getPortfolioWhatsAppUrl } from '../utils/whatsapp';
 import { BookingModal } from './BookingModal';
+import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
 
 interface PortfolioPageProps {
   onBackToHome: () => void;
@@ -27,24 +28,15 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-  // Lock background body scroll when any modal is open
+  // Lock background body scroll safely when any modal is open
+  useBodyScrollLock(Boolean(selectedItem || isBookingModalOpen));
+
+  // Reset scroll safeguard on unmount
   useEffect(() => {
-    if (selectedItem || isBookingModalOpen) {
-      const originalOverflow = document.body.style.overflow;
-      const originalPaddingRight = document.body.style.paddingRight;
-
-      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-      if (scrollBarWidth > 0) {
-        document.body.style.paddingRight = `${scrollBarWidth}px`;
-      }
-      document.body.style.overflow = 'hidden';
-
-      return () => {
-        document.body.style.overflow = originalOverflow;
-        document.body.style.paddingRight = originalPaddingRight;
-      };
-    }
-  }, [selectedItem, isBookingModalOpen]);
+    return () => {
+      resetBodyScroll();
+    };
+  }, []);
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen py-6 sm:py-10 animate-in fade-in duration-300 transition-colors">

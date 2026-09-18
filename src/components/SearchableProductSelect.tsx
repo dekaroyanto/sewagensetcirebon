@@ -7,6 +7,7 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { GensetProduct } from '../types';
+import { formatPrice } from '../utils/format';
 
 interface SearchableProductSelectProps {
   products: GensetProduct[];
@@ -23,7 +24,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'genset' | 'ac' | 'paket'>('all');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'genset' | 'ac' | 'paket' | 'aksesoris'>('all');
 
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -39,37 +40,31 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
 
     return products.filter(product => {
       // Category tab filter
-      if (activeFilter === 'genset') {
-        if (product.category === 'ac' || product.category === 'paket') return false;
-      } else if (activeFilter === 'ac') {
-        if (product.category !== 'ac') return false;
-      } else if (activeFilter === 'paket') {
-        if (product.category !== 'paket') return false;
+      if (activeFilter !== 'all') {
+        const matchesType = product.product_type === activeFilter || product.category === activeFilter;
+        if (!matchesType) return false;
       }
 
       // Search keyword filter
       if (!query) return true;
 
       const nameMatch = product.name.toLowerCase().includes(query);
-      const brandMatch = product.engineBrand.toLowerCase().includes(query);
+      const descMatch = product.description.toLowerCase().includes(query);
+      const typeMatch = product.product_type.toLowerCase().includes(query);
       const tagMatch = product.tag ? product.tag.toLowerCase().includes(query) : false;
-      const kvaMatch = product.kva ? product.kva.toString().includes(query) || `${product.kva}kva`.includes(query) || `${product.kva} kva`.includes(query) : false;
-      const kwMatch = product.kw ? product.kw.toString().includes(query) || `${product.kw}kw`.includes(query) : false;
-      const pkMatch = product.pk ? product.pk.toString().includes(query) || `${product.pk}pk`.includes(query) || `${product.pk} pk`.includes(query) : false;
-      const catLabelMatch = product.categoryLabel.toLowerCase().includes(query);
-      const idealMatch = product.idealFor.some(item => item.toLowerCase().includes(query));
 
-      return nameMatch || brandMatch || tagMatch || kvaMatch || kwMatch || pkMatch || catLabelMatch || idealMatch;
+      return nameMatch || descMatch || typeMatch || tagMatch;
     });
   }, [products, searchQuery, activeFilter]);
 
   // Group filtered products
   const groupedProducts = useMemo(() => {
-    const gensets = filteredProducts.filter(p => p.category !== 'ac' && p.category !== 'paket');
-    const acs = filteredProducts.filter(p => p.category === 'ac');
-    const pakets = filteredProducts.filter(p => p.category === 'paket');
+    const gensets = filteredProducts.filter(p => p.product_type === 'genset' || (p.category !== 'ac' && p.category !== 'paket' && p.category !== 'aksesoris'));
+    const acs = filteredProducts.filter(p => p.product_type === 'ac' || p.category === 'ac');
+    const pakets = filteredProducts.filter(p => p.product_type === 'paket' || p.category === 'paket');
+    const aksesoris = filteredProducts.filter(p => p.product_type === 'aksesoris' || p.category === 'aksesoris');
 
-    return { gensets, acs, pakets };
+    return { gensets, acs, pakets, aksesoris };
   }, [filteredProducts]);
 
   // Close dropdown on click outside
@@ -137,7 +132,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
             {product.name}
           </div>
           <div className="text-[11px] sm:text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-            {product.startingPriceEstimate}
+            {formatPrice(product.price)}
           </div>
         </div>
 
@@ -166,9 +161,9 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
           <div className="font-semibold text-slate-900 dark:text-white text-sm truncate">
             {selectedProduct?.name || 'Pilih Unit / Paket'}
           </div>
-          {selectedProduct?.startingPriceEstimate && (
+          {selectedProduct && (
             <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-              {selectedProduct.startingPriceEstimate}
+              {formatPrice(selectedProduct.price)}
             </div>
           )}
         </div>
@@ -193,7 +188,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari unit atau paket sewa..."
+                placeholder="Cari unit, genset, AC, atau aksesoris..."
                 className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
               />
               {searchQuery && (
@@ -214,6 +209,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
                 { id: 'genset', label: 'Genset Silent' },
                 { id: 'ac', label: 'AC Standing' },
                 { id: 'paket', label: 'Paket Wedding' },
+                { id: 'aksesoris', label: 'Aksesoris' },
               ].map((f) => (
                 <button
                   key={f.id}
@@ -266,7 +262,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
             {groupedProducts.acs.length > 0 && (
               <div className="pt-2 space-y-1">
                 <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  AC Standing & Pendingin Acara ({groupedProducts.acs.length})
+                  AC Standing &amp; Pendingin Acara ({groupedProducts.acs.length})
                 </div>
                 {groupedProducts.acs.map(renderProductItem)}
               </div>
@@ -279,6 +275,16 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
                   Paket Wedding ({groupedProducts.pakets.length})
                 </div>
                 {groupedProducts.pakets.map(renderProductItem)}
+              </div>
+            )}
+
+            {/* Group 4: Aksesoris & Distribusi */}
+            {groupedProducts.aksesoris && groupedProducts.aksesoris.length > 0 && (
+              <div className="pt-2 space-y-1">
+                <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  Aksesoris &amp; Distribusi ({groupedProducts.aksesoris.length})
+                </div>
+                {groupedProducts.aksesoris.map(renderProductItem)}
               </div>
             )}
 

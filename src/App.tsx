@@ -17,6 +17,7 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { GensetProduct } from './types';
+import { resetBodyScroll } from './utils/scrollLock';
 
 function MainApp() {
   const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel' | 'portofolio'>('home');
@@ -29,6 +30,7 @@ function MainApp() {
   };
 
   const handleNavigate = (target: string) => {
+    resetBodyScroll();
     if (target === 'katalog') {
       setCurrentPage('katalog');
       window.scrollTo({ top: 0, behavior: 'smooth' });
