@@ -26,25 +26,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent Siap Pakai
 • Kabel Power Standar 20 Meter
 • Operator Teknisi Standby selama Acara
-• Instalasi & Uji Coba Beban di Lokasi`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'small',
-    categoryLabel: 'Genset Kecil',
-    tag: 'Hemat BBM & Praktis',
-    kva: 10,
-    kw: 8,
-    phase: '1 & 3 Phase',
-    engineBrand: 'Yanmar / Isuzu Diesel Engine',
-    noiseLevel: '60 dB (Sangat Hening)',
-    idealFor: [
-      'Acara Hajatan & Syukuran Rumah Tangga',
-      'Stand Pameran / Bazaar / UMKM Food Truck',
-      'Ruko & Minimarket saat Pemadaman PLN'
-    ],
-    startingPriceEstimate: 'Rp 550.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+• Instalasi & Uji Coba Beban di Lokasi`
   },
   {
     id: 'e1a2f3b4-1002-4c5d-8e9f-0a1b2c3d4e02',
@@ -71,25 +53,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 20 kVA Kondisi Prima
 • Kabel Power Tembaga 25 Meter
 • 1 Orang Operator Teknisi Standby
-• Pengujian Jalur Listrik & Setting Beban Aman`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'small',
-    categoryLabel: 'Genset Kecil',
-    tag: 'Paling Laris Wedding Rumah',
-    kva: 20,
-    kw: 16,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Yanmar 4TNV88 / Fawde',
-    noiseLevel: '62 dB @ 7 Meter',
-    idealFor: [
-      'Resepsi Pernikahan Rumahan & Tenda',
-      'Acara Musik Akustik & Sound System 5.000W',
-      'Restoran, Cafe & Coffee Shop'
-    ],
-    startingPriceEstimate: 'Rp 750.000 / Hari',
-    image: 'https://d3ciiv7axt9x6p.cloudfront.net/blog/original/661f43445b8b6_ori.jpg'
+• Pengujian Jalur Listrik & Setting Beban Aman`
   },
   {
     id: 'e1a2f3b4-1003-4c5d-8e9f-0a1b2c3d4e03',
@@ -116,25 +80,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 30 kVA
 • Kabel Distribusi Utama 30 Meter
 • Operator Teknisi Standby Penuh
-• Panel Indikator Digital & Pengaman Beban`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'small',
-    categoryLabel: 'Genset Kecil',
-    tag: 'Favorit Wedding & Gathering',
-    kva: 30,
-    kw: 24,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Perkins 1103A / Isuzu',
-    noiseLevel: '63 dB @ 7 Meter',
-    idealFor: [
-      'Pernikahan Gedung Sedang / Ballroom Hotel Cirebon',
-      'Konser Musik Semi-Outdoor & Sound 10.000W',
-      'Gedung Serbaguna & Balai Pertemuan'
-    ],
-    startingPriceEstimate: 'Rp 950.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092162384-8987c1d64718?auto=format&fit=crop&w=800&q=80'
+• Panel Indikator Digital & Pengaman Beban`
   },
   {
     id: 'e1a2f3b4-1004-4c5d-8e9f-0a1b2c3d4e04',
@@ -161,25 +107,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 45 kVA Prima
 • Kabel Utama Heavy Duty 35 Meter
 • Operator Teknisi Siaga di Lokasi
-• Free Setting & Load Balancer Phase`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'medium',
-    categoryLabel: 'Genset Menengah',
-    tag: 'Rekomendasi Event Panggung',
-    kva: 45,
-    kw: 36,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 4BT / Perkins',
-    noiseLevel: '65 dB @ 7 Meter',
-    idealFor: [
-      'Panggung Konser Musik & Festival Seni Cirebon',
-      'Sound System Gantung (Line Array) + Tata Lampu LED',
-      'Gedung Konvensi / Convention Center'
-    ],
-    startingPriceEstimate: 'Rp 1.150.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80'
+• Free Setting & Load Balancer Phase`
   },
   {
     id: 'e1a2f3b4-1005-4c5d-8e9f-0a1b2c3d4e05',
@@ -206,25 +134,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 60 kVA
 • Kabel Power Tembaga 40 Meter
 • 1 Teknisi Ahli Standby Penuh
-• Mobilisasi & Pengantaran Area Cirebon`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'medium',
-    categoryLabel: 'Genset Menengah',
-    tag: 'Terlaris Wedding & Konser',
-    kva: 60,
-    kw: 48,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 4BTA / Perkins',
-    noiseLevel: '65 dB @ 7 Meter',
-    idealFor: [
-      'Wedding Besar dengan Banyak AC Standing & Lighting Panggung',
-      'Pabrik, Gudang Logistik & Kawasan Pergudangan Cirebon',
-      'Konser Musik Terbuka & Festival Budaya'
-    ],
-    startingPriceEstimate: 'Rp 1.350.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=800&q=80'
+• Mobilisasi & Pengantaran Area Cirebon`
   },
   {
     id: 'e1a2f3b4-1006-4c5d-8e9f-0a1b2c3d4e06',
@@ -251,25 +161,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 80 kVA
 • Kabel Distribusi 40 Meter
 • Tim Teknisi Bersertifikat Standby
-• Pengujian Beban Awal Tanpa Biaya Tambahan`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'medium',
-    categoryLabel: 'Genset Menengah',
-    tag: 'Andalan Proyek & Rumah Sakit',
-    kva: 80,
-    kw: 64,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 6BT / Perkins',
-    noiseLevel: '66 dB @ 7 Meter',
-    idealFor: [
-      'Rumah Sakit & Fasilitas Medis Darurat',
-      'Event Akbar Outdoor & Festival Musik Multi-Stage',
-      'Proyek Infrastruktur Tol & Jembatan'
-    ],
-    startingPriceEstimate: 'Rp 1.750.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80'
+• Pengujian Beban Awal Tanpa Biaya Tambahan`
   },
   {
     id: 'e1a2f3b4-1007-4c5d-8e9f-0a1b2c3d4e07',
@@ -296,25 +188,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 100 kVA Prima
 • Kabel Power Tembaga Standar 50 Meter
 • Operator Teknisi Senior Standby
-• Pengiriman Armada Truk Khusus Tepat Waktu`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'medium',
-    categoryLabel: 'Genset Menengah',
-    tag: 'Standar Industri & Konser Besar',
-    kva: 100,
-    kw: 80,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 6BTA5.9-G2',
-    noiseLevel: '67 dB @ 7 Meter',
-    idealFor: [
-      'Konser Musik Artis Papan Atas & Panggung Spektakuler',
-      'Pusat Perbelanjaan (Mall) & Supermarket Besar',
-      'Pabrik & Kawasan Industri Manufaktur'
-    ],
-    startingPriceEstimate: 'Rp 2.150.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80'
+• Pengiriman Armada Truk Khusus Tepat Waktu`
   },
   {
     id: 'e1a2f3b4-1008-4c5d-8e9f-0a1b2c3d4e08',
@@ -341,25 +215,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 150 kVA
 • Kabel Distribusi Utama Heavy Duty 50 Meter
 • 2 Teknisi Profesional Siaga di Lokasi
-• Pengantaran Cepat Armada Towing / Truk`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'large',
-    categoryLabel: 'Genset Besar',
-    tag: 'Daya Besar Industri',
-    kva: 150,
-    kw: 120,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 6CTA8.3 / Perkins',
-    noiseLevel: '68 dB @ 7 Meter',
-    idealFor: [
-      'Kawasan Industri, Semen & Pabrik Kimia',
-      'Cold Storage Pelabuhan Perikanan Kejawanan',
-      'Turnamen Olahraga & Stadion Pencahayaan Malam'
-    ],
-    startingPriceEstimate: 'Rp 2.850.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+• Pengantaran Cepat Armada Towing / Truk`
   },
   {
     id: 'e1a2f3b4-1009-4c5d-8e9f-0a1b2c3d4e09',
@@ -386,25 +242,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 200 kVA Heavy Duty
 • Kabel Power Tembaga 50 Meter
 • Tim Teknisi Standby 24 Jam
-• Dukungan Pemeliharaan & Penggantian Rutin`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'large',
-    categoryLabel: 'Genset Besar',
-    tag: 'Daya Berat & Andal',
-    kva: 200,
-    kw: 160,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 6CTA8.3 / Mitsubishi',
-    noiseLevel: '69 dB @ 7 Meter',
-    idealFor: [
-      'Pabrik Tekstil & Manufaktur Kontrak Bulanan',
-      'Batching Plant Beton & Konstruksi Tol Cisumdawu',
-      'Festival Musik Skala Stadion'
-    ],
-    startingPriceEstimate: 'Rp 3.600.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80'
+• Dukungan Pemeliharaan & Penggantian Rutin`
   },
   {
     id: 'e1a2f3b4-1010-4c5d-8e9f-0a1b2c3d4e10',
@@ -431,25 +269,7 @@ Paket Sewa Sudah Termasuk:
 • Unit Genset Silent 250 kVA
 • Kabel Power Standar Heavy Duty
 • Tim Teknisi Profesional Siaga
-• Bantuan Analisa Kebutuhan Beban Lapangan`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'large',
-    categoryLabel: 'Genset Besar',
-    tag: 'Daya Maksimal Event Akbar',
-    kva: 250,
-    kw: 200,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins 6LTAA8.9 / Perkins',
-    noiseLevel: '70 dB @ 7 Meter',
-    idealFor: [
-      'Pabrik Penggilingan & Industri Rotan Ekspor Cirebon',
-      'Event Mega Konser Musik & Festival Multi-Stage',
-      'Proyek Pembangunan Gedung Tinggi & Rumah Sakit'
-    ],
-    startingPriceEstimate: 'Rp 4.500.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80'
+• Bantuan Analisa Kebutuhan Beban Lapangan`
   },
   {
     id: 'e1a2f3b4-1011-4c5d-8e9f-0a1b2c3d4e11',
@@ -476,25 +296,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Genset Silent 500 kVA Kontainer
 • Kabel Power Heavy Cross-Section
 • Tim Engineer & Operator Dedicated
-• Mobil Crane Pengangkat & Pengawalan Logistik`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'heavy',
-    categoryLabel: 'Mega Power',
-    tag: 'Mega Power Proyek Strategis',
-    kva: 500,
-    kw: 400,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Cummins QSX15 / Perkins',
-    noiseLevel: '72 dB @ 7 Meter',
-    idealFor: [
-      'Mega Proyek Nasional & Bandara Kertajati (BIJB)',
-      'Kawasan Industri Terpadu Cirebon - Majalengka',
-      'Pabrik Kimia, Tekstil & Manufaktur Skala Besar'
-    ],
-    startingPriceEstimate: 'Hubungi WA Penawaran Khusus',
-    image: 'https://hartechsby.co.id/wp-content/uploads/genset40hdeIMG20240108105645-1024x768.jpg'
+• Mobil Crane Pengangkat & Pengawalan Logistik`
   },
   {
     id: 'e1a2f3b4-2001-4c5d-8e9f-0a1b2c3d4e21',
@@ -518,25 +320,7 @@ Paket Sewa Sudah Termasuk:
 • Unit Indoor Standing + Outdoor Unit 5 PK Super Dingin
 • Pipa Tembaga Freon & Kabel Power Siap Colok
 • Selang Pembuangan Air AC
-• Teknisi Khusus Instalasi & Standby Suhu Acara`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'ac',
-    categoryLabel: 'AC Standing',
-    tag: 'Paling Laris Wedding & VIP Tenda',
-    pk: 5,
-    btu: '45.000 BTU/h',
-    phase: '3 Phase (380V)',
-    engineBrand: 'Daikin / Panasonic / Gree',
-    noiseLevel: '48 dB (Sangat Hening Indoor)',
-    idealFor: [
-      'Pesta Pernikahan Tenda & Gedung Resepsi',
-      'VIP Lounge, Ruang Tamu Undangan Khusus',
-      'Pameran Mall, Expo & Hall Pertemuan Cirebon'
-    ],
-    startingPriceEstimate: 'Rp 750.000 / Unit / Hari',
-    image: 'https://www.oscarliving.co.id/cdn/shop/files/ac-air-conditioner-ac-standing-gree-gvc-18sts-2pk-gree-shopname-4242700.png?v=1770723613'
+• Teknisi Khusus Instalasi & Standby Suhu Acara`
   },
   {
     id: 'e1a2f3b4-2002-4c5d-8e9f-0a1b2c3d4e22',
@@ -560,25 +344,7 @@ Paket Sewa Sudah Termasuk:
 • Unit Indoor + Outdoor AC Standing 3 PK
 • Instalasi Pipa Freon & Kabel Listrik
 • Jasa Setting & Pengujian Dingin Cepat
-• Dukungan Teknisi Standby`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'ac',
-    categoryLabel: 'AC Standing',
-    tag: 'Favorit Ruang Akad & Rias',
-    pk: 3,
-    btu: '28.000 BTU/h',
-    phase: '1 Phase (220V)',
-    engineBrand: 'Daikin / Panasonic Heavy Duty',
-    noiseLevel: '45 dB (Hening Maksimal)',
-    idealFor: [
-      'Ruang Akad Nikah / Pemberkatan Keluarga',
-      'Kamar Rias Pengantin & Ruang Ganti Artis',
-      'Tenda Prasmanan / Dining Area Tertutup'
-    ],
-    startingPriceEstimate: 'Rp 550.000 / Unit / Hari',
-    image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=800&q=80'
+• Dukungan Teknisi Standby`
   },
   {
     id: 'e1a2f3b4-2003-4c5d-8e9f-0a1b2c3d4e23',
@@ -602,23 +368,7 @@ Paket Sewa Sudah Termasuk:
 • 1 Unit Kipas Misty Fan 26 Inch Siap Pakai
 • Kabel Rol Listrik 10 - 15 Meter
 • Pengisian Air Pertama & Kalibrasi Kabut Embun Halus
-• Teknisi Siap Bantu Refill Air Berkala`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'ac',
-    categoryLabel: 'Kipas Blower',
-    tag: 'Rekomendasi Semi-Outdoor',
-    phase: '1 Phase (220V)',
-    engineBrand: 'Misty Fan Industrial 26"',
-    noiseLevel: '52 dB (Hembusan Segar)',
-    idealFor: [
-      'Area Tenda Semi Terbuka & Halaman Resepsi',
-      'Bazaar Makanan, Pasar Malam & Festival Kuliner',
-      'Acara Olahraga, Fun Run & Konser Outdoor'
-    ],
-    startingPriceEstimate: 'Rp 250.000 / Unit / Hari',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80'
+• Teknisi Siap Bantu Refill Air Berkala`
   },
   {
     id: 'e1a2f3b4-3001-4c5d-8e9f-0a1b2c3d4e31',
@@ -642,26 +392,7 @@ Keunggulan Paket:
 • Pasokan listrik stabil & suhu sejuk dingin terjamin 100%
 • Cukup 1 vendor untuk kelistrikan dan pendingin pesta
 • Jalur instalasi kabel tersembunyi rapi dan aman dilalui tamu
-• Tarif bundling jauh lebih hemat dibanding sewa terpisah`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'paket',
-    categoryLabel: 'Paket Wedding',
-    tag: 'Solusi All-In Wedding Mewah',
-    kva: 60,
-    kw: 48,
-    pk: 20,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Genset 60 kVA + 4x AC 5 PK',
-    noiseLevel: 'Super Silent (<65 dB)',
-    idealFor: [
-      'Pesta Resepsi Pernikahan 500 - 1.500 Undangan',
-      'Tenda Dekorasi Mewah Full AC',
-      'Gathering Perusahaan & Acara Akbar Instansi'
-    ],
-    startingPriceEstimate: 'Rp 4.350.000 / Paket',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTO2I6LEgUQOJf13Yjx7_HTY61XEUAJzahfmxSvy4KnEDzyVZtY5gvoUcSy&s=10'
+• Tarif bundling jauh lebih hemat dibanding sewa terpisah`
   },
   {
     id: 'e1a2f3b4-3002-4c5d-8e9f-0a1b2c3d4e32',
@@ -684,26 +415,7 @@ Rekomendasi Penggunaan:
 Keunggulan Paket:
 • Kombinasi sejuk di dalam pelaminan dan segar di area luar
 • Konsumsi bahan bakar sangat ekonomis
-• Instalasi cepat dan tidak merusak pekarangan rumah`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'paket',
-    categoryLabel: 'Paket Wedding',
-    tag: 'Pilihan Populer Hajatan Rumah',
-    kva: 30,
-    kw: 24,
-    pk: 10,
-    phase: '3 Phase (380V)',
-    engineBrand: 'Genset 30 kVA + 2 AC 5 PK + 2 Fan',
-    noiseLevel: 'Super Silent (<63 dB)',
-    idealFor: [
-      'Pesta Pernikahan Rumahan & Tenda 300-600 Tamu',
-      'Halaman Rumah dengan Tenda Semi-Tertutup',
-      'Acara Khitanan & Tasyakuran Keluarga'
-    ],
-    startingPriceEstimate: 'Rp 2.850.000 / Paket',
-    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80'
+• Instalasi cepat dan tidak merusak pekarangan rumah`
   },
   {
     id: 'e1a2f3b4-4001-4c5d-8e9f-0a1b2c3d4e41',
@@ -727,23 +439,7 @@ Rekomendasi Penggunaan:
 Paket Sewa Sudah Termasuk:
 • 1 Unit Panel ATS Standar Industri Siap Pakai
 • Kabel Kontrol Sensor Tegangan
-• Jasa Instalasi & Pengujian Simulasi Padam PLN oleh Teknisi Ahli`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'aksesoris',
-    categoryLabel: 'Aksesoris & Panel',
-    tag: 'Proteksi Zero Downtime',
-    phase: '3 Phase (380V)',
-    engineBrand: 'Schneider / ABB ATS Panel',
-    noiseLevel: 'Silent Electronic Panel',
-    idealFor: [
-      'Rumah Sakit, Ruang Operasi & Ruang ICU',
-      'Ujian Nasional CBT & Ruang Server Komputer',
-      'Acara Krusial Tanpa Toleransi Padam Listrik'
-    ],
-    startingPriceEstimate: 'Rp 350.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&w=800&q=80'
+• Jasa Instalasi & Pengujian Simulasi Padam PLN oleh Teknisi Ahli`
   },
   {
     id: 'e1a2f3b4-4002-4c5d-8e9f-0a1b2c3d4e42',
@@ -766,22 +462,6 @@ Rekomendasi Penggunaan:
 Paket Sewa Sudah Termasuk:
 • 1 Roll Kabel Power 50 Meter
 • Kabel Protector / Karet Pelindung Lindasan Roda (Rubber Cable Ramp)
-• Jasa Pemasangan & Jalur Kabel Rapi oleh Teknisi`,
-    created_at: '2025-01-10T08:00:00Z',
-    updated_at: '2025-01-10T08:00:00Z',
-    // Compatibility helpers
-    category: 'aksesoris',
-    categoryLabel: 'Aksesoris & Kabel',
-    tag: 'Ekstensi Jalur Panjang',
-    phase: '3 Phase (380V)',
-    engineBrand: 'Supreme / Kabelmetal SNI 4x35mm²',
-    noiseLevel: 'Kabel Distribusi Tembaga',
-    idealFor: [
-      'Genset Parkir Jauh dari Tenda / Venue Pesta',
-      'Event Konser Musik Outdoor Jarak Panjang',
-      'Proyek Lapangan & Gudang Terbuka'
-    ],
-    startingPriceEstimate: 'Rp 250.000 / Hari',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+• Jasa Pemasangan & Jalur Kabel Rapi oleh Teknisi`
   }
 ];

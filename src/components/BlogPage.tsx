@@ -43,7 +43,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   ];
 
   const filteredPosts = BLOG_POSTS.filter((post) => {
-    const matchCategory = selectedCategory === 'all' || post.category === selectedCategory;
+    const matchCategory = selectedCategory === 'all' || post.product_type === selectedCategory;
     const matchSearch = searchQuery.trim() === '' || 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -467,3 +467,4 @@ export const BlogPage: React.FC<BlogPageProps> = ({
     </div>
   );
 };
+

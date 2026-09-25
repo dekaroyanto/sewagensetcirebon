@@ -221,7 +221,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
           style={{
             scrollBehavior: isDragging ? 'auto' : 'smooth',
@@ -406,3 +406,4 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
     </section>
   );
 };
+

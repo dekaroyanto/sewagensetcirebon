@@ -55,7 +55,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     duration: '1 Hari (12 Jam)',
     eventLocation: '',
     districtCirebon: 'Kejaksan - Kota Cirebon',
-    packageType: product?.category === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : 'Include BBM Solar & Operator',
+    packageType: product?.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : 'Include BBM Solar & Operator',
     additionalNeeds: [],
     notes: ''
   });
@@ -69,7 +69,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         ...prev,
         selectedGensetId: product.id,
         selectedGensetName: product.name,
-        packageType: product.category === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
+        packageType: product.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
       }));
     }
   }, [product]);
@@ -94,7 +94,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       ...prev,
       selectedGensetId: selected.id,
       selectedGensetName: selected.name,
-      packageType: selected.category === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
+      packageType: selected.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
     }));
   };
 

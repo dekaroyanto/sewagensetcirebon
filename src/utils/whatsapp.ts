@@ -57,9 +57,9 @@ export function getWhatsAppBookingUrl(data: BookingFormData): string {
  * Creates a quick WhatsApp URL for a specific genset or AC product.
  */
 export function getProductQuickWhatsAppUrl(product: GensetProduct): string {
-  const isAc = product.product_type === 'ac' || product.category === 'ac';
-  const isPaket = product.product_type === 'paket' || product.category === 'paket';
-  const isAksesoris = product.product_type === 'aksesoris' || product.category === 'aksesoris';
+  const isAc = product.product_type === 'ac' || product.product_type === 'ac';
+  const isPaket = product.product_type === 'paket' || product.product_type === 'paket';
+  const isAksesoris = product.product_type === 'aksesoris' || product.product_type === 'aksesoris';
 
   let typeLabel = 'Genset Silent';
   if (isAc) typeLabel = 'AC Standing & Pendingin';

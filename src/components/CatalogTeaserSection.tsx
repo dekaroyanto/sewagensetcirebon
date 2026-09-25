@@ -346,17 +346,17 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                     <div className="flex items-center justify-between gap-2 z-10">
                       <span
                         className={`px-3 py-1 rounded-xl font-black text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5 ${
-                          item.category === "ac"
+                          item.product_type === "ac"
                             ? "bg-cyan-500 text-slate-950 font-bold"
-                            : item.category === "paket"
+                            : item.product_type === "paket"
                               ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
                               : "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950"
                         }`}
                       >
                         <Zap className="w-3 h-3 fill-current" />
-                        {item.category === "ac"
+                        {item.product_type === "ac"
                           ? `${item.pk ? `${item.pk} PK` : "AC Standing"}`
-                          : item.category === "paket"
+                          : item.product_type === "paket"
                             ? "Paket Wedding"
                             : `${item.kva} kVA`}
                       </span>

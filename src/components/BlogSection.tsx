@@ -185,3 +185,4 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
     </section>
   );
 };
+

@@ -1,3 +1,4 @@
+import { formatPrice } from '../utils/format';
 import React, { useState, useMemo } from 'react';
 import {
   Zap,
@@ -40,12 +41,9 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
 
   const filteredProducts = useMemo(() => {
     return GENSET_PRODUCTS.filter((product) => {
-      const matchCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchCategory = selectedCategory === 'all' || product.product_type === selectedCategory;
       const matchSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.engineBrand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.idealFor.some(item => item.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        product.kva.toString().includes(searchQuery);
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ;
       return matchCategory && matchSearch;
     });
   }, [selectedCategory, searchQuery]);
@@ -146,22 +144,15 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
                   {/* Card Header with Badges & kVA */}
                   <div className="p-5 pb-4 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white flex items-start justify-between gap-2">
                     <div>
-                      {product.tag && (
-                        <span className="inline-block px-2.5 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[11px] font-extrabold mb-1.5">
-                          {product.tag}
-                        </span>
-                      )}
+                      
                       <h3 className="font-display font-bold text-lg text-slate-900 leading-snug group-hover:text-amber-600 transition-colors">
                         {product.name}
                       </h3>
-                      <p className="text-xs text-slate-500 mt-0.5">{product.engineBrand}</p>
+                      
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="w-14 h-14 rounded-xl bg-amber-500 text-slate-950 flex flex-col items-center justify-center font-display font-black shadow-xs">
-                        <span className="text-base leading-none">{product.kva}</span>
-                        <span className="text-[10px] uppercase font-bold">kVA</span>
-                      </div>
+                      
                     </div>
                   </div>
 
@@ -201,7 +192,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
                         <div>
                           <span className="text-[10px] text-slate-400 uppercase font-semibold block">Harga Rental</span>
                           <span className="text-sm font-extrabold text-amber-600">
-                            {product.startingPriceEstimate}
+                            {formatPrice(product.price)}
                           </span>
                         </div>
                         <button
@@ -277,3 +268,4 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
     </section>
   );
 };
+

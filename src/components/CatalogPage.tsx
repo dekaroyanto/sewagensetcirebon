@@ -64,14 +64,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       const matchCategory = 
         selectedCategory === 'all' || 
         product.product_type === selectedCategory || 
-        product.category === selectedCategory;
+        product.product_type === selectedCategory;
 
       const query = searchQuery.toLowerCase().trim();
       const matchSearch = !query ||
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
-        product.product_type.toLowerCase().includes(query) ||
-        (product.tag && product.tag.toLowerCase().includes(query));
+        product.product_type.toLowerCase().includes(query) ;
 
       return matchCategory && matchSearch;
     });

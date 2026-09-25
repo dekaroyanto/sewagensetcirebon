@@ -41,7 +41,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
     return products.filter(product => {
       // Category tab filter
       if (activeFilter !== 'all') {
-        const matchesType = product.product_type === activeFilter || product.category === activeFilter;
+        const matchesType = product.product_type === activeFilter || product.product_type === activeFilter;
         if (!matchesType) return false;
       }
 
@@ -59,10 +59,10 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
 
   // Group filtered products
   const groupedProducts = useMemo(() => {
-    const gensets = filteredProducts.filter(p => p.product_type === 'genset' || (p.category !== 'ac' && p.category !== 'paket' && p.category !== 'aksesoris'));
-    const acs = filteredProducts.filter(p => p.product_type === 'ac' || p.category === 'ac');
-    const pakets = filteredProducts.filter(p => p.product_type === 'paket' || p.category === 'paket');
-    const aksesoris = filteredProducts.filter(p => p.product_type === 'aksesoris' || p.category === 'aksesoris');
+    const gensets = filteredProducts.filter(p => p.product_type === 'genset' || (p.product_type !== 'ac' && p.product_type !== 'paket' && p.product_type !== 'aksesoris'));
+    const acs = filteredProducts.filter(p => p.product_type === 'ac' || p.product_type === 'ac');
+    const pakets = filteredProducts.filter(p => p.product_type === 'paket' || p.product_type === 'paket');
+    const aksesoris = filteredProducts.filter(p => p.product_type === 'aksesoris' || p.product_type === 'aksesoris');
 
     return { gensets, acs, pakets, aksesoris };
   }, [filteredProducts]);
@@ -295,3 +295,4 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
     </div>
   );
 };
+

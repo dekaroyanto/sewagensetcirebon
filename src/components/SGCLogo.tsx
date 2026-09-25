@@ -245,3 +245,4 @@ export const SGCLogo: React.FC<SGCLogoProps> = ({
     </div>
   );
 };
+

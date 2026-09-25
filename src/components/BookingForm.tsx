@@ -63,7 +63,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
         ...prev,
         selectedGensetId: preselectedProduct.id,
         selectedGensetName: preselectedProduct.name,
-        packageType: preselectedProduct.category === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
+        packageType: preselectedProduct.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
       }));
     }
   }, [preselectedProduct]);
@@ -74,7 +74,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
       ...prev,
       selectedGensetId: selected.id,
       selectedGensetName: selected.name,
-      packageType: selected.category === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
+      packageType: selected.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
     }));
   };
 
@@ -158,10 +158,10 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
   ];
 
   // Grouped products
-  const gensetItems = GENSET_PRODUCTS.filter(p => p.product_type === 'genset' || (p.category !== 'ac' && p.category !== 'paket' && p.category !== 'aksesoris'));
-  const acItems = GENSET_PRODUCTS.filter(p => p.product_type === 'ac' || p.category === 'ac');
-  const paketItems = GENSET_PRODUCTS.filter(p => p.product_type === 'paket' || p.category === 'paket');
-  const aksesorisItems = GENSET_PRODUCTS.filter(p => p.product_type === 'aksesoris' || p.category === 'aksesoris');
+  const gensetItems = GENSET_PRODUCTS.filter(p => p.product_type === 'genset' || (p.product_type !== 'ac' && p.product_type !== 'paket' && p.product_type !== 'aksesoris'));
+  const acItems = GENSET_PRODUCTS.filter(p => p.product_type === 'ac' || p.product_type === 'ac');
+  const paketItems = GENSET_PRODUCTS.filter(p => p.product_type === 'paket' || p.product_type === 'paket');
+  const aksesorisItems = GENSET_PRODUCTS.filter(p => p.product_type === 'aksesoris' || p.product_type === 'aksesoris');
 
   return (
     <section id="booking" className="py-16 sm:py-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 relative overflow-hidden transition-colors duration-200">

@@ -193,3 +193,4 @@ export const CatalogGuideSection: React.FC<CatalogGuideSectionProps> = ({
     </section>
   );
 };
+

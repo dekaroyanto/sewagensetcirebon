@@ -111,3 +111,4 @@ export const Hero: React.FC<HeroProps> = ({ onExploreCatalog, onGoToBooking }) =
 };
 
 
+

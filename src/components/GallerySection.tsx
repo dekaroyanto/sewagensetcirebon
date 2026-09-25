@@ -452,3 +452,4 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
     </section>
   );
 };
+

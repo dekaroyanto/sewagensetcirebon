@@ -8,31 +8,6 @@ export interface Product {
   price: number; // DECIMAL(12,2)
   image_url: string; // TEXT
   description: string; // TEXT (textarea containing specs & full details)
-  created_at?: string; // TIMESTAMP
-  updated_at?: string; // TIMESTAMP
-
-  // Helper & transition aliases for seamless UI compatibility:
-  category?: 'small' | 'medium' | 'large' | 'heavy' | 'ac' | 'paket' | 'aksesoris';
-  categoryLabel?: string;
-  image?: string; // alias to image_url
-  startingPriceEstimate?: string;
-  tag?: string;
-  kva?: number;
-  kw?: number;
-  pk?: number;
-  btu?: string;
-  phase?: string;
-  engineBrand?: string;
-  alternatorBrand?: string;
-  fuelType?: string;
-  fuelConsumption?: string;
-  noiseLevel?: string;
-  dimensions?: string;
-  weight?: string;
-  tankCapacity?: string;
-  idealFor?: string[];
-  features?: string[];
-  includedItems?: string[];
 }
 
 export type GensetProduct = Product;

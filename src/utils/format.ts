@@ -2,12 +2,10 @@ import { ProductType } from '../types';
 
 /**
  * Format price in Indonesian Rupiah (DECIMAL to IDR format)
+ * Returns 'Harga Negotiable' for UI display to hide exact prices
  */
 export function formatPrice(price: number): string {
-  if (!price || price <= 0) {
-    return 'Hubungi WhatsApp';
-  }
-  return `Rp ${new Intl.NumberFormat('id-ID').format(price)} / Hari`;
+  return 'Harga Negotiable';
 }
 
 /**
