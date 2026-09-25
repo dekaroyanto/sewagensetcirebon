@@ -361,11 +361,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                             : `${item.kva} kVA`}
                       </span>
 
-                      <span className="px-2.5 py-1 rounded-lg bg-white/90 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1 backdrop-blur-md shadow-2xs">
-                        <Volume2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        {item.noiseLevel.split("@")[0] ||
-                          item.noiseLevel.split("(")[0]}
-                      </span>
+                      
                     </div>
 
                     {/* Card Middle: 3D Product Visual */}
@@ -384,7 +380,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                       <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] font-medium text-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-lg bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-xs backdrop-blur-md">
                         <span className="flex items-center gap-1 truncate font-semibold">
                           <Cpu className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                          <span className="truncate">{item.engineBrand || item.name}</span>
+                          <span className="truncate">{ item.name}</span>
                         </span>
                         <span className="font-mono text-amber-700 dark:text-amber-400 font-bold shrink-0 ml-2">
                           {item.kw ? `${item.kw} kW` : (item.phase || '3 Phase')}
@@ -402,7 +398,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                           {item.name}
                         </h3>
                         <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
-                          {item.idealFor?.[0] || item.description?.split('\n')?.[0] || "Cocok untuk event & industri"}
+                          {item.description?.split('\n')?.[0] || "Cocok untuk event & industri"}
                         </p>
                       </div>
                     </div>
