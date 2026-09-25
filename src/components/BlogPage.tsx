@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
   Calendar, 
@@ -19,6 +19,7 @@ import {
 import { BLOG_POSTS } from '../data/blogPosts';
 import { COMPANY_INFO } from '../data/company';
 import { BlogPost } from '../types';
+import { getBlogPosts } from '../utils/api';
 
 interface BlogPageProps {
   onBackToHome: () => void;
@@ -31,9 +32,18 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   onGoToBooking,
   onToast 
 }) => {
+  const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
+
+  useEffect(() => {
+    getBlogPosts().then((data) => {
+      if (data && data.length > 0) {
+        setPosts(data);
+      }
+    });
+  }, []);
 
   const categories = [
     { id: 'all', label: 'Semua Berita' },
@@ -42,8 +52,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
     { id: 'Event & Proyek', label: 'Event & Industri' },
   ];
 
-  const filteredPosts = BLOG_POSTS.filter((post) => {
-    const matchCategory = selectedCategory === 'all' || post.product_type === selectedCategory;
+  const filteredPosts = posts.filter((post) => {
+    const matchCategory = selectedCategory === 'all' || post.category === selectedCategory || (post.product_type as string) === selectedCategory;
     const matchSearch = searchQuery.trim() === '' || 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -51,7 +61,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
     return matchCategory && matchSearch;
   });
 
-  const featuredPost = BLOG_POSTS[0];
+  const featuredPost = filteredPosts[0] || posts[0] || BLOG_POSTS[0];
 
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon (SGC)`;

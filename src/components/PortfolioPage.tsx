@@ -13,6 +13,7 @@ import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl, getPortfolioWhatsAppUrl } from '../utils/whatsapp';
 import { BookingModal } from './BookingModal';
 import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
+import { getGallery } from '../utils/api';
 
 interface PortfolioPageProps {
   onBackToHome: () => void;
@@ -25,8 +26,17 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   onBackToHome,
   onToast
 }) => {
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(GALLERY_ITEMS);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    getGallery().then((data) => {
+      if (data && data.length > 0) {
+        setGalleryItems(data);
+      }
+    });
+  }, []);
 
   // Lock background body scroll safely when any modal is open
   useBodyScrollLock(Boolean(selectedItem || isBookingModalOpen));
@@ -80,7 +90,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
 
         {/* Clean Portfolio Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-7">
-          {GALLERY_ITEMS.map((item) => (
+          {galleryItems.map((item) => (
             <article
               key={item.id}
               onClick={() => setSelectedItem(item)}

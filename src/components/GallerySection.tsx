@@ -19,12 +19,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { GALLERY_ITEMS } from '../data/gallery';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
+import { getGallery } from '../utils/api';
 
 interface GallerySectionProps {
   onOpenPortfolio?: () => void;
 }
 
 export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio }) => {
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(GALLERY_ITEMS);
   const [activeIndex, setActiveIndex] = useState<number>(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [selectedZoomPhoto, setSelectedZoomPhoto] = useState<GalleryItem | null>(null);
@@ -32,7 +34,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
   const dragStartX = useRef<number | null>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const totalItems = GALLERY_ITEMS.length;
+  useEffect(() => {
+    getGallery().then((data) => {
+      if (data && data.length > 0) {
+        setGalleryItems(data);
+      }
+    });
+  }, []);
+
+  const totalItems = galleryItems.length;
 
   // Wheel & Gesture states with transition lock
   const lastWheelTime = useRef<number>(0);
@@ -135,7 +145,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
     }
   };
 
-  const activeItem = GALLERY_ITEMS[activeIndex];
+  const activeItem = galleryItems[activeIndex] || galleryItems[0];
 
   return (
     <section
@@ -220,7 +230,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
         >
           <div className={`relative h-[400px] sm:h-[460px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}>
-            {GALLERY_ITEMS.map((item, idx) => {
+            {galleryItems.map((item, idx) => {
               // Calculate offset relative to active item
               let offset = idx - activeIndex;
               if (offset < -Math.floor(totalItems / 2)) {
@@ -363,7 +373,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
 
           {/* Dots Indicator */}
           <div className="flex items-center justify-center gap-2 mt-6">
-            {GALLERY_ITEMS.map((_, idx) => (
+            {galleryItems.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSelectCard(idx)}

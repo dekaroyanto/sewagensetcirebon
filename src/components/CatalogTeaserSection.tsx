@@ -13,6 +13,7 @@ import {
 import { motion } from "motion/react";
 import { GENSET_PRODUCTS } from "../data/gensets";
 import { GensetProduct } from "../types";
+import { getProducts } from "../utils/api";
 
 interface CatalogTeaserSectionProps {
   onOpenCatalog: () => void;
@@ -23,14 +24,24 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   onOpenCatalog,
   onGoToBooking,
 }) => {
+  const [products, setProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
+
+  useEffect(() => {
+    getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setProducts(data);
+      }
+    });
+  }, []);
+
   // Curated spotlight units
   const carouselItems = [
-    GENSET_PRODUCTS[1], // 20 kVA
-    GENSET_PRODUCTS[4], // 60 kVA
-    GENSET_PRODUCTS[6], // 100 kVA
-    GENSET_PRODUCTS.find((p) => p.product_type === "ac") || GENSET_PRODUCTS[2],
-    GENSET_PRODUCTS.find((p) => p.product_type === "paket") || GENSET_PRODUCTS[5],
-    GENSET_PRODUCTS[9] || GENSET_PRODUCTS[0], // 250 kVA
+    products[1] || products[0],
+    products[4] || products[0],
+    products[6] || products[0],
+    products.find((p) => p.product_type === "ac") || products[2] || products[0],
+    products.find((p) => p.product_type === "paket") || products[3] || products[0],
+    products[9] || products[0],
   ];
 
   const [activeIndex, setActiveIndex] = useState(1);

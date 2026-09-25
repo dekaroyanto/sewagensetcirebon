@@ -30,6 +30,8 @@ import {
   copyToClipboard 
 } from '../utils/whatsapp';
 import { useBodyScrollLock } from '../utils/scrollLock';
+import { submitBooking } from '../utils/api';
+import { ConfirmBookingModal } from './ConfirmBookingModal';
 
 interface BookingModalProps {
   product: GensetProduct | null;
@@ -61,6 +63,39 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   });
 
   const [copied, setCopied] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  // Open confirmation modal with validation
+  const handleOpenBookingConfirm = () => {
+    if (!formData.fullName.trim()) {
+      onToast('Mohon isi nama lengkap / nama PIC pemesanan.');
+      return;
+    }
+    if (!formData.phone.trim()) {
+      onToast('Mohon isi nomor telepon / WhatsApp yang bisa dihubungi.');
+      return;
+    }
+    if (!formData.eventLocation.trim()) {
+      onToast('Mohon isi alamat / lokasi pelaksanaan acara.');
+      return;
+    }
+    setIsConfirmModalOpen(true);
+  };
+
+  // Confirm booking: save to MySQL and open WhatsApp
+  const handleConfirmBookingAndRedirect = async () => {
+    try {
+      await submitBooking(formData);
+      onToast('Pesanan berhasil dicatat ke database! Mengalihkan ke WhatsApp...');
+    } catch (err) {
+      console.error('Error submitting booking:', err);
+    } finally {
+      const url = getWhatsAppBookingUrl(formData);
+      window.open(url, '_blank');
+      setIsConfirmModalOpen(false);
+      onClose();
+    }
+  };
 
   // Sync if initial product changes
   useEffect(() => {
@@ -533,18 +568,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 {/* Actions Toolbar */}
                 <div className="p-3 bg-[#202c33] border-t border-slate-800 space-y-2">
-                  <a
-                    href={getWhatsAppBookingUrl(formData)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      onToast('Membuka WhatsApp untuk mengirim rincian pesanan!');
-                    }}
-                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all text-center"
+                  <button
+                    type="button"
+                    onClick={handleOpenBookingConfirm}
+                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all text-center cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
-                    <span>Kirim Pesanan via WhatsApp</span>
-                  </a>
+                    <span>Booking Sekarang</span>
+                  </button>
 
                   <button
                     type="button"
@@ -592,6 +623,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         </div>
 
       </div>
+
+      {/* Confirmation Popup Modal */}
+      <ConfirmBookingModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        formData={formData}
+        onConfirm={handleConfirmBookingAndRedirect}
+      />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import {
 import { motion } from 'motion/react';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { BlogPost } from '../types';
+import { getBlogPosts } from '../utils/api';
 
 interface BlogHomePreviewProps {
   onOpenAllArticles: () => void;
@@ -29,10 +30,19 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   onGoToBooking,
   onToast
 }) => {
+  const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
+  useEffect(() => {
+    getBlogPosts().then((data) => {
+      if (data && data.length > 0) {
+        setPosts(data);
+      }
+    });
+  }, []);
+
   // Articles to show in preview
-  const previewPosts = BLOG_POSTS.slice(0, 6);
+  const previewPosts = posts.slice(0, 6);
 
   // Scroll Container Ref & State for Horizontal Navigation
   const scrollContainerRef = useRef<HTMLDivElement>(null);

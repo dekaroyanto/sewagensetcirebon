@@ -24,6 +24,7 @@ import { getProductWhatsAppUrl, getGeneralWhatsAppUrl } from '../utils/whatsapp'
 import { formatPrice, getProductTypeBadge, getProductTypeLabel } from '../utils/format';
 import { BookingModal } from './BookingModal';
 import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
+import { getProducts } from '../utils/api';
 
 interface CatalogPageProps {
   onBackToHome: () => void;
@@ -36,10 +37,20 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   onSelectGensetForBooking,
   onToast
 }) => {
+  const [products, setProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalGenset, setActiveModalGenset] = useState<GensetProduct | null>(null);
   const [bookingModalProduct, setBookingModalProduct] = useState<GensetProduct | null>(null);
+
+  // Load dynamic products from MySQL API
+  useEffect(() => {
+    getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setProducts(data);
+      }
+    });
+  }, []);
 
   // Prevent background scroll safely when any modal is active
   useBodyScrollLock(Boolean(activeModalGenset || bookingModalProduct));
@@ -60,21 +71,20 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   ];
 
   const filteredProducts = useMemo(() => {
-    return GENSET_PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       const matchCategory = 
         selectedCategory === 'all' || 
-        product.product_type === selectedCategory || 
         product.product_type === selectedCategory;
 
       const query = searchQuery.toLowerCase().trim();
       const matchSearch = !query ||
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
-        product.product_type.toLowerCase().includes(query) ;
+        product.product_type.toLowerCase().includes(query);
 
       return matchCategory && matchSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [products, selectedCategory, searchQuery]);
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen py-8 sm:py-12 transition-colors duration-200">

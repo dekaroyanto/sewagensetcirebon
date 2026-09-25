@@ -57,9 +57,9 @@ export function getWhatsAppBookingUrl(data: BookingFormData): string {
  * Creates a quick WhatsApp URL for a specific genset or AC product.
  */
 export function getProductQuickWhatsAppUrl(product: GensetProduct): string {
-  const isAc = product.product_type === 'ac' || product.product_type === 'ac';
-  const isPaket = product.product_type === 'paket' || product.product_type === 'paket';
-  const isAksesoris = product.product_type === 'aksesoris' || product.product_type === 'aksesoris';
+  const isAc = product.product_type === 'ac';
+  const isPaket = product.product_type === 'paket';
+  const isAksesoris = product.product_type === 'aksesoris';
 
   let typeLabel = 'Genset Silent';
   if (isAc) typeLabel = 'AC Standing & Pendingin';
@@ -68,7 +68,7 @@ export function getProductQuickWhatsAppUrl(product: GensetProduct): string {
 
   const priceText = product.price > 0
     ? `Rp ${new Intl.NumberFormat('id-ID').format(product.price)} / Hari`
-    : (product.startingPriceEstimate || 'Hubungi Admin');
+    : (product.startingPriceEstimate ? `Mulai Rp ${new Intl.NumberFormat('id-ID').format(product.startingPriceEstimate)}` : 'Hubungi Admin');
 
   const message = `Halo Admin *${COMPANY_INFO.name}*, saya tertarik untuk sewa unit berikut:
 

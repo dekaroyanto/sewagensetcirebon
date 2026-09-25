@@ -8,6 +8,14 @@ export interface Product {
   price: number; // DECIMAL(12,2)
   image_url: string; // TEXT
   description: string; // TEXT (textarea containing specs & full details)
+  image?: string;
+  kva?: number;
+  kw?: number;
+  pk?: number;
+  phase?: string;
+  tag?: string;
+  categoryLabel?: string;
+  startingPriceEstimate?: number;
 }
 
 export type GensetProduct = Product;
@@ -37,6 +45,7 @@ export interface BlogPost {
   title: string;
   summary: string;
   category: 'Tips & Panduan' | 'Seputar Genset' | 'Event & Proyek' | 'Berita Cirebon';
+  product_type?: string;
   date: string;
   readTime: string;
   author: string;

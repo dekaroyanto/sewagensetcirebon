@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HelpCircle,
   ChevronDown,
@@ -6,11 +6,22 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FAQ_LIST } from '../data/faqs';
+import { FAQItem } from '../types';
 import { COMPANY_INFO } from '../data/company';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
+import { getFaqs } from '../utils/api';
 
 export const FAQSection: React.FC = () => {
+  const [faqs, setFaqs] = useState<FAQItem[]>(FAQ_LIST);
   const [openFaqId, setOpenFaqId] = useState<string>('faq-1');
+
+  useEffect(() => {
+    getFaqs().then((data) => {
+      if (data && data.length > 0) {
+        setFaqs(data);
+      }
+    });
+  }, []);
 
   const toggleFaq = (id: string) => {
     setOpenFaqId(openFaqId === id ? '' : id);
@@ -38,7 +49,7 @@ export const FAQSection: React.FC = () => {
 
         {/* FAQ Accordion List (Animated Smooth Expansion) */}
         <div className="space-y-3">
-          {FAQ_LIST.map((faq, idx) => {
+          {faqs.map((faq, idx) => {
             const isOpen = openFaqId === faq.id;
             return (
               <motion.div

@@ -17,6 +17,7 @@ import {
 import { motion } from 'motion/react';
 import { TESTIMONIALS } from '../data/testimonials';
 import { Testimonial } from '../types';
+import { getTestimonials, submitTestimonial } from '../utils/api';
 
 interface TestimonialsSectionProps {
   onToast: (msg: string) => void;
@@ -49,6 +50,14 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
     const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    getTestimonials().then((data) => {
+      if (data && data.length > 0) {
+        setTestimonials(data);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -116,6 +125,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
     };
 
     setTestimonials([newTesti, ...testimonials]);
+    submitTestimonial(newTesti);
     setIsAddReviewOpen(false);
     onToast('Terima kasih! Ulasan & testimoni Anda berhasil ditambahkan.');
 

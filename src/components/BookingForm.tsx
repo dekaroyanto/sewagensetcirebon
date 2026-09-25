@@ -29,6 +29,8 @@ import {
   getWhatsAppBookingUrl,
   copyToClipboard
 } from '../utils/whatsapp';
+import { submitBooking, getProducts } from '../utils/api';
+import { ConfirmBookingModal } from './ConfirmBookingModal';
 
 interface BookingFormProps {
   preselectedProduct?: GensetProduct | null;
@@ -55,6 +57,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
   });
 
   const [copied, setCopied] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   // Synchronize when a product is preselected from catalog
   useEffect(() => {
@@ -89,9 +92,9 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     });
   };
 
-  // Submit to WhatsApp
-  const handleSubmitToWhatsApp = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Open confirmation modal with validation
+  const handleOpenBookingConfirm = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!formData.fullName.trim()) {
       onToast('Mohon isi nama lengkap / nama penanggung jawab pemesanan.');
       return;
@@ -100,10 +103,25 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
       onToast('Mohon isi nomor telepon / WhatsApp yang bisa dihubungi.');
       return;
     }
+    if (!formData.eventLocation.trim()) {
+      onToast('Mohon isi alamat / lokasi pelaksanaan acara di Cirebon.');
+      return;
+    }
+    setIsConfirmModalOpen(true);
+  };
 
-    const url = getWhatsAppBookingUrl(formData);
-    window.open(url, '_blank');
-    onToast('Membuka WhatsApp untuk mengirim rincian pemesanan ke admin!');
+  // Confirm booking: save to MySQL and open WhatsApp
+  const handleConfirmBookingAndRedirect = async () => {
+    try {
+      await submitBooking(formData);
+      onToast('Pesanan berhasil dicatat ke database! Mengalihkan ke WhatsApp...');
+    } catch (err) {
+      console.error('Error submitting booking:', err);
+    } finally {
+      const url = getWhatsAppBookingUrl(formData);
+      window.open(url, '_blank');
+      setIsConfirmModalOpen(false);
+    }
   };
 
   // Copy message
@@ -157,11 +175,21 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     'Kipas Misty Fan Blower Tambahan'
   ];
 
+  const [allProducts, setAllProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
+
+  useEffect(() => {
+    getProducts().then((data) => {
+      if (data && data.length > 0) {
+        setAllProducts(data);
+      }
+    });
+  }, []);
+
   // Grouped products
-  const gensetItems = GENSET_PRODUCTS.filter(p => p.product_type === 'genset' || (p.product_type !== 'ac' && p.product_type !== 'paket' && p.product_type !== 'aksesoris'));
-  const acItems = GENSET_PRODUCTS.filter(p => p.product_type === 'ac' || p.product_type === 'ac');
-  const paketItems = GENSET_PRODUCTS.filter(p => p.product_type === 'paket' || p.product_type === 'paket');
-  const aksesorisItems = GENSET_PRODUCTS.filter(p => p.product_type === 'aksesoris' || p.product_type === 'aksesoris');
+  const gensetItems = allProducts.filter(p => p.product_type === 'genset' || !p.product_type);
+  const acItems = allProducts.filter(p => p.product_type === 'ac');
+  const paketItems = allProducts.filter(p => p.product_type === 'paket');
+  const aksesorisItems = allProducts.filter(p => p.product_type === 'aksesoris');
 
   return (
     <section id="booking" className="py-16 sm:py-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 relative overflow-hidden transition-colors duration-200">
@@ -194,7 +222,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
 
           {/* Left Column: The Form */}
           <div className="lg:col-span-7 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs">
-            <form onSubmit={handleSubmitToWhatsApp} className="space-y-6">
+            <form onSubmit={handleOpenBookingConfirm} className="space-y-6">
 
               {/* Step 1: Contact Info */}
               <div className="space-y-4">
@@ -263,7 +291,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
                       <span className="text-[11px] text-slate-400 dark:text-slate-500">Pencarian interaktif</span>
                     </div>
                     <SearchableProductSelect
-                      products={GENSET_PRODUCTS}
+                      products={allProducts}
                       selectedId={formData.selectedGensetId}
                       onSelect={handleSelectProduct}
                     />
@@ -476,6 +504,21 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
                     className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                   />
                 </div>
+
+                {/* Form Action Button */}
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={handleOpenBookingConfirm}
+                    className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:from-amber-400 hover:to-amber-500 active:from-amber-600 active:to-amber-600 text-slate-950 font-display font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all cursor-pointer"
+                  >
+                    <Send className="w-5 h-5 text-slate-950" />
+                    <span>Booking Sekarang</span>
+                  </button>
+                  <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 mt-2">
+                    ✓ Periksa rincian data sebelum dialihkan ke WhatsApp resmi SGC
+                  </p>
+                </div>
               </div>
 
             </form>
@@ -541,15 +584,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
                   <span>{copied ? 'Tersalin!' : 'Salin Pesan'}</span>
                 </button>
 
-                <a
-                  href={getWhatsAppBookingUrl(formData)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                <button
+                  type="button"
+                  onClick={handleOpenBookingConfirm}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-colors cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  <span>Buka di WA</span>
-                </a>
+                  <span>Booking Sekarang</span>
+                </button>
               </div>
 
             </div>
@@ -573,6 +615,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
         </motion.div>
 
       </div>
+
+      {/* Confirmation Popup Modal */}
+      <ConfirmBookingModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => setIsConfirmModalOpen(false)}
+        formData={formData}
+        onConfirm={handleConfirmBookingAndRedirect}
+      />
     </section>
   );
 };
