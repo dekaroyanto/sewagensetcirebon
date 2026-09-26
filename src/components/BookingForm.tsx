@@ -177,12 +177,19 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
 
   const [allProducts, setAllProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
 
-  useEffect(() => {
+  const loadProductsData = () => {
     getProducts().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setAllProducts(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadProductsData();
+    const handleSync = () => loadProductsData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   // Grouped products

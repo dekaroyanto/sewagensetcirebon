@@ -15,12 +15,19 @@ export const FAQSection: React.FC = () => {
   const [faqs, setFaqs] = useState<FAQItem[]>(FAQ_LIST);
   const [openFaqId, setOpenFaqId] = useState<string>('faq-1');
 
-  useEffect(() => {
+  const loadFaqData = () => {
     getFaqs().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setFaqs(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadFaqData();
+    const handleSync = () => loadFaqData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const toggleFaq = (id: string) => {

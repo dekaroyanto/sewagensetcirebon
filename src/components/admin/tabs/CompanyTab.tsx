@@ -54,6 +54,9 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadData();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,7 +66,7 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
       const res = await updateCompanySettings(formData);
       if (res.success) {
         onToast('Pengaturan perusahaan berhasil disimpan ke database MySQL!');
-        loadData();
+        await loadData();
       } else {
         onToast('Gagal update: ' + res.message);
       }

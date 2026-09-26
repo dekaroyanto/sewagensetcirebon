@@ -30,12 +30,19 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-  useEffect(() => {
+  const loadGalleryData = () => {
     getGallery().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setGalleryItems(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadGalleryData();
+    const handleSync = () => loadGalleryData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   // Lock background body scroll safely when any modal is open

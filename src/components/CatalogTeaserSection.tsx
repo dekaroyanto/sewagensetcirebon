@@ -26,12 +26,19 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
 }) => {
   const [products, setProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
 
-  useEffect(() => {
+  const loadProductsData = () => {
     getProducts().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setProducts(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadProductsData();
+    const handleSync = () => loadProductsData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   // Curated spotlight units

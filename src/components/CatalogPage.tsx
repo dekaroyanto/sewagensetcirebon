@@ -44,12 +44,19 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [bookingModalProduct, setBookingModalProduct] = useState<GensetProduct | null>(null);
 
   // Load dynamic products from MySQL API
-  useEffect(() => {
+  const loadDynamicProducts = () => {
     getProducts().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setProducts(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadDynamicProducts();
+    const handleSync = () => loadDynamicProducts();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   // Prevent background scroll safely when any modal is active

@@ -57,6 +57,9 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadData();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const openAddModal = () => {
@@ -101,23 +104,30 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
     setSubmitting(true);
     try {
       if (editingItem) {
+        // Optimistic update
+        setItems(prev => prev.map(it => it.id === editingItem.id ? { ...it, ...formData } : it));
+        setIsModalOpen(false);
+
         const res = await updateGalleryItem(editingItem.id, formData);
         if (res.success) {
           onToast('Portofolio berhasil diperbarui!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal update: ' + res.message);
         }
+        await loadData();
       } else {
+        const tempId = 'gal-' + Date.now();
+        const optimisticItem: GalleryItem = { id: tempId, ...formData };
+        setItems(prev => [optimisticItem, ...prev]);
+        setIsModalOpen(false);
+
         const res = await createGalleryItem(formData);
         if (res.success) {
           onToast('Portofolio baru berhasil ditambahkan!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal tambah: ' + res.message);
         }
+        await loadData();
       }
     } catch (err: any) {
       onToast('Error: ' + err.message);
@@ -127,14 +137,17 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
   };
 
   const handleDelete = async (id: string) => {
+    // Optimistic delete
+    setItems(prev => prev.filter(it => it.id !== id));
+    setDeleteConfirmId(null);
+
     const res = await deleteGalleryItem(id);
     if (res.success) {
       onToast('Portofolio berhasil dihapus.');
-      setDeleteConfirmId(null);
-      loadData();
     } else {
       onToast('Gagal menghapus: ' + res.message);
     }
+    await loadData();
   };
 
   const filtered = items.filter(item => {

@@ -63,6 +63,9 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadProducts();
+    const handleSync = () => loadProducts();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const openAddModal = () => {
@@ -121,27 +124,36 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
       };
 
       if (editingProduct) {
+        // 1. UPDATE INSTAN DI STATE LOKAL (OPTIMISTIC UPDATE)
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...payload } as Product : p));
+        setIsModalOpen(false);
+
         const res = await updateProduct(editingProduct.id, payload);
         if (res.success) {
           onToast(`Produk "${formData.name}" berhasil diperbarui!`);
-          setIsModalOpen(false);
-          loadProducts();
         } else {
-          onToast('Gagal update: ' + res.message);
+          onToast('Peringatan: ' + res.message);
         }
+        await loadProducts();
       } else {
-        payload.id = formData.id;
+        const newId = formData.id || 'sgc-' + Date.now();
+        payload.id = newId;
+
+        // 1. TAMBAH INSTAN DI STATE LOKAL (OPTIMISTIC UPDATE)
+        setProducts(prev => [payload as Product, ...prev]);
+        setIsModalOpen(false);
+
         const res = await createProduct(payload);
         if (res.success) {
           onToast(`Produk "${formData.name}" berhasil ditambahkan ke database!`);
-          setIsModalOpen(false);
-          loadProducts();
         } else {
-          onToast('Gagal tambah: ' + res.message);
+          onToast('Peringatan: ' + res.message);
         }
+        await loadProducts();
       }
     } catch (err: any) {
       onToast('Error: ' + err.message);
+      await loadProducts();
     } finally {
       setSubmitting(false);
     }
@@ -149,16 +161,20 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
   const handleDelete = async (id: string) => {
     try {
+      // 1. HAPUS INSTAN DARI STATE LOKAL (OPTIMISTIC DELETE)
+      setProducts(prev => prev.filter(p => p.id !== id));
+      setDeleteConfirmId(null);
+
       const res = await deleteProduct(id);
       if (res.success) {
         onToast('Produk berhasil dihapus dari database.');
-        setDeleteConfirmId(null);
-        loadProducts();
       } else {
         onToast('Gagal menghapus: ' + res.message);
       }
+      await loadProducts();
     } catch (err: any) {
       onToast('Error: ' + err.message);
+      await loadProducts();
     }
   };
 

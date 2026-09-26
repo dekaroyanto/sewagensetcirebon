@@ -56,6 +56,9 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({ onToast }) => 
 
   useEffect(() => {
     loadData();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const openAddModal = () => {
@@ -98,26 +101,37 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({ onToast }) => 
     setSubmitting(true);
     try {
       if (editingItem) {
+        // Optimistic update
+        setTestimonials(prev => prev.map(t => t.id === editingItem.id ? { ...t, ...formData } : t));
+        setIsModalOpen(false);
+
         const res = await updateTestimonial(editingItem.id, formData);
         if (res.success) {
           onToast('Testimoni berhasil diperbarui!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal update: ' + res.message);
         }
+        await loadData();
       } else {
+        const tempId = 'testi-' + Date.now();
+        const optimisticTesti: Testimonial = {
+          id: tempId,
+          ...formData,
+          date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+        };
+        setTestimonials(prev => [optimisticTesti, ...prev]);
+        setIsModalOpen(false);
+
         const res = await createTestimonialAdmin({
           ...formData,
           date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
         });
         if (res.success) {
           onToast('Testimoni baru berhasil ditambahkan!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal tambah: ' + res.message);
         }
+        await loadData();
       }
     } catch (err: any) {
       onToast('Error: ' + err.message);
@@ -127,14 +141,17 @@ export const TestimonialsTab: React.FC<TestimonialsTabProps> = ({ onToast }) => 
   };
 
   const handleDelete = async (id: string) => {
+    // Optimistic delete
+    setTestimonials(prev => prev.filter(t => t.id !== id));
+    setDeleteConfirmId(null);
+
     const res = await deleteTestimonial(id);
     if (res.success) {
       onToast('Testimoni berhasil dihapus.');
-      setDeleteConfirmId(null);
-      loadData();
     } else {
       onToast('Gagal menghapus: ' + res.message);
     }
+    await loadData();
   };
 
   const filtered = testimonials.filter(t =>

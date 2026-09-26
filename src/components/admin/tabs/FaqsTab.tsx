@@ -49,6 +49,9 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadData();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const openAddModal = () => {
@@ -81,23 +84,30 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
     setSubmitting(true);
     try {
       if (editingItem) {
+        // Optimistic update
+        setFaqs(prev => prev.map(f => f.id === editingItem.id ? { ...f, ...formData } : f));
+        setIsModalOpen(false);
+
         const res = await updateFaq(editingItem.id, formData);
         if (res.success) {
           onToast('FAQ berhasil diperbarui!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal update: ' + res.message);
         }
+        await loadData();
       } else {
+        const tempId = 'faq-' + Date.now();
+        const optimisticFaq: FAQItem = { id: tempId, ...formData };
+        setFaqs(prev => [optimisticFaq, ...prev]);
+        setIsModalOpen(false);
+
         const res = await createFaq(formData);
         if (res.success) {
           onToast('FAQ baru berhasil ditambahkan!');
-          setIsModalOpen(false);
-          loadData();
         } else {
           onToast('Gagal tambah: ' + res.message);
         }
+        await loadData();
       }
     } catch (err: any) {
       onToast('Error: ' + err.message);
@@ -107,14 +117,17 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
   };
 
   const handleDelete = async (id: string) => {
+    // Optimistic delete
+    setFaqs(prev => prev.filter(f => f.id !== id));
+    setDeleteConfirmId(null);
+
     const res = await deleteFaq(id);
     if (res.success) {
       onToast('FAQ berhasil dihapus.');
-      setDeleteConfirmId(null);
-      loadData();
     } else {
       onToast('Gagal menghapus: ' + res.message);
     }
+    await loadData();
   };
 
   const filtered = faqs.filter(f =>

@@ -34,12 +34,19 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
   const dragStartX = useRef<number | null>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  const loadGalleryData = () => {
     getGallery().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setGalleryItems(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadGalleryData();
+    const handleSync = () => loadGalleryData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const totalItems = galleryItems.length;

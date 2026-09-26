@@ -37,12 +37,19 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
-  useEffect(() => {
+  const loadBlogData = () => {
     getBlogPosts().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setPosts(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadBlogData();
+    const handleSync = () => loadBlogData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const categories = [

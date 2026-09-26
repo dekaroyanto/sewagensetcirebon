@@ -49,31 +49,40 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadData();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const handleStatusChange = async (id: number, newStatus: string) => {
+    // 1. UPDATE INSTAN DI STATE LOKAL
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus as BookingStatus } : b));
+    if (selectedBooking && selectedBooking.id === id) {
+      setSelectedBooking(prev => prev ? { ...prev, status: newStatus as BookingStatus } : null);
+    }
+
     const res = await updateBookingStatus(id, newStatus);
     if (res.success) {
       onToast(`Status booking #${id} diubah ke "${newStatus}"`);
-      setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus as BookingStatus } : b));
-      if (selectedBooking && selectedBooking.id === id) {
-        setSelectedBooking(prev => prev ? { ...prev, status: newStatus as BookingStatus } : null);
-      }
     } else {
       onToast('Gagal update status: ' + res.message);
     }
+    await loadData();
   };
 
   const handleDelete = async (id: number) => {
+    // 1. HAPUS INSTAN DI STATE LOKAL
+    setBookings(prev => prev.filter(b => b.id !== id));
+    setDeleteConfirmId(null);
+    if (selectedBooking?.id === id) setSelectedBooking(null);
+
     const res = await deleteBooking(id);
     if (res.success) {
       onToast('Data booking berhasil dihapus.');
-      setDeleteConfirmId(null);
-      if (selectedBooking?.id === id) setSelectedBooking(null);
-      loadData();
     } else {
       onToast('Gagal menghapus: ' + res.message);
     }
+    await loadData();
   };
 
   const openWhatsApp = (b: BookingRecord) => {

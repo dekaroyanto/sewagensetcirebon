@@ -33,12 +33,19 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
-  useEffect(() => {
+  const loadBlogData = () => {
     getBlogPosts().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setPosts(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadBlogData();
+    const handleSync = () => loadBlogData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   // Articles to show in preview

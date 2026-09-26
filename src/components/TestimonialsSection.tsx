@@ -52,12 +52,19 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
   }, []);
 
-  useEffect(() => {
+  const loadTestimonialsData = () => {
     getTestimonials().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setTestimonials(data);
       }
     });
+  };
+
+  useEffect(() => {
+    loadTestimonialsData();
+    const handleSync = () => loadTestimonialsData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   useEffect(() => {

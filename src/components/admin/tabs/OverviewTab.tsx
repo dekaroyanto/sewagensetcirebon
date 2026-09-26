@@ -66,15 +66,22 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({ onNavigateTab, onToast
   useEffect(() => {
     loadData();
     checkDb();
+    const handleSync = () => loadData();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const handleStatusChange = async (id: number, newStatus: string) => {
+    // Optimistic status update in recent bookings list
+    setRecentBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus as any } : b));
+
     const res = await updateBookingStatus(id, newStatus);
     if (res.success) {
       onToast(`Status pesanan #${id} diubah ke ${newStatus}`);
-      loadData();
+      await loadData();
     } else {
       onToast('Gagal mengubah status: ' + res.message);
+      await loadData();
     }
   };
 

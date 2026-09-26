@@ -58,6 +58,9 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
 
   useEffect(() => {
     loadBlogs();
+    const handleSync = () => loadBlogs();
+    window.addEventListener('sgc_data_changed', handleSync);
+    return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
   const openAddModal = () => {
@@ -138,23 +141,30 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
 
     try {
       if (editingBlog) {
+        // Optimistic update
+        setBlogs(prev => prev.map(b => b.id === editingBlog.id ? { ...b, ...payload } as BlogPost : b));
+        setIsModalOpen(false);
+
         const res = await updateBlogPost(editingBlog.id, payload);
         if (res.success) {
           onToast('Artikel berhasil diperbarui!');
-          setIsModalOpen(false);
-          loadBlogs();
         } else {
           onToast('Gagal update: ' + res.message);
         }
+        await loadBlogs();
       } else {
+        const tempId = 'blog-' + Date.now();
+        const optimisticBlog = { id: tempId, ...payload } as BlogPost;
+        setBlogs(prev => [optimisticBlog, ...prev]);
+        setIsModalOpen(false);
+
         const res = await createBlogPost(payload);
         if (res.success) {
           onToast('Artikel baru berhasil diterbitkan!');
-          setIsModalOpen(false);
-          loadBlogs();
         } else {
           onToast('Gagal terbit: ' + res.message);
         }
+        await loadBlogs();
       }
     } catch (err: any) {
       onToast('Error: ' + err.message);
@@ -164,14 +174,17 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
   };
 
   const handleDelete = async (id: string) => {
+    // Optimistic delete
+    setBlogs(prev => prev.filter(b => b.id !== id));
+    setDeleteConfirmId(null);
+
     const res = await deleteBlogPost(id);
     if (res.success) {
       onToast('Artikel berhasil dihapus.');
-      setDeleteConfirmId(null);
-      loadBlogs();
     } else {
       onToast('Gagal menghapus: ' + res.message);
     }
+    await loadBlogs();
   };
 
   const filtered = blogs.filter(b => 
