@@ -17,10 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    sendJsonResponse(['status' => 'error', 'message' => 'Hanya metode POST yang diizinkan untuk upload gambar.'], 405);
-}
-
 // Target upload directory
 $uploadDir = dirname(__DIR__) . '/uploads';
 if (!is_dir($uploadDir)) {
@@ -30,6 +26,34 @@ if (!is_dir($uploadDir)) {
             'message' => 'Gagal membuat direktori uploads di server Hostinger. Silakan periksa izin folder (chmod 755).'
         ], 500);
     }
+}
+
+// Handle GET: list files in uploads folder
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $files = [];
+    if (is_dir($uploadDir)) {
+        foreach (scandir($uploadDir) as $f) {
+            if ($f !== '.' && $f !== '..' && $f !== '.gitkeep' && $f !== '.htaccess') {
+                $filePath = $uploadDir . '/' . $f;
+                $files[] = [
+                    'name' => $f,
+                    'size' => is_file($filePath) ? filesize($filePath) : 0,
+                    'url' => '/uploads/' . $f,
+                    'modified' => is_file($filePath) ? date('Y-m-d H:i:s', filemtime($filePath)) : ''
+                ];
+            }
+        }
+    }
+    sendJsonResponse([
+        'status' => 'success',
+        'upload_dir' => $uploadDir,
+        'count' => count($files),
+        'files' => $files
+    ]);
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    sendJsonResponse(['status' => 'error', 'message' => 'Hanya metode POST atau GET yang diizinkan.'], 405);
 }
 
 // 1. Check if a standard file was uploaded via $_FILES['image'] or $_FILES['file']

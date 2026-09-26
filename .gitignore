@@ -9,3 +9,11 @@ coverage/
 config.local.php
 api/config.local.php
 public/api/config.local.php
+
+# Ignore uploaded media files (preserve .gitkeep and .htaccess)
+public/uploads/*
+!public/uploads/.gitkeep
+!public/uploads/.htaccess
+uploads/*
+!uploads/.gitkeep
+!uploads/.htaccess
