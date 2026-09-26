@@ -253,9 +253,9 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
       {/* Add / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative">
-            <div className="flex justify-between items-center pb-4 mb-4 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-amber-500" />
                 <span>{editingItem ? 'Edit Dokumentasi' : 'Tambah Foto Portofolio'}</span>
@@ -265,85 +265,95 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Judul Acara / Proyek *</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="Contoh: Resepsi Pernikahan di Hotel Grage Cirebon"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Kategori</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                  >
-                    <option value="Wedding & Resepsi">Wedding & Resepsi</option>
-                    <option value="Konser & Musik">Konser & Musik</option>
-                    <option value="Proyek & Pembangunan">Proyek & Pembangunan</option>
-                    <option value="Pabrik & Industri">Pabrik & Industri</option>
-                    <option value="Instansi & Pemerintahan">Instansi & Pemerintahan</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Lokasi Acara</label>
+                  <label className="block text-slate-400 font-semibold mb-1">Judul Acara / Proyek *</label>
                   <input
                     type="text"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    placeholder="Grage Hotel, Kota Cirebon"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="Contoh: Resepsi Pernikahan di Hotel Grage Cirebon"
                     className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Kategori</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                    >
+                      <option value="Wedding & Resepsi">Wedding & Resepsi</option>
+                      <option value="Konser & Musik">Konser & Musik</option>
+                      <option value="Proyek & Pembangunan">Proyek & Pembangunan</option>
+                      <option value="Pabrik & Industri">Pabrik & Industri</option>
+                      <option value="Instansi & Pemerintahan">Instansi & Pemerintahan</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Lokasi Acara</label>
+                    <input
+                      type="text"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      placeholder="Grage Hotel, Kota Cirebon"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Genset / Unit yang Digunakan</label>
+                  <input
+                    type="text"
+                    value={formData.gensetUsed}
+                    onChange={(e) => setFormData({ ...formData, gensetUsed: e.target.value })}
+                    placeholder="Genset Silent 60 kVA + 4 AC 5 PK"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">URL Foto Dokumentasi *</label>
+                  <input
+                    type="text"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                    required
+                  />
+                  {formData.image && (
+                    <div className="mt-2 flex items-center gap-3">
+                      <div className="w-16 h-12 rounded-lg bg-slate-800 overflow-hidden border border-slate-700 shrink-0">
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                      <span className="text-[11px] text-slate-500">Preview Foto</span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Deskripsi Ringkas</label>
+                  <textarea
+                    rows={3}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Penjelasan beban listrik, kestabilan voltase, atau testimoni singkat klien..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Genset / Unit yang Digunakan</label>
-                <input
-                  type="text"
-                  value={formData.gensetUsed}
-                  onChange={(e) => setFormData({ ...formData, gensetUsed: e.target.value })}
-                  placeholder="Genset Silent 60 kVA + 4 AC 5 PK"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">URL Foto Dokumentasi *</label>
-                <input
-                  type="text"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Deskripsi Ringkas</label>
-                <textarea
-                  rows={3}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Penjelasan beban listrik, kestabilan voltase, atau testimoni singkat klien..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold cursor-pointer hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -362,8 +372,8 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
       {/* Delete Confirmation */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
             <h3 className="text-base font-bold text-white mb-2">Hapus Portofolio?</h3>
             <p className="text-xs text-slate-400 mb-6">
               Item dokumentasi ini akan dihapus dari database.

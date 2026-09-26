@@ -300,9 +300,9 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
       {/* Booking Details Drawer / Modal */}
       {selectedBooking && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative">
-            <div className="flex justify-between items-start pb-4 mb-4 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            <div className="flex justify-between items-start px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
               <div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
                   {selectedBooking.booking_code}
@@ -317,7 +317,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
               </button>
             </div>
 
-            <div className="space-y-3.5 text-xs">
+            <div className="p-6 overflow-y-auto flex-1 space-y-3.5 text-xs overscroll-contain">
               <div className="grid grid-cols-2 gap-3 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
                 <div>
                   <span className="text-slate-500 block text-[10px] uppercase font-semibold">Nomor WhatsApp</span>
@@ -375,31 +375,31 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                   )}
                 </div>
               </div>
+            </div>
 
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-400 text-xs">Ubah Status:</span>
-                  <select
-                    value={selectedBooking.status}
-                    onChange={(e) => handleStatusChange(selectedBooking.id, e.target.value)}
-                    className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg px-2.5 py-1 focus:outline-none"
-                  >
-                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
-                    <option value="Dikonfirmasi">Dikonfirmasi</option>
-                    <option value="Sedang Berjalan">Sedang Berjalan</option>
-                    <option value="Selesai">Selesai</option>
-                    <option value="Dibatalkan">Dibatalkan</option>
-                  </select>
-                </div>
-
-                <button
-                  onClick={() => openWhatsApp(selectedBooking)}
-                  className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20"
+            <div className="flex items-center justify-between px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400 text-xs">Ubah Status:</span>
+                <select
+                  value={selectedBooking.status}
+                  onChange={(e) => handleStatusChange(selectedBooking.id, e.target.value)}
+                  className="bg-slate-950 border border-slate-800 text-xs text-white rounded-lg px-2.5 py-1.5 focus:outline-none"
                 >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>Chat WhatsApp</span>
-                </button>
+                  <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                  <option value="Dikonfirmasi">Dikonfirmasi</option>
+                  <option value="Sedang Berjalan">Sedang Berjalan</option>
+                  <option value="Selesai">Selesai</option>
+                  <option value="Dibatalkan">Dibatalkan</option>
+                </select>
               </div>
+
+              <button
+                onClick={() => openWhatsApp(selectedBooking)}
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>Chat WhatsApp</span>
+              </button>
             </div>
           </div>
         </div>
@@ -407,8 +407,8 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
             <h3 className="text-base font-bold text-white mb-2">Hapus Data Booking?</h3>
             <p className="text-xs text-slate-400 mb-6">
               Data pemesanan ini akan dihapus dari database. Tindakan ini tidak dapat dibatalkan.

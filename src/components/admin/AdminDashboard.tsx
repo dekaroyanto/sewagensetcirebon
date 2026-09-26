@@ -16,7 +16,10 @@ import {
   X,
   ExternalLink,
   ChevronRight,
-  UserCheck
+  UserCheck,
+  CheckCircle2,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 import { AdminLogin } from './AdminLogin';
 import { OverviewTab } from './tabs/OverviewTab';
@@ -35,16 +38,37 @@ interface AdminDashboardProps {
   onBackToHome: () => void;
 }
 
+interface ToastItem {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'info';
+}
+
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) => {
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<ToastItem | null>(null);
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
+  const showToast = (msg: string, explicitType?: 'success' | 'error' | 'info') => {
+    let type: 'success' | 'error' | 'info' = explicitType || 'info';
+    if (!explicitType) {
+      if (/(berhasil|sukses|terbit|tersimpan|dihapus|selamat)/i.test(msg)) {
+        type = 'success';
+      } else if (/(gagal|error|salah|peringatan|tidak dapat)/i.test(msg)) {
+        type = 'error';
+      }
+    }
+    const newToast: ToastItem = {
+      id: Date.now(),
+      message: msg,
+      type
+    };
+    setToast(newToast);
+    setTimeout(() => {
+      setToast(prev => (prev?.id === newToast.id ? null : prev));
+    }, 4500);
   };
 
   useEffect(() => {
@@ -60,7 +84,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
   const handleLogout = () => {
     logoutAdmin();
     setCurrentUser(null);
-    showToast('Anda telah logout dari sesi admin.');
+    showToast('Anda telah logout dari sesi admin.', 'info');
   };
 
   if (authChecking) {
@@ -77,7 +101,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
       <AdminLogin
         onLoginSuccess={(user) => {
           setCurrentUser(user);
-          showToast(`Selamat datang, ${user.full_name || user.username}!`);
+          showToast(`Selamat datang, ${user.full_name || user.username}!`, 'success');
         }}
         onBackToHome={onBackToHome}
       />
@@ -97,12 +121,68 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onBackToHome }) 
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white">
-      {/* Toast Alert */}
-      {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 bg-slate-900 border border-amber-500/50 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2.5 text-xs font-semibold animate-in slide-in-from-top-2 duration-200">
-          <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-          <span>{toastMessage}</span>
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white relative">
+      {/* Toast Alert Notifikasi Sukses / Error CRUD */}
+      {toast && (
+        <div className="fixed top-5 right-5 z-[100] max-w-sm sm:max-w-md w-[calc(100%-2.5rem)] animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className={`p-4 rounded-2xl border shadow-2xl backdrop-blur-2xl flex items-start gap-3.5 relative overflow-hidden ${
+            toast.type === 'success'
+              ? 'bg-slate-900/95 border-emerald-500/50 shadow-emerald-950/60 text-white'
+              : toast.type === 'error'
+              ? 'bg-slate-900/95 border-rose-500/50 shadow-rose-950/60 text-white'
+              : 'bg-slate-900/95 border-amber-500/50 shadow-amber-950/60 text-white'
+          }`}>
+            {/* Icon status */}
+            <div className={`p-2 rounded-xl shrink-0 ${
+              toast.type === 'success'
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                : toast.type === 'error'
+                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+            }`}>
+              {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 animate-pulse" />}
+              {toast.type === 'error' && <AlertCircle className="w-5 h-5" />}
+              {toast.type === 'info' && <Info className="w-5 h-5" />}
+            </div>
+
+            {/* Content text */}
+            <div className="flex-1 min-w-0 pr-2">
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                  toast.type === 'success'
+                    ? 'bg-emerald-500/20 text-emerald-300'
+                    : toast.type === 'error'
+                    ? 'bg-rose-500/20 text-rose-300'
+                    : 'bg-amber-500/20 text-amber-300'
+                }`}>
+                  {toast.type === 'success' ? 'Sukses / Berhasil' : toast.type === 'error' ? 'Peringatan' : 'Informasi'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-100 font-medium mt-1 leading-relaxed">
+                {toast.message}
+              </p>
+            </div>
+
+            {/* Close button */}
+            <button
+              onClick={() => setToast(null)}
+              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              title="Tutup Notifikasi"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Progress line */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-800">
+              <div className={`h-full ${
+                toast.type === 'success'
+                  ? 'bg-emerald-500'
+                  : toast.type === 'error'
+                  ? 'bg-rose-500'
+                  : 'bg-amber-500'
+              }`} />
+            </div>
+          </div>
         </div>
       )}
 

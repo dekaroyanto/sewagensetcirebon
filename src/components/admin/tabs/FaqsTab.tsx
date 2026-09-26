@@ -235,9 +235,9 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
 
       {/* Modal Add / Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 text-left shadow-2xl relative">
-            <div className="flex justify-between items-center pb-4 mb-4 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <HelpCircle className="w-4 h-4 text-amber-500" />
                 <span>{editingItem ? 'Edit FAQ' : 'Tambah Pertanyaan FAQ'}</span>
@@ -247,51 +247,53 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Kategori Topik *</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                >
-                  <option value="Pemesanan & Syarat">Pemesanan & Syarat</option>
-                  <option value="Pengiriman & Lokasi">Pengiriman & Lokasi</option>
-                  <option value="Teknis & Operator">Teknis & Operator</option>
-                  <option value="BBM & Biaya">BBM & Biaya</option>
-                  <option value="Darurat 24 Jam">Darurat 24 Jam</option>
-                </select>
+            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Kategori Topik *</label>
+                  <select
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                  >
+                    <option value="Pemesanan & Syarat">Pemesanan & Syarat</option>
+                    <option value="Pengiriman & Lokasi">Pengiriman & Lokasi</option>
+                    <option value="Teknis & Operator">Teknis & Operator</option>
+                    <option value="BBM & Biaya">BBM & Biaya</option>
+                    <option value="Darurat 24 Jam">Darurat 24 Jam</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Pertanyaan *</label>
+                  <input
+                    type="text"
+                    value={formData.question}
+                    onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+                    placeholder="Contoh: Apakah sewa genset sudah termasuk operator?"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Jawaban Lengkap *</label>
+                  <textarea
+                    rows={4}
+                    value={formData.answer}
+                    onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
+                    placeholder="Tulis jawaban informatif dan jelas bagi pelanggan..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500 leading-relaxed"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Pertanyaan *</label>
-                <input
-                  type="text"
-                  value={formData.question}
-                  onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-                  placeholder="Contoh: Apakah sewa genset sudah termasuk operator?"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Jawaban Lengkap *</label>
-                <textarea
-                  rows={4}
-                  value={formData.answer}
-                  onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                  placeholder="Tulis jawaban informatif dan jelas bagi pelanggan..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500 leading-relaxed"
-                  required
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-800">
+              <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold cursor-pointer hover:bg-slate-700"
                 >
                   Batal
                 </button>
@@ -310,8 +312,8 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
 
       {/* Delete Confirmation */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
             <h3 className="text-base font-bold text-white mb-2">Hapus FAQ?</h3>
             <p className="text-xs text-slate-400 mb-6">
               Pertanyaan ini akan dihapus dari database.

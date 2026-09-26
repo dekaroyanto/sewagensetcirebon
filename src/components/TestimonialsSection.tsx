@@ -308,110 +308,112 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
 
       {/* Write Review Modal */}
       {isAddReviewOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full max-h-[90vh] flex flex-col my-auto shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
               <h3 className="font-bold text-slate-900 dark:text-white text-base">Tulis Ulasan / Pengalaman Anda</h3>
-              <button onClick={() => setIsAddReviewOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+              <button onClick={() => setIsAddReviewOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleAddReview} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Anda *</label>
-                <input
-                  type="text"
-                  required
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Contoh: Bpk. Kurniawan"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
+            <form onSubmit={handleAddReview} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 overflow-y-auto flex-1 overscroll-contain space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Peran / Posisi</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Anda *</label>
                   <input
                     type="text"
-                    value={newRole}
-                    onChange={(e) => setNewRole(e.target.value)}
-                    placeholder="Contoh: Wedding Organizer / Panitia"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                    required
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Contoh: Bpk. Kurniawan"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Peran / Posisi</label>
+                    <input
+                      type="text"
+                      value={newRole}
+                      onChange={(e) => setNewRole(e.target.value)}
+                      placeholder="Contoh: Wedding Organizer / Panitia"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Lokasi di Cirebon</label>
+                    <input
+                      type="text"
+                      value={newLocation}
+                      onChange={(e) => setNewLocation(e.target.value)}
+                      placeholder="Contoh: Kesambi, Kota Cirebon"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Lokasi di Cirebon</label>
-                  <input
-                    type="text"
-                    value={newLocation}
-                    onChange={(e) => setNewLocation(e.target.value)}
-                    placeholder="Contoh: Kesambi, Kota Cirebon"
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Genset yang Disewa</label>
+                  <select
+                    value={newGenset}
+                    onChange={(e) => setNewGenset(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
+                  >
+                    <option value="Genset Silent 10 kVA">Genset Silent 10 kVA</option>
+                    <option value="Genset Silent 20 kVA">Genset Silent 20 kVA</option>
+                    <option value="Genset Silent 30 kVA">Genset Silent 30 kVA</option>
+                    <option value="Genset Silent 45 kVA">Genset Silent 45 kVA</option>
+                    <option value="Genset Silent 60 kVA">Genset Silent 60 kVA</option>
+                    <option value="Genset Silent 100 kVA">Genset Silent 100 kVA</option>
+                    <option value="Genset Silent 150 kVA">Genset Silent 150 kVA</option>
+                    <option value="Genset Silent 250 kVA">Genset Silent 250 kVA</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Rating Penilaian</label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setNewRating(num)}
+                        className={`p-2 rounded-lg border flex items-center gap-1 ${newRating >= num ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-400 text-amber-600 dark:text-amber-400 font-bold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'
+                          }`}
+                      >
+                        <Star className={`w-4 h-4 ${newRating >= num ? 'fill-amber-400 text-amber-400' : ''}`} />
+                        <span className="text-xs">{num}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Ulasan / Pengalaman Anda *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Ceritakan pengalaman Anda menyewa genset di Sewa Genset Cirebon..."
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Genset yang Disewa</label>
-                <select
-                  value={newGenset}
-                  onChange={(e) => setNewGenset(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
-                >
-                  <option value="Genset Silent 10 kVA">Genset Silent 10 kVA</option>
-                  <option value="Genset Silent 20 kVA">Genset Silent 20 kVA</option>
-                  <option value="Genset Silent 30 kVA">Genset Silent 30 kVA</option>
-                  <option value="Genset Silent 45 kVA">Genset Silent 45 kVA</option>
-                  <option value="Genset Silent 60 kVA">Genset Silent 60 kVA</option>
-                  <option value="Genset Silent 100 kVA">Genset Silent 100 kVA</option>
-                  <option value="Genset Silent 150 kVA">Genset Silent 150 kVA</option>
-                  <option value="Genset Silent 250 kVA">Genset Silent 250 kVA</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Rating Penilaian</label>
-                <div className="flex items-center gap-2">
-                  {[1, 2, 3, 4, 5].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      onClick={() => setNewRating(num)}
-                      className={`p-2 rounded-lg border flex items-center gap-1 ${newRating >= num ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-400 text-amber-600 dark:text-amber-400 font-bold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'
-                        }`}
-                    >
-                      <Star className={`w-4 h-4 ${newRating >= num ? 'fill-amber-400 text-amber-400' : ''}`} />
-                      <span className="text-xs">{num}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Ulasan / Pengalaman Anda *</label>
-                <textarea
-                  rows={3}
-                  required
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Ceritakan pengalaman Anda menyewa genset di Sewa Genset Cirebon..."
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500"
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
+              <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-end gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsAddReviewOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-extrabold shadow-sm hover:bg-amber-600"
+                  className="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-extrabold shadow-sm hover:bg-amber-600 cursor-pointer"
                 >
                   Kirim Ulasan
                 </button>

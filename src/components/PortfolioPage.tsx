@@ -184,11 +184,11 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
           onClick={() => setSelectedItem(null)}
         >
           <div
-            className="relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full my-6 overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200"
+            className="relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl max-w-xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Image */}
-            <div className="relative aspect-16/10 bg-slate-950 overflow-hidden">
+            <div className="relative aspect-16/10 bg-slate-950 overflow-hidden shrink-0">
               <img
                 src={selectedItem.image}
                 alt={selectedItem.title}
@@ -204,7 +204,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </div>
 
             {/* Modal Content */}
-            <div className="p-5 sm:p-6 space-y-4">
+            <div className="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 overscroll-contain">
               {/* Location */}
               <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
                 <MapPin className="w-3.5 h-3.5 shrink-0" />

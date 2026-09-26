@@ -312,9 +312,9 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
 
       {/* Modal Add / Edit */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 my-8 text-left shadow-2xl relative">
-            <div className="flex justify-between items-center pb-4 mb-4 border-b border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <FileText className="w-4 h-4 text-indigo-400" />
                 <span>{editingBlog ? 'Edit Artikel' : 'Tulis Artikel Baru'}</span>
@@ -327,115 +327,125 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Judul Artikel *</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="Contoh: Tips Memilih Kapasitas Genset Silent untuk Pesta Pernikahan"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden">
+              <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Slug URL *</label>
+                  <label className="block text-slate-400 font-semibold mb-1">Judul Artikel *</label>
                   <input
                     type="text"
-                    value={formData.slug}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono"
+                    value={formData.title}
+                    onChange={(e) => handleTitleChange(e.target.value)}
+                    placeholder="Contoh: Tips Memilih Kapasitas Genset Silent untuk Pesta Pernikahan"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     required
                   />
                 </div>
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Kategori</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                  >
-                    <option value="Tips & Panduan">Tips & Panduan</option>
-                    <option value="Seputar Genset">Seputar Genset</option>
-                    <option value="Event & Proyek">Event & Proyek</option>
-                    <option value="Berita Cirebon">Berita Cirebon</option>
-                  </select>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Slug URL *</label>
+                    <input
+                      type="text"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 font-mono"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Kategori</label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    >
+                      <option value="Tips & Panduan">Tips & Panduan</option>
+                      <option value="Seputar Genset">Seputar Genset</option>
+                      <option value="Event & Proyek">Event & Proyek</option>
+                      <option value="Berita Cirebon">Berita Cirebon</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">URL Gambar Cover *</label>
-                <input
-                  type="text"
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">Ringkasan / Excerpt *</label>
-                <textarea
-                  rows={2}
-                  value={formData.summary}
-                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                  placeholder="Ringkasan singkat yang tampil di beranda Google dan preview artikel..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-slate-400 font-semibold mb-1">
-                  Isi Paragraf Konten (Pisahkan paragraf dengan 2x Enter / Baris Kosong) *
-                </label>
-                <textarea
-                  rows={6}
-                  value={formData.contentRaw}
-                  onChange={(e) => setFormData({ ...formData, contentRaw: e.target.value })}
-                  placeholder="Tulis paragraf artikel di sini..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Penulis</label>
+                  <label className="block text-slate-400 font-semibold mb-1">URL Gambar Cover *</label>
                   <input
                     type="text"
-                    value={formData.author}
-                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    placeholder="https://images.unsplash.com/..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    required
+                  />
+                  {formData.image && (
+                    <div className="mt-2 flex items-center gap-3">
+                      <div className="w-16 h-12 rounded-lg bg-slate-800 overflow-hidden border border-slate-700 shrink-0">
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                      <span className="text-[11px] text-slate-500">Preview Cover Artikel</span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 font-semibold mb-1">Ringkasan / Excerpt *</label>
+                  <textarea
+                    rows={2}
+                    value={formData.summary}
+                    onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                    placeholder="Ringkasan singkat yang tampil di beranda Google dan preview artikel..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    required
                   />
                 </div>
+
                 <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Waktu Baca</label>
-                  <input
-                    type="text"
-                    value={formData.readTime}
-                    onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
+                  <label className="block text-slate-400 font-semibold mb-1">
+                    Isi Paragraf Konten (Pisahkan paragraf dengan 2x Enter / Baris Kosong) *
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={formData.contentRaw}
+                    onChange={(e) => setFormData({ ...formData, contentRaw: e.target.value })}
+                    placeholder="Tulis paragraf artikel di sini..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
+                    required
                   />
                 </div>
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Tags (Koma)</label>
-                  <input
-                    type="text"
-                    value={formData.tagsRaw}
-                    onChange={(e) => setFormData({ ...formData, tagsRaw: e.target.value })}
-                    placeholder="Genset, Cirebon, Wedding"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
-                  />
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Penulis</label>
+                    <input
+                      type="text"
+                      value={formData.author}
+                      onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Waktu Baca</label>
+                    <input
+                      type="text"
+                      value={formData.readTime}
+                      onChange={(e) => setFormData({ ...formData, readTime: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">Tags (Koma)</label>
+                    <input
+                      type="text"
+                      value={formData.tagsRaw}
+                      onChange={(e) => setFormData({ ...formData, tagsRaw: e.target.value })}
+                      placeholder="Genset, Cirebon, Wedding"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-800 mt-6">
+              <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -459,8 +469,8 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
 
       {/* Delete Confirmation */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
             <h3 className="text-base font-bold text-white mb-2">Hapus Artikel Ini?</h3>
             <p className="text-xs text-slate-400 mb-6">
               Artikel akan dihapus secara permanen dari database.

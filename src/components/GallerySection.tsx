@@ -412,14 +412,14 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
       {/* Lightbox Zoom Modal */}
       {selectedZoomPhoto && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in"
+          className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in"
           onClick={() => setSelectedZoomPhoto(null)}
         >
           <div
-            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800"
+            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 my-auto max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative aspect-16/10 bg-slate-950">
+            <div className="relative aspect-16/10 bg-slate-950 shrink-0">
               <img
                 src={selectedZoomPhoto.image}
                 alt={selectedZoomPhoto.title}
@@ -433,7 +433,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 text-left bg-white dark:bg-slate-900">
+            <div className="p-6 text-left bg-white dark:bg-slate-900 overflow-y-auto flex-1 overscroll-contain">
               <span className="px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider">
                 {selectedZoomPhoto.category}
               </span>

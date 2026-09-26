@@ -319,7 +319,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           onClick={() => setActiveModalGenset(null)}
         >
           <div 
-            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl sm:max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92vh] flex flex-col animate-in zoom-in-95 duration-200"
+            className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl sm:max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92vh] flex flex-col my-auto animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header (Compact & Clean) */}
@@ -347,7 +347,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </div>
 
             {/* Modal Body (Scrollable with full specifications from description textarea) */}
-            <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs sm:text-sm flex-1">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs sm:text-sm flex-1 overscroll-contain">
               
               {/* Compact Product Snapshot Card (Image is compact thumbnail) */}
               <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-700/80 flex flex-row items-center gap-3.5 sm:gap-5">

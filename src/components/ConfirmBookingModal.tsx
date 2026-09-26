@@ -66,7 +66,7 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-10 flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-10 flex flex-col max-h-[90vh] my-auto"
         >
           {/* Header */}
           <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 flex items-center justify-between shrink-0">
@@ -95,7 +95,7 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
           </div>
 
           {/* Body Content - Scrollable */}
-          <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <div className="p-5 sm:p-6 overflow-y-auto flex-1 overscroll-contain space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
             
             {/* Unit Info Highlight Banner */}
             <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-amber-100/60 dark:from-amber-950/30 dark:to-slate-800/50 border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-3">
