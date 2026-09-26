@@ -259,6 +259,11 @@ if ($resource === 'products') {
     }
 
     if ($method === 'PUT' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image_url` FROM `products` WHERE id = ?");
+        $stmtOld->execute([$id]);
+        $oldProduct = $stmtOld->fetch();
+        $oldImageUrl = $oldProduct['image_url'] ?? null;
+
         $data = getJsonInput();
         $fields = [];
         $params = [];
@@ -284,12 +289,29 @@ if ($resource === 'products') {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
+        // Auto-cleanup: If image was changed, safely delete the old image
+        $newImageUrl = $data['image_url'] ?? ($data['image'] ?? null);
+        if ($newImageUrl && $oldImageUrl && $newImageUrl !== $oldImageUrl) {
+            safelyDeleteUploadedImage($oldImageUrl, $pdo);
+        }
+
         sendJsonResponse(['status' => 'success', 'message' => 'Data produk berhasil diperbarui.']);
     }
 
     if ($method === 'DELETE' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image_url` FROM `products` WHERE id = ?");
+        $stmtOld->execute([$id]);
+        $oldProduct = $stmtOld->fetch();
+        $oldImageUrl = $oldProduct['image_url'] ?? null;
+
         $stmt = $pdo->prepare("DELETE FROM `products` WHERE id = ?");
         $stmt->execute([$id]);
+
+        // Auto-cleanup: Delete the product's image if local
+        if ($oldImageUrl) {
+            safelyDeleteUploadedImage($oldImageUrl, $pdo);
+        }
+
         sendJsonResponse(['status' => 'success', 'message' => 'Produk berhasil dihapus.']);
     }
 }
@@ -432,6 +454,11 @@ if ($resource === 'blogs') {
     }
 
     if ($method === 'PUT' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image` FROM `blog_posts` WHERE id = ? OR slug = ?");
+        $stmtOld->execute([$id, $id]);
+        $oldBlog = $stmtOld->fetch();
+        $oldImage = $oldBlog['image'] ?? null;
+
         $data = getJsonInput();
         $fields = [];
         $params = [];
@@ -460,12 +487,29 @@ if ($resource === 'blogs') {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
+        // Auto-cleanup: If image was changed, safely delete the old image
+        $newImage = $data['image'] ?? null;
+        if ($newImage && $oldImage && $newImage !== $oldImage) {
+            safelyDeleteUploadedImage($oldImage, $pdo);
+        }
+
         sendJsonResponse(['status' => 'success', 'message' => 'Artikel berhasil diperbarui.']);
     }
 
     if ($method === 'DELETE' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image` FROM `blog_posts` WHERE id = ? OR slug = ?");
+        $stmtOld->execute([$id, $id]);
+        $oldBlog = $stmtOld->fetch();
+        $oldImage = $oldBlog['image'] ?? null;
+
         $stmt = $pdo->prepare("DELETE FROM `blog_posts` WHERE id = ? OR slug = ?");
         $stmt->execute([$id, $id]);
+
+        // Auto-cleanup: Delete the blog cover image if local
+        if ($oldImage) {
+            safelyDeleteUploadedImage($oldImage, $pdo);
+        }
+
         sendJsonResponse(['status' => 'success', 'message' => 'Artikel berhasil dihapus.']);
     }
 }
@@ -510,6 +554,11 @@ if ($resource === 'gallery') {
     }
 
     if ($method === 'PUT' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image` FROM `gallery_items` WHERE id = ?");
+        $stmtOld->execute([$id]);
+        $oldGal = $stmtOld->fetch();
+        $oldImage = $oldGal['image'] ?? null;
+
         $data = getJsonInput();
         $fields = [];
         $params = [];
@@ -532,13 +581,30 @@ if ($resource === 'gallery') {
             $params[] = $id;
             $stmt = $pdo->prepare("UPDATE `gallery_items` SET " . implode(', ', $fields) . " WHERE id = ?");
             $stmt->execute($params);
+
+            // Auto-cleanup: If image was changed, safely delete the old image
+            $newImage = $data['image'] ?? null;
+            if ($newImage && $oldImage && $newImage !== $oldImage) {
+                safelyDeleteUploadedImage($oldImage, $pdo);
+            }
         }
         sendJsonResponse(['status' => 'success', 'message' => 'Portofolio berhasil diperbarui.']);
     }
 
     if ($method === 'DELETE' && $id) {
+        $stmtOld = $pdo->prepare("SELECT `image` FROM `gallery_items` WHERE id = ?");
+        $stmtOld->execute([$id]);
+        $oldGal = $stmtOld->fetch();
+        $oldImage = $oldGal['image'] ?? null;
+
         $stmt = $pdo->prepare("DELETE FROM `gallery_items` WHERE id = ?");
         $stmt->execute([$id]);
+
+        // Auto-cleanup: Delete the gallery image if local
+        if ($oldImage) {
+            safelyDeleteUploadedImage($oldImage, $pdo);
+        }
+
         sendJsonResponse(['status' => 'success', 'message' => 'Portofolio berhasil dihapus.']);
     }
 }

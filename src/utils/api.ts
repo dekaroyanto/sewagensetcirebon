@@ -787,3 +787,29 @@ export async function uploadImageFile(file: File): Promise<{
     size: json.size
   };
 }
+
+/**
+ * Menghapus file gambar tertentu dari server uploads (jika tidak dipakai lagi)
+ */
+export async function deleteImageFile(urlOrFilename: string): Promise<{ success: boolean; message: string }> {
+  try {
+    const headers = getAuthHeaders();
+    let response = await fetch(`${API_BASE}/upload`, {
+      method: 'DELETE',
+      headers,
+      body: JSON.stringify({ url: urlOrFilename }),
+    });
+    if (!response.ok && response.status === 404) {
+      response = await fetch(`${API_BASE}/upload.php`, {
+        method: 'DELETE',
+        headers,
+        body: JSON.stringify({ url: urlOrFilename }),
+      });
+    }
+    const json = await parseResponseJson(response, 'File gambar berhasil dihapus.');
+    return { success: response.ok && json.status === 'success', message: json.message || 'Selesai' };
+  } catch (err: any) {
+    return { success: false, message: err.message || 'Gagal menghapus gambar.' };
+  }
+}
+

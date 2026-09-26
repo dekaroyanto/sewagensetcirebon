@@ -52,8 +52,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ]);
 }
 
+// Handle DELETE: remove an uploaded image file if not in use
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $data = getJsonInput();
+    $targetUrl = $data['url'] ?? ($data['filename'] ?? '');
+    if (!$targetUrl) {
+        sendJsonResponse(['status' => 'error', 'message' => 'Sertakan URL atau nama file gambar yang ingin dihapus.'], 400);
+    }
+    $pdo = getDbConnection();
+    $deleted = safelyDeleteUploadedImage($targetUrl, $pdo);
+    if ($deleted) {
+        sendJsonResponse(['status' => 'success', 'message' => 'File gambar berhasil dihapus dari server.']);
+    } else {
+        sendJsonResponse([
+            'status' => 'error',
+            'message' => 'File tidak ditemukan, masih digunakan oleh produk/artikel lain, atau tidak dapat dihapus.'
+        ], 400);
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    sendJsonResponse(['status' => 'error', 'message' => 'Hanya metode POST atau GET yang diizinkan.'], 405);
+    sendJsonResponse(['status' => 'error', 'message' => 'Hanya metode POST, GET, atau DELETE yang diizinkan.'], 405);
 }
 
 // 1. Check if a standard file was uploaded via $_FILES['image'] or $_FILES['file']

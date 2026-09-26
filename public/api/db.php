@@ -103,3 +103,82 @@ function generateAuthToken($user) {
     $signature = hash_hmac('sha256', $encodedPayload, JWT_SECRET);
     return $encodedPayload . '.' . $signature;
 }
+
+/**
+ * Safely delete an uploaded image file from the server's uploads folder.
+ * Only deletes files inside /uploads/ with allowed image extensions.
+ * Never deletes external URLs, .gitkeep, .htaccess, or files used by other database records.
+ */
+function safelyDeleteUploadedImage(?string $imageUrl, ?PDO $pdo = null): bool {
+    if (empty($imageUrl)) {
+        return false;
+    }
+
+    // Must be a local upload (e.g. /uploads/sgc_... or https://.../uploads/sgc_...)
+    if (strpos($imageUrl, '/uploads/') === false) {
+        return false;
+    }
+
+    $filename = basename(parse_url($imageUrl, PHP_URL_PATH));
+    
+    // Safety check: protect special files and root
+    if (empty($filename) || $filename === '.' || $filename === '..' || $filename === '.gitkeep' || $filename === '.htaccess') {
+        return false;
+    }
+
+    // Only allow known image extensions
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'])) {
+        return false;
+    }
+
+    // If PDO is provided, check if any OTHER record in products, blog_posts, or gallery_items is still using this file!
+    if ($pdo) {
+        try {
+            $likePattern = '%' . $filename;
+            
+            // Check products
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM `products` WHERE `image_url` LIKE ?");
+            $stmt->execute([$likePattern]);
+            $countProducts = (int)$stmt->fetchColumn();
+
+            // Check blog_posts
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM `blog_posts` WHERE `image` LIKE ?");
+            $stmt->execute([$likePattern]);
+            $countBlogs = (int)$stmt->fetchColumn();
+
+            // Check gallery_items
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM `gallery_items` WHERE `image` LIKE ?");
+            $stmt->execute([$likePattern]);
+            $countGallery = (int)$stmt->fetchColumn();
+
+            // If more than 0 records are currently using this file, do NOT delete
+            if (($countProducts + $countBlogs + $countGallery) > 0) {
+                return false;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    // Resolve uploads directory
+    $possibleDirs = [
+        dirname(__DIR__) . '/uploads',
+        rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/uploads',
+        dirname(dirname(__DIR__)) . '/uploads',
+    ];
+
+    $deleted = false;
+    foreach ($possibleDirs as $dir) {
+        if (!empty($dir) && is_dir($dir)) {
+            $targetFile = $dir . '/' . $filename;
+            if (is_file($targetFile)) {
+                @unlink($targetFile);
+                $deleted = true;
+            }
+        }
+    }
+
+    return $deleted;
+}
+
