@@ -16,6 +16,8 @@ export interface Product {
   tag?: string;
   categoryLabel?: string;
   startingPriceEstimate?: number;
+  is_available?: boolean;
+  sort_order?: number;
 }
 
 export type GensetProduct = Product;
@@ -97,3 +99,64 @@ export interface GalleryItem {
   description?: string;
   highlightQuote?: string;
 }
+
+export interface AdminUser {
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+  role: string;
+}
+
+export interface DashboardStats {
+  total_genset: number;
+  total_ac: number;
+  total_products: number;
+  total_bookings: number;
+  pending_bookings: number;
+  total_blogs: number;
+  total_testimonials: number;
+  total_gallery: number;
+}
+
+export type BookingStatus = 'Menunggu Konfirmasi' | 'Dikonfirmasi' | 'Sedang Berjalan' | 'Selesai' | 'Dibatalkan';
+
+export interface BookingRecord {
+  id: number;
+  booking_code: string;
+  full_name: string;
+  company_or_event?: string;
+  phone: string;
+  selected_genset_id?: string;
+  selected_genset_name?: string;
+  unit_quantity: number;
+  ac_quantity?: number;
+  rental_type: string;
+  start_date: string;
+  start_time: string;
+  duration: string;
+  event_location: string;
+  district_cirebon: string;
+  package_type: string;
+  additional_needs?: string[];
+  notes?: string;
+  status: BookingStatus;
+  created_at?: string;
+}
+
+export interface CompanySettings {
+  name: string;
+  shortName: string;
+  tagline: string;
+  description: string;
+  phone: string;
+  whatsappNumber: string;
+  email: string;
+  address: string;
+  city: string;
+  operatingHours: string;
+  emergencyAvailable: boolean;
+  instagram?: string;
+  facebook?: string;
+}
+

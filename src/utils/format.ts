@@ -9,6 +9,14 @@ export function formatPrice(price: number): string {
 }
 
 /**
+ * Format raw number to Indonesian Rupiah currency string
+ */
+export function formatCurrency(price: number): string {
+  if (!price || price <= 0) return 'Hubungi WA';
+  return 'Rp ' + Number(price).toLocaleString('id-ID');
+}
+
+/**
  * Get human-readable label for product_type ENUM
  */
 export function getProductTypeLabel(type: ProductType | string): string {

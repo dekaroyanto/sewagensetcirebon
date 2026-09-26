@@ -9,7 +9,8 @@ import {
   ChevronRight,
   MessageSquare,
   Truck,
-  Heart
+  Heart,
+  Lock
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/company';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
@@ -104,9 +105,18 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Bottom Copyright & Guarantee */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 dark:text-slate-400 text-center sm:text-left">
+        <div className="pt-8 border-t border-slate-200 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 dark:text-slate-400 text-center sm:text-left">
           <div>
             © {new Date().getFullYear()} <strong>{COMPANY_INFO.name}</strong>. Hak Cipta Dilindungi. Kota Cirebon, Jawa Barat, Indonesia.
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => onNavigate('admin')}
+              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-amber-500 dark:text-slate-400 dark:hover:text-amber-400 transition-colors cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5 text-amber-500" />
+              <span>Portal Admin SGC</span>
+            </button>
           </div>
         </div>
 

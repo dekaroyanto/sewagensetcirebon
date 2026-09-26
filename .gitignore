@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+config.local.php
+api/config.local.php
+public/api/config.local.php

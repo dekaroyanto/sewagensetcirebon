@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -18,12 +18,29 @@ import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { GensetProduct } from './types';
 import { resetBodyScroll } from './utils/scrollLock';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 function MainApp() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel' | 'portofolio'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel' | 'portofolio' | 'admin'>('home');
   const [activeSection, setActiveSection] = useState<string>('beranda');
   const [selectedGenset, setSelectedGenset] = useState<GensetProduct | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Detect URL parameter, hash, or path for Admin Dashboard access
+  useEffect(() => {
+    const checkUrlRoute = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (path.includes('/admin') || hash === '#admin' || search.includes('page=admin') || search.includes('admin')) {
+        setCurrentPage('admin');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+    checkUrlRoute();
+    window.addEventListener('popstate', checkUrlRoute);
+    return () => window.removeEventListener('popstate', checkUrlRoute);
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -31,11 +48,18 @@ function MainApp() {
 
   const handleNavigate = (target: string) => {
     resetBodyScroll();
+    if (target === 'admin') {
+      setCurrentPage('admin');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (target === 'katalog') {
       setCurrentPage('katalog');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+
 
     if (target === 'artikel') {
       setCurrentPage('artikel');
@@ -88,6 +112,10 @@ function MainApp() {
       handleNavigate('booking');
     }, 50);
   };
+
+  if (currentPage === 'admin') {
+    return <AdminDashboard onBackToHome={() => handleNavigate('beranda')} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#070a0f] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white transition-colors duration-200">
