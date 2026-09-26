@@ -39,6 +39,17 @@ function sendJsonResponse($data, $statusCode = 200) {
     header('Access-Control-Allow-Origin: ' . (defined('CORS_ALLOWED_ORIGIN') ? CORS_ALLOWED_ORIGIN : '*'));
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+
+    // Pastikan field success dan status selalu konsisten
+    if (is_array($data)) {
+        if (!isset($data['success'])) {
+            $data['success'] = ($statusCode >= 200 && $statusCode < 300) && (!isset($data['status']) || $data['status'] === 'success');
+        }
+        if (!isset($data['status'])) {
+            $data['status'] = $data['success'] ? 'success' : 'error';
+        }
+    }
+
     echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
@@ -161,20 +172,23 @@ function safelyDeleteUploadedImage(?string $imageUrl, ?PDO $pdo = null): bool {
         }
     }
 
-    // Resolve uploads directory
+    // Resolve all possible uploads directory locations across various hosting setups
     $possibleDirs = [
         dirname(__DIR__) . '/uploads',
-        rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/uploads',
         dirname(dirname(__DIR__)) . '/uploads',
+        rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/uploads',
+        rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/public/uploads',
+        dirname(__DIR__) . '/public/uploads',
     ];
 
     $deleted = false;
     foreach ($possibleDirs as $dir) {
         if (!empty($dir) && is_dir($dir)) {
-            $targetFile = $dir . '/' . $filename;
+            $targetFile = rtrim($dir, '/\\') . '/' . $filename;
             if (is_file($targetFile)) {
-                @unlink($targetFile);
-                $deleted = true;
+                if (@unlink($targetFile)) {
+                    $deleted = true;
+                }
             }
         }
     }

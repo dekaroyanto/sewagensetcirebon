@@ -170,7 +170,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
       if (res.success) {
         onToast('Produk berhasil dihapus dari database.');
       } else {
-        onToast('Gagal menghapus: ' + res.message);
+        onToast('Gagal menghapus: ' + (res.message || 'Terjadi kesalahan'));
       }
       await loadProducts();
     } catch (err: any) {

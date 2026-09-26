@@ -414,6 +414,14 @@ async function parseResponseJson(res: Response, defaultSuccessMsg: string = 'Ope
   const text = await res.text();
   try {
     const json = JSON.parse(text);
+    if (typeof json === 'object' && json !== null) {
+      if (typeof json.success === 'undefined') {
+        json.success = res.ok && json.status === 'success';
+      }
+      if (!json.message) {
+        json.message = res.ok ? defaultSuccessMsg : 'Operasi gagal diproses server.';
+      }
+    }
     return json;
   } catch {
     return {
