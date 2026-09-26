@@ -733,3 +733,62 @@ export async function updateCompanySettings(data: Partial<CompanySettings>): Pro
     return { success: false, message: err.message || 'Koneksi gagal' };
   }
 }
+
+// -----------------------------------------------------------------------------
+// UPLOAD FILE & GAMBAR KE SERVER (public/uploads/)
+// -----------------------------------------------------------------------------
+export async function uploadImageFile(file: File): Promise<{
+  status: 'success' | 'error';
+  message?: string;
+  url: string;
+  full_url?: string;
+  filename: string;
+  size?: number;
+}> {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const token = localStorage.getItem('sgc_admin_token');
+  const headers: HeadersInit = {
+    'Accept': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/upload`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+    if (!response.ok && response.status === 404) {
+      response = await fetch(`${API_BASE}/upload.php`, {
+        method: 'POST',
+        headers,
+        body: formData,
+      });
+    }
+  } catch {
+    response = await fetch(`${API_BASE}/upload.php`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+  }
+
+  const json = await parseResponseJson(response, 'Gambar berhasil diunggah.');
+  if (!response.ok || json.status === 'error' || json.success === false) {
+    throw new Error(json.message || 'Gagal mengunggah file gambar ke server.');
+  }
+
+  return {
+    status: 'success',
+    url: json.url || `/uploads/${json.filename}`,
+    full_url: json.full_url,
+    filename: json.filename || '',
+    message: json.message,
+    size: json.size
+  };
+}

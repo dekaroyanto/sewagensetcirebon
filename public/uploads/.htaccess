@@ -1,0 +1,23 @@
+# Security rules for uploads directory
+# Prevent PHP and executable scripts from running directly
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|phps|sh|cgi|pl|py|exe)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Disable directory listing
+Options -Indexes
+
+# Allow direct public access to image files
+<FilesMatch "\.(jpg|jpeg|png|webp|gif|svg)$">
+    <IfModule mod_authz_core.c>
+        Require all granted
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Allow from all
+    </IfModule>
+</FilesMatch>

@@ -18,6 +18,7 @@ import {
 import { Product, ProductType } from '../../../types';
 import { getProducts, createProduct, updateProduct, deleteProduct } from '../../../utils/api';
 import { formatCurrency } from '../../../utils/format';
+import { ImageUploadField } from '../ImageUploadField';
 
 interface ProductsTabProps {
   onToast: (msg: string) => void;
@@ -488,23 +489,14 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-400 font-semibold mb-1">URL Gambar Unit *</label>
-                  <input
-                    type="text"
+                  <ImageUploadField
+                    label="Foto / Gambar Unit Genset"
                     value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    onChange={(url) => setFormData({ ...formData, image_url: url })}
                     required
+                    helpText="Format JPG, PNG, WEBP, GIF (Rekomendasi foto unit asli atau genset di lapangan)"
+                    onNotify={onToast}
                   />
-                  {formData.image_url && (
-                    <div className="mt-2 flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-lg bg-slate-800 overflow-hidden border border-slate-700 shrink-0">
-                        <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
-                      </div>
-                      <span className="text-[11px] text-slate-500">Preview Gambar Unit</span>
-                    </div>
-                  )}
                 </div>
 
                 <div className="sm:col-span-2">
