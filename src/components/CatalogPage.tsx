@@ -18,7 +18,6 @@ import {
   UserCheck,
   CheckCircle2
 } from 'lucide-react';
-import { GENSET_PRODUCTS } from '../data/gensets';
 import { GensetProduct } from '../types';
 import { getProductWhatsAppUrl, getGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { formatPrice, getProductTypeBadge, getProductTypeLabel } from '../utils/format';
@@ -37,7 +36,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   onSelectGensetForBooking,
   onToast
 }) => {
-  const [products, setProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
+  const [products, setProducts] = useState<GensetProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalGenset, setActiveModalGenset] = useState<GensetProduct | null>(null);
@@ -46,9 +46,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   // Load dynamic products from MySQL API
   const loadDynamicProducts = () => {
     getProducts().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setProducts(data);
-      }
+      setProducts(Array.isArray(data) ? data : []);
+      setLoading(false);
     });
   };
 
@@ -302,7 +301,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           <button
             type="button"
-            onClick={() => setBookingModalProduct(GENSET_PRODUCTS.find(p => p.product_type === 'paket') || GENSET_PRODUCTS[0])}
+            onClick={() => setBookingModalProduct(products.find(p => p.product_type === 'paket') || products[0] || null)}
             className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-sm shrink-0 transition-colors cursor-pointer"
           >
             <Zap className="w-4 h-4 fill-slate-950" />

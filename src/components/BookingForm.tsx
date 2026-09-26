@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { BookingFormData, GensetProduct } from '../types';
-import { GENSET_PRODUCTS } from '../data/gensets';
 import { COMPANY_INFO } from '../data/company';
 import { SearchableProductSelect } from './SearchableProductSelect';
 import {
@@ -175,13 +174,11 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     'Kipas Misty Fan Blower Tambahan'
   ];
 
-  const [allProducts, setAllProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
+  const [allProducts, setAllProducts] = useState<GensetProduct[]>([]);
 
   const loadProductsData = () => {
     getProducts().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setAllProducts(data);
-      }
+      setAllProducts(Array.isArray(data) ? data : []);
     });
   };
 

@@ -8,7 +8,6 @@ import {
   Sparkles,
   Zap
 } from 'lucide-react';
-import { GALLERY_ITEMS } from '../data/gallery';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl, getPortfolioWhatsAppUrl } from '../utils/whatsapp';
 import { BookingModal } from './BookingModal';
@@ -26,15 +25,13 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   onBackToHome,
   onToast
 }) => {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(GALLERY_ITEMS);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
   const loadGalleryData = () => {
     getGallery().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setGalleryItems(data);
-      }
+      setGalleryItems(Array.isArray(data) ? data : []);
     });
   };
 
@@ -96,51 +93,61 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
         </div>
 
         {/* Clean Portfolio Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-7">
-          {galleryItems.map((item) => (
-            <article
-              key={item.id}
-              onClick={() => setSelectedItem(item)}
-              className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-amber-400/50 dark:hover:border-amber-500/40 transition-all duration-300 overflow-hidden flex flex-col group cursor-pointer"
-            >
-              {/* Image */}
-              <div className="relative aspect-16/10 overflow-hidden bg-slate-950">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
+        {galleryItems.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
+            <Sparkles className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada Dokumentasi Portofolio</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Dokumentasi proyek &amp; instalasi genset akan segera diperbarui.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-7">
+            {galleryItems.map((item) => (
+              <article
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
+                className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-amber-400/50 dark:hover:border-amber-500/40 transition-all duration-300 overflow-hidden flex flex-col group cursor-pointer"
+              >
+                {/* Image */}
+                <div className="relative aspect-16/10 overflow-hidden bg-slate-950">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
 
-              {/* Card Body: Lokasi, Judul, Deskripsi Singkat */}
-              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  {/* Lokasi */}
-                  <div className="flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 mb-1.5">
-                    <MapPin className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{item.location}</span>
+                {/* Card Body: Lokasi, Judul, Deskripsi Singkat */}
+                <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    {/* Lokasi */}
+                    <div className="flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 mb-1.5">
+                      <MapPin className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{item.location}</span>
+                    </div>
+
+                    {/* Judul */}
+                    <h3 className="text-base sm:text-lg font-display font-bold text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                      {item.title}
+                    </h3>
+
+                    {/* Deskripsi Singkat */}
+                    <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
+                      {item.description}
+                    </p>
                   </div>
 
-                  {/* Judul */}
-                  <h3 className="text-base sm:text-lg font-display font-bold text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                    {item.title}
-                  </h3>
-
-                  {/* Deskripsi Singkat */}
-                  <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">
-                    {item.description}
-                  </p>
+                  {/* Subtle Action Hint */}
+                  <div className="mt-3 pt-2 text-[11px] font-semibold text-amber-600 dark:text-amber-400 group-hover:underline">
+                    Klik untuk detail lengkap &rarr;
+                  </div>
                 </div>
-
-                {/* Subtle Action Hint */}
-                <div className="mt-3 pt-2 text-[11px] font-semibold text-amber-600 dark:text-amber-400 group-hover:underline">
-                  Klik untuk detail lengkap &rarr;
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         {/* Clean Bottom CTA Banner with Modal Trigger */}
         <div className="mt-12 sm:mt-16 bg-amber-500 text-slate-950 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-lg relative overflow-hidden">

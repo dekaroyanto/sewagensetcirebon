@@ -5,20 +5,20 @@ import {
   MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { FAQ_LIST } from '../data/faqs';
 import { FAQItem } from '../types';
 import { COMPANY_INFO } from '../data/company';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { getFaqs } from '../utils/api';
 
 export const FAQSection: React.FC = () => {
-  const [faqs, setFaqs] = useState<FAQItem[]>(FAQ_LIST);
-  const [openFaqId, setOpenFaqId] = useState<string>('faq-1');
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
+  const [openFaqId, setOpenFaqId] = useState<string>('');
 
   const loadFaqData = () => {
     getFaqs().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setFaqs(data);
+      setFaqs(Array.isArray(data) ? data : []);
+      if (Array.isArray(data) && data.length > 0 && !openFaqId) {
+        setOpenFaqId(data[0].id);
       }
     });
   };
@@ -55,9 +55,18 @@ export const FAQSection: React.FC = () => {
         </motion.div>
 
         {/* FAQ Accordion List (Animated Smooth Expansion) */}
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => {
-            const isOpen = openFaqId === faq.id;
+        {faqs.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
+            <HelpCircle className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada FAQ</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Daftar tanya jawab seputar sewa genset akan segera diperbarui.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaqId === faq.id;
             return (
               <motion.div
                 key={faq.id}
@@ -127,6 +136,7 @@ export const FAQSection: React.FC = () => {
             );
           })}
         </div>
+        )}
 
         {/* Still Have Questions Box with Motion */}
         <motion.div

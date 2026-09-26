@@ -15,7 +15,6 @@ import {
   MoveHorizontal
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { BLOG_POSTS } from '../data/blogPosts';
 import { BlogPost } from '../types';
 import { getBlogPosts } from '../utils/api';
 
@@ -30,14 +29,12 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   onGoToBooking,
   onToast
 }) => {
-  const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
   const loadBlogData = () => {
     getBlogPosts().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setPosts(data);
-      }
+      setPosts(Array.isArray(data) ? data : []);
     });
   };
 
@@ -150,63 +147,73 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
             id="home-view-all-articles-btn"
             className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 dark:hover:border-amber-500 text-slate-800 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 font-bold text-xs sm:text-sm shadow-xs transition-all cursor-pointer shrink-0 self-start md:self-auto"
           >
-            <span>Buka Semua Artikel ({BLOG_POSTS.length})</span>
+            <span>Buka Semua Artikel ({posts.length})</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </motion.div>
 
-        {/* Scroll Control Bar & Navigation Hint */}
-        <div className="flex items-center justify-between mb-4 px-1">
-          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
-            <span className="font-medium">Geser kartu artikel ke kanan dan kiri</span>
+        {previewPosts.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
+            <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada Artikel</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Artikel dan berita edukasi genset akan segera diperbarui.
+            </p>
           </div>
+        ) : (
+          <>
+            {/* Scroll Control Bar & Navigation Hint */}
+            <div className="flex items-center justify-between mb-4 px-1">
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
+                <span className="font-medium">Geser kartu artikel ke kanan dan kiri</span>
+              </div>
 
-          {/* Left / Right Scroll Buttons */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => scroll('left')}
-              disabled={!canScrollLeft}
-              aria-label="Scroll Artikel ke Kiri"
-              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollLeft
-                ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+              {/* Left / Right Scroll Buttons */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => scroll('left')}
+                  disabled={!canScrollLeft}
+                  aria-label="Scroll Artikel ke Kiri"
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollLeft
+                    ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                    }`}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={() => scroll('right')}
+                  disabled={!canScrollRight}
+                  aria-label="Scroll Artikel ke Kanan"
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollRight
+                    ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                    }`}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Articles Cards */}
+            <div
+              ref={scrollContainerRef}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none mb-8 scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
                 }`}
+              style={{
+                scrollBehavior: isDragging ? 'auto' : 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
+                scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
+              }}
             >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => scroll('right')}
-              disabled={!canScrollRight}
-              aria-label="Scroll Artikel ke Kanan"
-              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollRight
-                ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                }`}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Scrollable Articles Cards (Supports Left & Right Drag, Swipe, Wheel & Buttons) */}
-        <div
-          ref={scrollContainerRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none mb-8 scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
-          style={{
-            scrollBehavior: isDragging ? 'auto' : 'smooth',
-            WebkitOverflowScrolling: 'touch',
-            scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
-            scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
-          }}
-        >
-          {previewPosts.map((post, idx) => (
+              {previewPosts.map((post, idx) => (
             <motion.article
               key={post.id}
               initial={{ opacity: 0, y: 25 }}
@@ -266,6 +273,8 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
             </motion.article>
           ))}
         </div>
+        </>
+        )}
       </div>
 
       {/* Article Reader Modal */}

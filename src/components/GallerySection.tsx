@@ -16,7 +16,6 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GALLERY_ITEMS } from '../data/gallery';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { getGallery } from '../utils/api';
@@ -26,8 +25,8 @@ interface GallerySectionProps {
 }
 
 export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio }) => {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(GALLERY_ITEMS);
-  const [activeIndex, setActiveIndex] = useState<number>(1);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [selectedZoomPhoto, setSelectedZoomPhoto] = useState<GalleryItem | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -36,9 +35,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
 
   const loadGalleryData = () => {
     getGallery().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setGalleryItems(data);
-      }
+      setGalleryItems(Array.isArray(data) ? data : []);
     });
   };
 
@@ -194,50 +191,63 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none backdrop-blur-md">
-              <button
-                onClick={handlePrev}
-                id="gallery-prev-btn"
-                aria-label="Foto Sebelumnya"
-                className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/70 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
-              >
-                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-              </button>
+          {totalItems > 1 && (
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm dark:shadow-none backdrop-blur-md">
+                <button
+                  onClick={handlePrev}
+                  id="gallery-prev-btn"
+                  aria-label="Foto Sebelumnya"
+                  className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/70 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
+                >
+                  <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                </button>
 
-              <div className="px-3 text-xs font-mono font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
-                <span>0{activeIndex + 1}</span>
-                <span className="text-slate-400 dark:text-slate-500">/ 0{totalItems}</span>
+                <div className="px-3 text-xs font-mono font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                  <span>0{activeIndex + 1}</span>
+                  <span className="text-slate-400 dark:text-slate-500">/ 0{totalItems}</span>
+                </div>
+
+                <button
+                  onClick={handleNext}
+                  id="gallery-next-btn"
+                  aria-label="Foto Berikutnya"
+                  className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/70 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
+                >
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                </button>
               </div>
-
-              <button
-                onClick={handleNext}
-                id="gallery-next-btn"
-                aria-label="Foto Berikutnya"
-                className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/70 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
-              >
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
             </div>
+          )}
+        </div>
+
+        {totalItems === 0 ? (
+          <div className="py-16 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 my-6">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Belum Ada Foto Portofolio di Database
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+              Dokumentasi proyek sekarang dimuat langsung dari database. Tambahkan foto dokumentasi melalui Dashboard Admin.
+            </p>
           </div>
-        </div>
+        ) : (
+          <>
+            {/* Interaction Hint */}
+            <div className="flex items-center justify-center gap-2 mb-4 text-xs font-medium text-slate-500 dark:text-slate-400 select-none">
+              <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
+              <span>Geser gambar ke samping atau klik kartu untuk melihat detail</span>
+            </div>
 
-        {/* Interaction Hint */}
-        <div className="flex items-center justify-center gap-2 mb-4 text-xs font-medium text-slate-500 dark:text-slate-400 select-none">
-          <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
-          <span>Geser gambar ke samping atau klik kartu untuk melihat detail</span>
-        </div>
-
-        {/* COOL SLIDE IMAGE STAGE (Ultra-Smooth 3D Perspective Coverflow) */}
-        <div
-          className="relative py-4 my-2 select-none touch-pan-y"
-          onWheel={handleWheel}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          <div className={`relative h-[400px] sm:h-[460px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}>
-            {galleryItems.map((item, idx) => {
+            {/* COOL SLIDE IMAGE STAGE (Ultra-Smooth 3D Perspective Coverflow) */}
+            <div
+              className="relative py-4 my-2 select-none touch-pan-y"
+              onWheel={handleWheel}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div className={`relative h-[400px] sm:h-[460px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+                }`}>
+                {galleryItems.map((item, idx) => {
               // Calculate offset relative to active item
               let offset = idx - activeIndex;
               if (offset < -Math.floor(totalItems / 2)) {
@@ -406,6 +416,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
           )}
 
         </div>
+        </>
+        )}
 
       </div>
 

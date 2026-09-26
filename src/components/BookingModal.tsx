@@ -21,7 +21,6 @@ import {
   Wind
 } from 'lucide-react';
 import { BookingFormData, GensetProduct } from '../types';
-import { GENSET_PRODUCTS } from '../data/gensets';
 import { COMPANY_INFO } from '../data/company';
 import { SearchableProductSelect } from './SearchableProductSelect';
 import { 
@@ -30,7 +29,7 @@ import {
   copyToClipboard 
 } from '../utils/whatsapp';
 import { useBodyScrollLock } from '../utils/scrollLock';
-import { submitBooking } from '../utils/api';
+import { submitBooking, getProducts } from '../utils/api';
 import { ConfirmBookingModal } from './ConfirmBookingModal';
 
 interface BookingModalProps {
@@ -61,6 +60,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     additionalNeeds: [],
     notes: ''
   });
+
+  const [dynamicProducts, setDynamicProducts] = useState<GensetProduct[]>(product ? [product] : []);
+
+  useEffect(() => {
+    getProducts().then((data) => {
+      if (Array.isArray(data)) {
+        setDynamicProducts(data);
+      }
+    });
+  }, []);
 
   const [copied, setCopied] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -271,7 +280,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 {/* Searchable Combobox Component */}
                 <SearchableProductSelect
-                  products={GENSET_PRODUCTS}
+                  products={dynamicProducts}
                   selectedId={formData.selectedGensetId}
                   onSelect={handleSelectProduct}
                 />

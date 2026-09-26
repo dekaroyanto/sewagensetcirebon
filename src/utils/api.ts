@@ -10,11 +10,6 @@ import {
   AdminUser,
   CompanySettings
 } from '../types';
-import { GENSET_PRODUCTS } from '../data/gensets';
-import { BLOG_POSTS } from '../data/blogPosts';
-import { GALLERY_ITEMS } from '../data/gallery';
-import { TESTIMONIALS } from '../data/testimonials';
-import { FAQ_LIST } from '../data/faqs';
 import { COMPANY_INFO } from '../data/company';
 
 // Di Hostinger, /api mengakses public_html/api/index.php secara langsung
@@ -65,11 +60,11 @@ export async function getProducts(category?: string, search?: string): Promise<P
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return GENSET_PRODUCTS; }
-    return json.data || GENSET_PRODUCTS;
+    try { json = JSON.parse(text); } catch { return []; }
+    return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Backend API belum terhubung atau offline, menggunakan fallback static:', err);
-    return GENSET_PRODUCTS;
+    console.warn('Gagal memuat produk dari database Hostinger:', err);
+    return [];
   }
 }
 
@@ -85,11 +80,11 @@ export async function getProductDetail(id: string): Promise<Product | undefined>
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return GENSET_PRODUCTS.find(p => p.id === id); }
+    try { json = JSON.parse(text); } catch { return undefined; }
     return json.data;
   } catch (err) {
-    console.warn('Backend API unreachable, using static fallback for product detail:', err);
-    return GENSET_PRODUCTS.find(p => p.id === id);
+    console.warn('Gagal memuat detail produk dari database:', err);
+    return undefined;
   }
 }
 
@@ -105,11 +100,11 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return TESTIMONIALS; }
-    return json.data || TESTIMONIALS;
+    try { json = JSON.parse(text); } catch { return []; }
+    return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Backend API unreachable, using static fallback for testimonials:', err);
-    return TESTIMONIALS;
+    console.warn('Gagal memuat testimoni dari database:', err);
+    return [];
   }
 }
 
@@ -179,11 +174,11 @@ export async function getGallery(category?: string): Promise<GalleryItem[]> {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return GALLERY_ITEMS; }
-    return json.data || GALLERY_ITEMS;
+    try { json = JSON.parse(text); } catch { return []; }
+    return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Backend API unreachable, using static fallback for gallery:', err);
-    return GALLERY_ITEMS;
+    console.warn('Gagal memuat galeri dari database:', err);
+    return [];
   }
 }
 
@@ -199,11 +194,11 @@ export async function getFaqs(): Promise<FAQItem[]> {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return FAQ_LIST; }
-    return json.data || FAQ_LIST;
+    try { json = JSON.parse(text); } catch { return []; }
+    return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Backend API unreachable, using static fallback for FAQs:', err);
-    return FAQ_LIST;
+    console.warn('Gagal memuat FAQ dari database:', err);
+    return [];
   }
 }
 
@@ -223,11 +218,11 @@ export async function getBlogPosts(category?: string): Promise<BlogPost[]> {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return BLOG_POSTS; }
-    return json.data || BLOG_POSTS;
+    try { json = JSON.parse(text); } catch { return []; }
+    return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Backend API unreachable, using static fallback for blogs:', err);
-    return BLOG_POSTS;
+    console.warn('Gagal memuat artikel dari database:', err);
+    return [];
   }
 }
 

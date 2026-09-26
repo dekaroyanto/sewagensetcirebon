@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Calendar,
@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   Tag
 } from 'lucide-react';
-import { BLOG_POSTS } from '../data/blogPosts';
+import { getBlogPosts } from '../utils/api';
 import { BlogPost } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 
@@ -21,7 +21,12 @@ interface BlogSectionProps {
 }
 
 export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast }) => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
+
+  useEffect(() => {
+    getBlogPosts().then((data) => setPosts(Array.isArray(data) ? data : []));
+  }, []);
 
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon`;
@@ -57,7 +62,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
 
         {/* Articles Grid (Clean Layout Without Category Filter) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {BLOG_POSTS.map((post) => (
+          {posts.map((post) => (
             <article
               key={post.id}
               className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md hover:border-amber-300 transition-all flex flex-col justify-between group cursor-pointer"

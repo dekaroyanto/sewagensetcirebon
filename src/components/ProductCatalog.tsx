@@ -1,5 +1,5 @@
 import { formatPrice } from '../utils/format';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Zap,
   Search,
@@ -14,7 +14,7 @@ import {
   Flame,
   Layers
 } from 'lucide-react';
-import { GENSET_PRODUCTS } from '../data/gensets';
+import { getProducts } from '../utils/api';
 import { GensetProduct } from '../types';
 import { ProductDetailModal } from './ProductDetailModal';
 import { BookingModal } from './BookingModal';
@@ -26,10 +26,15 @@ interface ProductCatalogProps {
 }
 
 export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetForBooking, onToast }) => {
+  const [products, setProducts] = useState<GensetProduct[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [modalProduct, setModalProduct] = useState<GensetProduct | null>(null);
   const [bookingModalProduct, setBookingModalProduct] = useState<GensetProduct | null>(null);
+
+  useEffect(() => {
+    getProducts().then((data) => setProducts(Array.isArray(data) ? data : []));
+  }, []);
 
   const categories = [
     { id: 'all', label: 'Semua Kapasitas' },
@@ -40,13 +45,13 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
   ];
 
   const filteredProducts = useMemo(() => {
-    return GENSET_PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       const matchCategory = selectedCategory === 'all' || product.product_type === selectedCategory;
       const matchSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ;
       return matchCategory && matchSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [products, selectedCategory, searchQuery]);
 
   return (
     <section id="katalog" className="py-16 sm:py-20 bg-slate-50 relative">

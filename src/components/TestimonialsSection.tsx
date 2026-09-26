@@ -15,7 +15,6 @@ import {
   User
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { TESTIMONIALS } from '../data/testimonials';
 import { Testimonial } from '../types';
 import { getTestimonials, submitTestimonial } from '../utils/api';
 
@@ -24,7 +23,7 @@ interface TestimonialsSectionProps {
 }
 
 export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToast }) => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(TESTIMONIALS);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [filterRating, setFilterRating] = useState<number | 'all'>('all');
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
 
@@ -54,9 +53,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
 
   const loadTestimonialsData = () => {
     getTestimonials().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setTestimonials(data);
-      }
+      setTestimonials(Array.isArray(data) ? data : []);
     });
   };
 
@@ -232,22 +229,38 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
         </div>
 
         {/* Scrollable Testimonials Cards (Supports Left & Right Drag, Swipe, Wheel & Buttons) */}
-        <div
-          ref={scrollContainerRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
-          style={{
-            scrollBehavior: isDragging ? 'auto' : 'smooth',
-            WebkitOverflowScrolling: 'touch',
-            scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
-            scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
-          }}
-        >
-          {filteredTestimonials.map((item, idx) => (
+        {filteredTestimonials.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
+            <Sparkles className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada Ulasan Klien</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">
+              Jadilah yang pertama memberikan ulasan sewa genset di Cirebon!
+            </p>
+            <button
+              onClick={() => setIsAddReviewOpen(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-600 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Tulis Ulasan Sekarang</span>
+            </button>
+          </div>
+        ) : (
+          <div
+            ref={scrollContainerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
+              }`}
+            style={{
+              scrollBehavior: isDragging ? 'auto' : 'smooth',
+              WebkitOverflowScrolling: 'touch',
+              scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
+              scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
+            }}
+          >
+            {filteredTestimonials.map((item, idx) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, y: 25 }}
@@ -303,6 +316,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
             </motion.div>
           ))}
         </div>
+        )}
 
       </div>
 

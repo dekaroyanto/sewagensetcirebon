@@ -16,7 +16,6 @@ import {
   PhoneCall,
   CheckCircle2
 } from 'lucide-react';
-import { BLOG_POSTS } from '../data/blogPosts';
 import { COMPANY_INFO } from '../data/company';
 import { BlogPost } from '../types';
 import { getBlogPosts } from '../utils/api';
@@ -32,16 +31,14 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   onGoToBooking,
   onToast 
 }) => {
-  const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
   const loadBlogData = () => {
     getBlogPosts().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setPosts(data);
-      }
+      setPosts(Array.isArray(data) ? data : []);
     });
   };
 
@@ -68,7 +65,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
     return matchCategory && matchSearch;
   });
 
-  const featuredPost = filteredPosts[0] || posts[0] || BLOG_POSTS[0];
+  const featuredPost = filteredPosts[0] || posts[0] || null;
 
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon (SGC)`;

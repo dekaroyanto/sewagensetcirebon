@@ -10,7 +10,6 @@ import {
   Clock,
   ChevronRight
 } from 'lucide-react';
-import { GENSET_PRODUCTS } from '../data/gensets';
 
 interface CatalogGuideSectionProps {
   onOpenFullCatalog: () => void;

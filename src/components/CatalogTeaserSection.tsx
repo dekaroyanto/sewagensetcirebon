@@ -9,9 +9,9 @@ import {
   SlidersHorizontal,
   Cpu,
   MoveHorizontal,
+  PackageOpen,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { GENSET_PRODUCTS } from "../data/gensets";
 import { GensetProduct } from "../types";
 import { getProducts } from "../utils/api";
 
@@ -24,13 +24,13 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   onOpenCatalog,
   onGoToBooking,
 }) => {
-  const [products, setProducts] = useState<GensetProduct[]>(GENSET_PRODUCTS);
+  const [products, setProducts] = useState<GensetProduct[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const loadProductsData = () => {
     getProducts().then((data) => {
-      if (Array.isArray(data) && data.length > 0) {
-        setProducts(data);
-      }
+      setProducts(Array.isArray(data) ? data : []);
+      setLoading(false);
     });
   };
 
@@ -41,17 +41,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
     return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
-  // Curated spotlight units
-  const carouselItems = [
-    products[1] || products[0],
-    products[4] || products[0],
-    products[6] || products[0],
-    products.find((p) => p.product_type === "ac") || products[2] || products[0],
-    products.find((p) => p.product_type === "paket") || products[3] || products[0],
-    products[9] || products[0],
-  ];
+  // Spotlight units directly from database
+  const carouselItems = products;
 
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -61,9 +54,14 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   const isTransitioning = useRef(false);
   const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  // Safe normalized active index
+  const safeActiveIndex = carouselItems.length > 0 
+    ? Math.min(activeIndex, carouselItems.length - 1) 
+    : 0;
+
   // Auto slide rotation
   useEffect(() => {
-    if (isAutoPlaying) {
+    if (isAutoPlaying && carouselItems.length > 1) {
       autoPlayRef.current = setInterval(() => {
         setActiveIndex((prev) => (prev + 1) % carouselItems.length);
       }, 5500);
@@ -83,6 +81,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   // Safe slide transition: locks rapid consecutive calls so exactly 1 card moves per gesture
   const safeSlide = useCallback(
     (direction: "next" | "prev") => {
+      if (carouselItems.length <= 1) return;
       if (isTransitioning.current) return;
       isTransitioning.current = true;
       setIsAutoPlaying(false);
@@ -208,30 +207,32 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
 
           <div className="flex items-center gap-3 shrink-0">
             {/* Navigation Carousel Controls */}
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm dark:shadow-none backdrop-blur-md">
-              <button
-                onClick={handlePrev}
-                id="carousel-prev-btn"
-                aria-label="Previous Unit"
-                className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/60 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
-              >
-                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
-              </button>
-              <div className="px-3 text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
-                0{activeIndex + 1}{" "}
-                <span className="text-slate-400 dark:text-slate-500">
-                  / 0{carouselItems.length}
-                </span>
+            {carouselItems.length > 1 && (
+              <div className="flex items-center gap-2 bg-white dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-sm dark:shadow-none backdrop-blur-md">
+                <button
+                  onClick={handlePrev}
+                  id="carousel-prev-btn"
+                  aria-label="Previous Unit"
+                  className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/60 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
+                >
+                  <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+                </button>
+                <div className="px-3 text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
+                  0{safeActiveIndex + 1}{" "}
+                  <span className="text-slate-400 dark:text-slate-500">
+                    / 0{carouselItems.length}
+                  </span>
+                </div>
+                <button
+                  onClick={handleNext}
+                  id="carousel-next-btn"
+                  aria-label="Next Unit"
+                  className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/60 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
+                >
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                </button>
               </div>
-              <button
-                onClick={handleNext}
-                id="carousel-next-btn"
-                aria-label="Next Unit"
-                className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-slate-950 dark:bg-slate-700/60 dark:hover:bg-amber-500 dark:hover:text-slate-950 text-slate-700 dark:text-white flex items-center justify-center transition-colors cursor-pointer group shadow-2xs"
-              >
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </div>
+            )}
 
             <button
               onClick={onOpenCatalog}
@@ -245,27 +246,40 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
           </div>
         </div>
 
-        {/* 3D Carousel Interactive Stage (Supports Wheel, Touch Swipe & Mouse Drag) */}
-        <div
-          className="relative py-2 my-2 select-none touch-pan-y"
-          onWheel={handleWheel}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          {/* Main 3D Stage Container */}
+        {/* 3D Carousel Interactive Stage / Empty State */}
+        {carouselItems.length === 0 ? (
+          <div className="py-16 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 my-6">
+            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center mb-3">
+              <Zap className="w-7 h-7" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Belum Ada Unit di Database
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+              Semua katalog sekarang dimuat langsung dari database. Tambahkan data produk melalui Dashboard Admin.
+            </p>
+          </div>
+        ) : (
           <div
-            className={`relative h-[430px] sm:h-[470px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${
-              isDragging ? "cursor-grabbing" : "cursor-grab"
-            }`}
+            className="relative py-2 my-2 select-none touch-pan-y"
+            onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
-            {carouselItems.map((item, idx) => {
-              // Calculate relative offset from active item
-              let offset = idx - activeIndex;
-              if (offset < -Math.floor(carouselItems.length / 2)) {
-                offset += carouselItems.length;
-              } else if (offset > Math.floor(carouselItems.length / 2)) {
-                offset -= carouselItems.length;
-              }
+            {/* Main 3D Stage Container */}
+            <div
+              className={`relative h-[430px] sm:h-[470px] md:h-[500px] flex items-center justify-center perspective-[1400px] ${
+                isDragging ? "cursor-grabbing" : "cursor-grab"
+              }`}
+            >
+              {carouselItems.map((item, idx) => {
+                // Calculate relative offset from active item
+                let offset = idx - safeActiveIndex;
+                if (offset < -Math.floor(carouselItems.length / 2)) {
+                  offset += carouselItems.length;
+                } else if (offset > Math.floor(carouselItems.length / 2)) {
+                  offset -= carouselItems.length;
+                }
 
               const isActive = offset === 0;
               const isPrev = offset === -1;
@@ -442,6 +456,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
             ))}
           </div>
         </div>
+      )}
       </div>
     </section>
   );
