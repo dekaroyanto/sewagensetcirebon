@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   BookOpen,
   Calendar,
@@ -9,18 +9,21 @@ import {
   MessageSquare,
   Zap,
   CheckCircle2,
-  Tag
-} from 'lucide-react';
-import { getBlogPosts } from '../utils/api';
-import { BlogPost } from '../types';
-import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
+  Tag,
+} from "lucide-react";
+import { getBlogPosts } from "../utils/api";
+import { BlogPost } from "../types";
+import { getGeneralWhatsAppUrl } from "../utils/whatsapp";
 
 interface BlogSectionProps {
   onGoToBooking: () => void;
   onToast: (msg: string) => void;
 }
 
-export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast }) => {
+export const BlogSection: React.FC<BlogSectionProps> = ({
+  onGoToBooking,
+  onToast,
+}) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
@@ -31,21 +34,22 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon`;
     if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.summary,
-        url: window.location.href,
-      }).catch(() => { });
+      navigator
+        .share({
+          title: post.title,
+          text: post.summary,
+          url: window.location.href,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-      onToast('Tautan artikel berhasil disalin!');
+      onToast("Tautan artikel berhasil disalin!");
     }
   };
 
   return (
     <section id="blog" className="py-16 sm:py-20 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-100 text-blue-900 text-xs font-bold uppercase tracking-wider mb-3">
@@ -56,7 +60,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
             Artikel Terkini & Tips Seputar Rental Genset
           </h2>
           <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-            Informasi bermanfaat seputar perhitungan beban listrik, panduan pemilihan kapasitas genset pernikahan, tips proyek, dan berita terkini di Cirebon.
+            Informasi bermanfaat seputar perhitungan beban listrik, panduan
+            pemilihan kapasitas genset pernikahan, tips proyek, dan berita
+            terkini di Cirebon.
           </p>
         </div>
 
@@ -107,7 +113,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
             </article>
           ))}
         </div>
-
       </div>
 
       {/* Article Reader Modal */}
@@ -137,7 +142,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
               </h2>
 
               <div className="flex items-center gap-4 text-xs text-slate-500 pb-3 border-b border-slate-100 flex-wrap">
-                <span>Penulis: <strong>{activeArticle.author}</strong></span>
+                <span>
+                  Penulis: <strong>{activeArticle.author}</strong>
+                </span>
                 <span>•</span>
                 <span>Dipublikasikan: {activeArticle.date}</span>
               </div>
@@ -153,7 +160,10 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
               <div className="pt-4 border-t border-slate-100 flex items-center gap-2 flex-wrap">
                 <Tag className="w-3.5 h-3.5 text-slate-400" />
                 {activeArticle.tags.map((tag, i) => (
-                  <span key={i} className="text-[11px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-medium">
+                  <span
+                    key={i}
+                    className="text-[11px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-md font-medium"
+                  >
                     #{tag}
                   </span>
                 ))}
@@ -162,13 +172,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
 
             {/* Modal Footer */}
             <div className="p-4 sm:p-6 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-              <button
+              {/* <button
                 onClick={() => handleShareArticle(activeArticle)}
                 className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold flex items-center gap-1.5 hover:bg-slate-100 cursor-pointer"
               >
                 <Share2 className="w-4 h-4" />
                 <span>Bagikan Artikel</span>
-              </button>
+              </button> */}
 
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
@@ -183,11 +193,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onGoToBooking, onToast
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       )}
     </section>
   );
 };
-

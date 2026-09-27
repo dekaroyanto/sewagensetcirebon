@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   BookOpen,
   Calendar,
@@ -12,11 +12,11 @@ import {
   Tag,
   Zap,
   Flame,
-  MoveHorizontal
-} from 'lucide-react';
-import { motion } from 'motion/react';
-import { BlogPost } from '../types';
-import { getBlogPosts } from '../utils/api';
+  MoveHorizontal,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { BlogPost } from "../types";
+import { getBlogPosts } from "../utils/api";
 
 interface BlogHomePreviewProps {
   onOpenAllArticles: () => void;
@@ -27,7 +27,7 @@ interface BlogHomePreviewProps {
 export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   onOpenAllArticles,
   onGoToBooking,
-  onToast
+  onToast,
 }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
@@ -41,8 +41,8 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   useEffect(() => {
     loadBlogData();
     const handleSync = () => loadBlogData();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   // Articles to show in preview
@@ -67,23 +67,25 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
     const el = scrollContainerRef.current;
     if (!el) return;
     checkScroll();
-    el.addEventListener('scroll', checkScroll);
-    window.addEventListener('resize', checkScroll);
+    el.addEventListener("scroll", checkScroll);
+    window.addEventListener("resize", checkScroll);
     return () => {
-      el.removeEventListener('scroll', checkScroll);
-      window.removeEventListener('resize', checkScroll);
+      el.removeEventListener("scroll", checkScroll);
+      window.removeEventListener("resize", checkScroll);
     };
   }, [checkScroll]);
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: "left" | "right") => {
     if (!scrollContainerRef.current) return;
     const container = scrollContainerRef.current;
-    const firstArticle = container.querySelector('article');
+    const firstArticle = container.querySelector("article");
     const cardWidth = firstArticle
       ? firstArticle.getBoundingClientRect().width + 24
-      : (container.clientWidth > 768 ? 394 : 330);
-    const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
-    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      : container.clientWidth > 768
+        ? 394
+        : 330;
+    const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
+    container.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
   // Mouse Drag to Scroll Handlers
@@ -109,21 +111,25 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon (SGC)`;
     if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.summary,
-        url: window.location.href,
-      }).catch(() => { });
+      navigator
+        .share({
+          title: post.title,
+          text: post.summary,
+          url: window.location.href,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-      onToast('Tautan artikel berhasil disalin!');
+      onToast("Tautan artikel berhasil disalin!");
     }
   };
 
   return (
-    <section id="artikel" className="py-16 sm:py-20 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative border-t border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200">
+    <section
+      id="artikel"
+      className="py-16 sm:py-20 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative border-t border-slate-200/80 dark:border-slate-800 overflow-hidden transition-colors duration-200"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -155,7 +161,9 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
         {previewPosts.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 rounded-2xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
             <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada Artikel</h3>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
+              Belum Ada Artikel
+            </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Artikel dan berita edukasi genset akan segera diperbarui.
             </p>
@@ -166,31 +174,35 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
             <div className="flex items-center justify-between mb-4 px-1">
               <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                 <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
-                <span className="font-medium">Geser kartu artikel ke kanan dan kiri</span>
+                <span className="font-medium">
+                  Geser kartu artikel ke kanan dan kiri
+                </span>
               </div>
 
               {/* Left / Right Scroll Buttons */}
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => scroll('left')}
+                  onClick={() => scroll("left")}
                   disabled={!canScrollLeft}
                   aria-label="Scroll Artikel ke Kiri"
-                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollLeft
-                    ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                    }`}
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                    canScrollLeft
+                      ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                      : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+                  }`}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
 
                 <button
-                  onClick={() => scroll('right')}
+                  onClick={() => scroll("right")}
                   disabled={!canScrollRight}
                   aria-label="Scroll Artikel ke Kanan"
-                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${canScrollRight
-                    ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed'
-                    }`}
+                  className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                    canScrollRight
+                      ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                      : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+                  }`}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -204,76 +216,77 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
-              className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none mb-8 scroll-smooth ${isDragging ? 'cursor-grabbing' : 'cursor-grab'
-                }`}
+              className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none mb-8 scroll-smooth ${
+                isDragging ? "cursor-grabbing" : "cursor-grab"
+              }`}
               style={{
-                scrollBehavior: isDragging ? 'auto' : 'smooth',
-                WebkitOverflowScrolling: 'touch',
-                scrollPaddingLeft: 'calc((100vw - 84vw) / 2)',
-                scrollPaddingRight: 'calc((100vw - 84vw) / 2)'
+                scrollBehavior: isDragging ? "auto" : "smooth",
+                WebkitOverflowScrolling: "touch",
+                scrollPaddingLeft: "calc((100vw - 84vw) / 2)",
+                scrollPaddingRight: "calc((100vw - 84vw) / 2)",
               }}
             >
               {previewPosts.map((post, idx) => (
-            <motion.article
-              key={post.id}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.15 }}
-              transition={{ duration: 0.45, delay: idx * 0.08 }}
-              className="w-[84vw] sm:w-[350px] md:w-[370px] shrink-0 snap-center sm:snap-start bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 dark:hover:border-amber-400 transition-all flex flex-col justify-between group cursor-pointer"
-              onClick={() => {
-                if (!isDragging) setActiveArticle(post);
-              }}
-            >
-              <div>
-                <div className="relative aspect-16/9 overflow-hidden bg-slate-900">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
-                  />
-                  <div className="absolute top-3 left-3">
-                    {/* <span className="px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
+                <motion.article
+                  key={post.id}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.15 }}
+                  transition={{ duration: 0.45, delay: idx * 0.08 }}
+                  className="w-[84vw] sm:w-[350px] md:w-[370px] shrink-0 snap-center sm:snap-start bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-xl hover:border-amber-400 dark:hover:border-amber-400 transition-all flex flex-col justify-between group cursor-pointer"
+                  onClick={() => {
+                    if (!isDragging) setActiveArticle(post);
+                  }}
+                >
+                  <div>
+                    <div className="relative aspect-16/9 overflow-hidden bg-slate-900">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                      />
+                      <div className="absolute top-3 left-3">
+                        {/* <span className="px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
                       {post.category}
                     </span> */}
+                      </div>
+                    </div>
+
+                    <div className="p-5 sm:p-6">
+                      <div className="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500 mb-2.5">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {post.date}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          {post.readTime}
+                        </span>
+                      </div>
+
+                      <h3 className="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-2.5 line-clamp-3 leading-relaxed">
+                        {post.summary}
+                      </p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-5 sm:p-6">
-                  <div className="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500 mb-2.5">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {post.date}
+                  <div className="px-5 sm:px-6 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1.5">
+                      <span>Baca Artikel</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {post.readTime}
-                    </span>
+                    {/* <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Oleh {post.author.split('(')[0]}</span> */}
                   </div>
-
-                  <h3 className="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-snug group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors line-clamp-2">
-                    {post.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-2.5 line-clamp-3 leading-relaxed">
-                    {post.summary}
-                  </p>
-                </div>
-              </div>
-
-              <div className="px-5 sm:px-6 pb-5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1.5">
-                  <span>Baca Artikel</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </span>
-                {/* <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Oleh {post.author.split('(')[0]}</span> */}
-              </div>
-            </motion.article>
-          ))}
-        </div>
-        </>
+                </motion.article>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
@@ -307,7 +320,12 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
               </h2>
 
               <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-100 dark:border-slate-800 flex-wrap">
-                <span>Penulis: <strong className="text-slate-700 dark:text-slate-200">{activeArticle.author}</strong></span>
+                <span>
+                  Penulis:{" "}
+                  <strong className="text-slate-700 dark:text-slate-200">
+                    {activeArticle.author}
+                  </strong>
+                </span>
                 <span>•</span>
                 <span>Dipublikasikan: {activeArticle.date}</span>
               </div>
@@ -323,7 +341,10 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 flex-wrap">
                 <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                 {activeArticle.tags.map((tag, i) => (
-                  <span key={i} className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700">
+                  <span
+                    key={i}
+                    className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700"
+                  >
                     #{tag}
                   </span>
                 ))}
@@ -332,13 +353,13 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
 
             {/* Modal Footer */}
             <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
-              <button
+              {/* <button
                 onClick={() => handleShareArticle(activeArticle)}
                 className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
               >
                 <Share2 className="w-4 h-4" />
                 <span>Bagikan Artikel</span>
-              </button>
+              </button> */}
 
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
@@ -353,11 +374,9 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       )}
     </section>
   );
 };
-
