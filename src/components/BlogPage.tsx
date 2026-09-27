@@ -142,7 +142,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         </div>
 
         {/* Featured Headline Article (shown if no search query) */}
-        {!searchQuery && selectedCategory === 'all' && (
+        {!searchQuery && selectedCategory === 'all' && featuredPost && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
