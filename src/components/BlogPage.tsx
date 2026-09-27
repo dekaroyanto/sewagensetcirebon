@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  BookOpen, 
-  Calendar, 
-  Clock, 
-  ArrowLeft, 
-  ArrowRight, 
-  Search, 
-  Tag, 
-  Share2, 
-  X, 
-  Zap, 
-  Flame, 
+import React, { useState, useEffect } from "react";
+import {
+  BookOpen,
+  Calendar,
+  Clock,
+  ArrowLeft,
+  ArrowRight,
+  Search,
+  Tag,
+  Share2,
+  X,
+  Zap,
+  Flame,
   MessageSquare,
   Sparkles,
   PhoneCall,
-  CheckCircle2
-} from 'lucide-react';
-import { COMPANY_INFO } from '../data/company';
-import { BlogPost } from '../types';
-import { getBlogPosts } from '../utils/api';
+  CheckCircle2,
+} from "lucide-react";
+import { COMPANY_INFO } from "../data/company";
+import { BlogPost } from "../types";
+import { getBlogPosts } from "../utils/api";
 
 interface BlogPageProps {
   onBackToHome: () => void;
@@ -26,14 +26,14 @@ interface BlogPageProps {
   onToast: (msg: string) => void;
 }
 
-export const BlogPage: React.FC<BlogPageProps> = ({ 
-  onBackToHome, 
+export const BlogPage: React.FC<BlogPageProps> = ({
+  onBackToHome,
   onGoToBooking,
-  onToast 
+  onToast,
 }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
 
   const loadBlogData = () => {
@@ -45,23 +45,29 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   useEffect(() => {
     loadBlogData();
     const handleSync = () => loadBlogData();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   const categories = [
-    { id: 'all', label: 'Semua Berita' },
-    { id: 'Tips & Panduan', label: 'Tips & Panduan' },
-    { id: 'Seputar Genset', label: 'Teknis & Spesifikasi' },
-    { id: 'Event & Proyek', label: 'Event & Industri' },
+    { id: "all", label: "Semua Berita" },
+    { id: "Tips & Panduan", label: "Tips & Panduan" },
+    { id: "Seputar Genset", label: "Teknis & Spesifikasi" },
+    { id: "Event & Proyek", label: "Event & Industri" },
   ];
 
   const filteredPosts = posts.filter((post) => {
-    const matchCategory = selectedCategory === 'all' || post.category === selectedCategory || (post.product_type as string) === selectedCategory;
-    const matchSearch = searchQuery.trim() === '' || 
+    const matchCategory =
+      selectedCategory === "all" ||
+      post.category === selectedCategory ||
+      (post.product_type as string) === selectedCategory;
+    const matchSearch =
+      searchQuery.trim() === "" ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
+      post.tags.some((t) =>
+        t.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     return matchCategory && matchSearch;
   });
 
@@ -70,21 +76,22 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   const handleShareArticle = (post: BlogPost) => {
     const shareText = `Baca artikel bermanfaat ini: ${post.title} oleh Sewa Genset Cirebon (SGC)`;
     if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.summary,
-        url: window.location.href,
-      }).catch(() => {});
+      navigator
+        .share({
+          title: post.title,
+          text: post.summary,
+          url: window.location.href,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(`${shareText}\n${window.location.href}`);
-      onToast('Tautan artikel berhasil disalin!');
+      onToast("Tautan artikel berhasil disalin!");
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-8 sm:py-12 animate-in fade-in duration-300 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Navigation Breadcrumb & Back */}
         <div className="flex items-center justify-between gap-4 mb-8">
           <button
@@ -97,7 +104,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
           </button>
 
           <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-            <span>Beranda</span> <span className="mx-1">/</span> <strong className="text-slate-900 dark:text-white">Portal Berita & Edukasi SGC</strong>
+            <span>Beranda</span> <span className="mx-1">/</span>{" "}
+            <strong className="text-slate-900 dark:text-white">
+              Portal Berita & Edukasi SGC
+            </strong>
           </div>
         </div>
 
@@ -114,7 +124,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
             </h1>
 
             <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-              Sumber informasi terpercaya seputar rental genset silent, kalkulasi beban daya acara, panduan teknis panel ATS, dan kabar seputar kelistrikan di wilayah Kota Cirebon, Kuningan, Majalengka, dan Indramayu.
+              Sumber informasi terpercaya seputar rental genset silent,
+              kalkulasi beban daya acara, panduan teknis panel ATS, dan kabar
+              seputar kelistrikan di wilayah Kota Cirebon, Kuningan, Majalengka,
+              dan Indramayu.
             </p>
 
             {/* Quick Search inside portal */}
@@ -130,7 +143,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 />
                 {searchQuery && (
                   <button
-                    onClick={() => setSearchQuery('')}
+                    onClick={() => setSearchQuery("")}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -142,7 +155,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
         </div>
 
         {/* Featured Headline Article (shown if no search query) */}
-        {!searchQuery && selectedCategory === 'all' && featuredPost && (
+        {!searchQuery && selectedCategory === "all" && featuredPost && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-4">
               <Flame className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -151,7 +164,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               </h2>
             </div>
 
-            <div 
+            <div
               onClick={() => setActiveArticle(featuredPost)}
               className="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-md hover:shadow-2xl transition-all cursor-pointer grid grid-cols-1 lg:grid-cols-12"
             >
@@ -193,7 +206,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
 
                   <div className="mt-4 flex flex-wrap gap-1.5">
                     {featuredPost.tags.slice(0, 3).map((tag, i) => (
-                      <span key={i} className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-medium border border-slate-200 dark:border-slate-700">
+                      <span
+                        key={i}
+                        className="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded font-medium border border-slate-200 dark:border-slate-700"
+                      >
                         #{tag}
                       </span>
                     ))}
@@ -202,7 +218,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
 
                 <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                    Oleh <strong className="text-slate-700 dark:text-slate-300">{featuredPost.author}</strong>
+                    Oleh{" "}
+                    <strong className="text-slate-700 dark:text-slate-300">
+                      {featuredPost.author}
+                    </strong>
                   </span>
                   <span className="text-xs font-extrabold text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                     <span>Baca Lengkap</span>
@@ -223,8 +242,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                   selectedCategory === cat.id
-                    ? 'bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 shadow-xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
+                    ? "bg-slate-900 dark:bg-amber-500 text-white dark:text-slate-950 shadow-xs"
+                    : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800"
                 }`}
               >
                 {cat.label}
@@ -239,18 +258,21 @@ export const BlogPage: React.FC<BlogPageProps> = ({
 
         {/* Main News Grid & Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
           {/* Articles Listing */}
           <div className="lg:col-span-8 space-y-6">
             {filteredPosts.length === 0 ? (
               <div className="bg-white dark:bg-slate-900 rounded-2xl p-10 text-center border border-slate-200 dark:border-slate-800">
                 <BookOpen className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                <h4 className="font-bold text-slate-800 dark:text-slate-200 text-base">Tidak ada artikel yang cocok</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Coba gunakan kata kunci lain atau pilih kategori Semua Berita.</p>
+                <h4 className="font-bold text-slate-800 dark:text-slate-200 text-base">
+                  Tidak ada artikel yang cocok
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  Coba gunakan kata kunci lain atau pilih kategori Semua Berita.
+                </p>
                 <button
                   onClick={() => {
-                    setSelectedCategory('all');
-                    setSearchQuery('');
+                    setSelectedCategory("all");
+                    setSearchQuery("");
                   }}
                   className="mt-4 px-4 py-2 rounded-xl bg-slate-900 dark:bg-amber-500 hover:bg-slate-800 dark:hover:bg-amber-600 text-white dark:text-slate-950 text-xs font-bold cursor-pointer"
                 >
@@ -308,7 +330,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                         <span>Baca Selengkapnya</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </span>
-                      <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Oleh {post.author.split('(')[0]}</span>
+                      <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                        Oleh {post.author.split("(")[0]}
+                      </span>
                     </div>
                   </article>
                 ))}
@@ -318,9 +342,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
 
           {/* Sidebar */}
           <div className="lg:col-span-4 space-y-6">
-            
             {/* Consultation Card */}
-            <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-slate-950 shadow-md">
+            {/* <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-slate-950 shadow-md">
               <div className="w-10 h-10 rounded-xl bg-slate-950 text-amber-400 flex items-center justify-center mb-4">
                 <Zap className="w-5 h-5 fill-amber-400" />
               </div>
@@ -328,7 +351,8 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 Butuh Bantuan Hitung Beban Listrik Acara Anda?
               </h3>
               <p className="text-xs text-slate-900/90 mt-2 leading-relaxed">
-                Konsultasikan daftar alat (sound, AC, lighting) gratis bersama insinyur listrik Sewa Genset Cirebon (SGC).
+                Konsultasikan daftar alat (sound, AC, lighting) gratis bersama
+                insinyur listrik Sewa Genset Cirebon (SGC).
               </p>
               <button
                 onClick={onGoToBooking}
@@ -337,10 +361,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 <span>Konsultasi & Booking Sekarang</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
-            </div>
+            </div> */}
 
             {/* Popular Topics */}
-            <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs">
+            {/* <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs">
               <h4 className="font-display font-bold text-sm text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <Tag className="w-4 h-4 text-amber-500" />
                 <span>Topik Populer Cirebon</span>
@@ -366,7 +390,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* SGC Hotline Standby */}
             <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
@@ -375,26 +399,24 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 <span>Hotline Emergency 24 Jam</span>
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-300">
-                Panggilan darurat genset padam di Cirebon dan sekitarnya langsung ke teknisi jaga.
+                Panggilan darurat genset padam di Cirebon dan sekitarnya
+                langsung ke teknisi jaga.
               </p>
               <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 font-mono font-bold text-sm text-center">
                 {COMPANY_INFO.phone}
               </div>
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       {/* Full Article Reader Modal */}
       {activeArticle && (
-        <div 
+        <div
           className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
           onClick={() => setActiveArticle(null)}
         >
-          <div 
+          <div
             className="relative bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] flex flex-col my-auto"
             onClick={(e) => e.stopPropagation()}
           >
@@ -418,7 +440,12 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               </h2>
 
               <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-100 dark:border-slate-800 flex-wrap">
-                <span>Penulis: <strong className="text-slate-700 dark:text-slate-300">{activeArticle.author}</strong></span>
+                <span>
+                  Penulis:{" "}
+                  <strong className="text-slate-700 dark:text-slate-300">
+                    {activeArticle.author}
+                  </strong>
+                </span>
                 <span>•</span>
                 <span>Dipublikasikan: {activeArticle.date}</span>
               </div>
@@ -444,7 +471,10 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 flex-wrap">
                 <Tag className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                 {activeArticle.tags.map((tag, i) => (
-                  <span key={i} className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700">
+                  <span
+                    key={i}
+                    className="text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700"
+                  >
                     #{tag}
                   </span>
                 ))}
@@ -474,11 +504,9 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       )}
     </div>
   );
 };
-
