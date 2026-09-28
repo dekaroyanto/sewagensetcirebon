@@ -159,7 +159,7 @@ if ($resource === 'auth') {
         sendJsonResponse(['status' => 'success', 'user' => $user]);
     }
 
-    if ($action === 'profile' && $method === 'PUT') {
+    if ($action === 'profile' && $method === 'POST') {
         $headers = getallheaders();
         $auth = verifyAuthToken($headers);
         if (!$auth) {

@@ -1,40 +1,44 @@
-import { 
-  BlogPost, 
-  FAQItem, 
-  GalleryItem, 
-  Product, 
-  Testimonial, 
-  BookingFormData, 
-  BookingRecord, 
+import {
+  BlogPost,
+  FAQItem,
+  GalleryItem,
+  Product,
+  Testimonial,
+  BookingFormData,
+  BookingRecord,
   DashboardStats,
   AdminUser,
-  CompanySettings
-} from '../types';
-import { COMPANY_INFO } from '../data/company';
+  CompanySettings,
+} from "../types";
+import { COMPANY_INFO } from "../data/company";
 
 // Di Hostinger, /api mengakses public_html/api/index.php secara langsung
-export const API_BASE = import.meta.env.VITE_API_URL || '/api';
+export const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 /**
  * Global event dispatcher to automatically notify all components to re-fetch latest data
  */
 export function notifyDataChanged() {
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('sgc_data_changed', { detail: { timestamp: Date.now() } }));
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(
+      new CustomEvent("sgc_data_changed", {
+        detail: { timestamp: Date.now() },
+      }),
+    );
   }
 }
 
 function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem('sgc_admin_token');
+  const token = localStorage.getItem("sgc_admin_token");
   const headers: HeadersInit = {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0',
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache, no-store, must-revalidate",
+    Pragma: "no-cache",
+    Expires: "0",
   };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
   return headers;
 }
@@ -46,24 +50,31 @@ function getAuthHeaders(): HeadersInit {
 /**
  * Mengambil semua katalog produk (Genset, AC Standing, Paket, Aksesoris)
  */
-export async function getProducts(category?: string, search?: string): Promise<Product[]> {
+export async function getProducts(
+  category?: string,
+  search?: string,
+): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
-    if (category && category !== 'all') params.append('product_type', category);
-    if (search) params.append('search', search);
-    params.append('_t', Date.now().toString());
+    if (category && category !== "all") params.append("product_type", category);
+    if (search) params.append("search", search);
+    params.append("_t", Date.now().toString());
 
     const res = await fetch(`${API_BASE}/products?${params.toString()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Gagal memuat produk dari database Hostinger:', err);
+    console.warn("Gagal memuat produk dari database Hostinger:", err);
     return [];
   }
 }
@@ -71,19 +82,25 @@ export async function getProducts(category?: string, search?: string): Promise<P
 /**
  * Mengambil rincian spesifikasi 1 produk
  */
-export async function getProductDetail(id: string): Promise<Product | undefined> {
+export async function getProductDetail(
+  id: string,
+): Promise<Product | undefined> {
   try {
     const res = await fetch(`${API_BASE}/products/${id}?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return undefined; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return undefined;
+    }
     return json.data;
   } catch (err) {
-    console.warn('Gagal memuat detail produk dari database:', err);
+    console.warn("Gagal memuat detail produk dari database:", err);
     return undefined;
   }
 }
@@ -95,15 +112,19 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   try {
     const res = await fetch(`${API_BASE}/testimonials?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Gagal memuat testimoni dari database:', err);
+    console.warn("Gagal memuat testimoni dari database:", err);
     return [];
   }
 }
@@ -111,23 +132,27 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 /**
  * Mengirim ulasan / testimoni baru dari pengunjung web
  */
-export async function submitTestimonial(data: Partial<Testimonial>): Promise<{ success: boolean; message: string; data?: any }> {
+export async function submitTestimonial(
+  data: Partial<Testimonial>,
+): Promise<{ success: boolean; message: string; data?: any }> {
   try {
     const res = await fetch(`${API_BASE}/testimonials`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(data),
     });
     const text = await res.text();
-    let result: any = { success: true, message: 'Ulasan Anda telah dicatat.' };
-    try { result = JSON.parse(text); } catch {}
+    let result: any = { success: true, message: "Ulasan Anda telah dicatat." };
+    try {
+      result = JSON.parse(text);
+    } catch {}
     if (result.success !== false) notifyDataChanged();
     return result;
   } catch (err) {
-    console.error('Error submitting testimonial to backend:', err);
+    console.error("Error submitting testimonial to backend:", err);
     return {
       success: true,
-      message: 'Ulasan Anda telah dicatat.',
+      message: "Ulasan Anda telah dicatat.",
     };
   }
 }
@@ -135,25 +160,29 @@ export async function submitTestimonial(data: Partial<Testimonial>): Promise<{ s
 /**
  * Menyimpan order / booking ke database MySQL Hostinger
  */
-export async function submitBooking(formData: BookingFormData): Promise<{ success: boolean; message: string; data?: any }> {
+export async function submitBooking(
+  formData: BookingFormData,
+): Promise<{ success: boolean; message: string; data?: any }> {
   try {
     const res = await fetch(`${API_BASE}/bookings`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
       body: JSON.stringify(formData),
     });
     const text = await res.text();
     let result: any = null;
-    try { result = JSON.parse(text); } catch {
-      result = { success: res.ok, message: 'Pesanan telah diterima.' };
+    try {
+      result = JSON.parse(text);
+    } catch {
+      result = { success: res.ok, message: "Pesanan telah diterima." };
     }
     if (result.success !== false) notifyDataChanged();
     return result;
   } catch (err) {
-    console.error('Error sending booking to backend:', err);
+    console.error("Error sending booking to backend:", err);
     return {
       success: false,
-      message: 'Gagal menghubungkan ke server database MySQL Hostinger.',
+      message: "Gagal menghubungkan ke server database MySQL Hostinger.",
     };
   }
 }
@@ -164,20 +193,24 @@ export async function submitBooking(formData: BookingFormData): Promise<{ succes
 export async function getGallery(category?: string): Promise<GalleryItem[]> {
   try {
     const params = new URLSearchParams();
-    if (category && category !== 'Semua') params.append('category', category);
-    params.append('_t', Date.now().toString());
+    if (category && category !== "Semua") params.append("category", category);
+    params.append("_t", Date.now().toString());
 
     const res = await fetch(`${API_BASE}/gallery?${params.toString()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Gagal memuat galeri dari database:', err);
+    console.warn("Gagal memuat galeri dari database:", err);
     return [];
   }
 }
@@ -189,15 +222,19 @@ export async function getFaqs(): Promise<FAQItem[]> {
   try {
     const res = await fetch(`${API_BASE}/faqs?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Gagal memuat FAQ dari database:', err);
+    console.warn("Gagal memuat FAQ dari database:", err);
     return [];
   }
 }
@@ -208,20 +245,24 @@ export async function getFaqs(): Promise<FAQItem[]> {
 export async function getBlogPosts(category?: string): Promise<BlogPost[]> {
   try {
     const params = new URLSearchParams();
-    if (category && category !== 'Semua') params.append('category', category);
-    params.append('_t', Date.now().toString());
+    if (category && category !== "Semua") params.append("category", category);
+    params.append("_t", Date.now().toString());
 
     const res = await fetch(`${API_BASE}/blogs?${params.toString()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return Array.isArray(json.data) ? json.data : [];
   } catch (err) {
-    console.warn('Gagal memuat artikel dari database:', err);
+    console.warn("Gagal memuat artikel dari database:", err);
     return [];
   }
 }
@@ -233,12 +274,16 @@ export async function getCompanyInfo(): Promise<typeof COMPANY_INFO> {
   try {
     const res = await fetch(`${API_BASE}/company?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return COMPANY_INFO; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return COMPANY_INFO;
+    }
     return { ...COMPANY_INFO, ...json.data };
   } catch (err) {
     return COMPANY_INFO;
@@ -252,12 +297,23 @@ export async function getCompanyInfo(): Promise<typeof COMPANY_INFO> {
 /**
  * Login Admin ke backend
  */
-export async function loginAdmin(username: string, password: string): Promise<{ success: boolean; token?: string; user?: AdminUser; message?: string }> {
+export async function loginAdmin(
+  username: string,
+  password: string,
+): Promise<{
+  success: boolean;
+  token?: string;
+  user?: AdminUser;
+  message?: string;
+}> {
   try {
     const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ username, password })
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ username, password }),
     });
     const text = await res.text();
     let json: any = null;
@@ -266,18 +322,25 @@ export async function loginAdmin(username: string, password: string): Promise<{ 
     } catch {
       return {
         success: false,
-        message: 'Backend API belum ter-deploy di server atau belum merespons JSON (Status HTTP ' + res.status + '). Pastikan file public/api/ sudah dipush ke GitHub dan ter-deploy di Hostinger.'
+        message:
+          "Backend API belum ter-deploy di server atau belum merespons JSON (Status HTTP " +
+          res.status +
+          "). Pastikan file public/api/ sudah dipush ke GitHub dan ter-deploy di Hostinger.",
       };
     }
 
     if (res.ok && json.token) {
-      localStorage.setItem('sgc_admin_token', json.token);
-      localStorage.setItem('sgc_admin_user', JSON.stringify(json.user));
+      localStorage.setItem("sgc_admin_token", json.token);
+      localStorage.setItem("sgc_admin_user", JSON.stringify(json.user));
       return { success: true, token: json.token, user: json.user };
     }
-    return { success: false, message: json.message || 'Login gagal.' };
+    return { success: false, message: json.message || "Login gagal." };
   } catch (err: any) {
-    return { success: false, message: 'Tidak dapat terhubung ke server backend API Hostinger: ' + err.message };
+    return {
+      success: false,
+      message:
+        "Tidak dapat terhubung ke server backend API Hostinger: " + err.message,
+    };
   }
 }
 
@@ -285,16 +348,16 @@ export async function loginAdmin(username: string, password: string): Promise<{ 
  * Cek sesi admin yang sedang login
  */
 export async function checkAdminAuth(): Promise<AdminUser | null> {
-  const token = localStorage.getItem('sgc_admin_token');
+  const token = localStorage.getItem("sgc_admin_token");
   if (!token) return null;
   try {
     const res = await fetch(`${API_BASE}/auth/me?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     if (!res.ok) {
-      localStorage.removeItem('sgc_admin_token');
-      localStorage.removeItem('sgc_admin_user');
+      localStorage.removeItem("sgc_admin_token");
+      localStorage.removeItem("sgc_admin_user");
       return null;
     }
     const text = await res.text();
@@ -309,8 +372,8 @@ export async function checkAdminAuth(): Promise<AdminUser | null> {
  * Logout admin
  */
 export function logoutAdmin() {
-  localStorage.removeItem('sgc_admin_token');
-  localStorage.removeItem('sgc_admin_user');
+  localStorage.removeItem("sgc_admin_token");
+  localStorage.removeItem("sgc_admin_user");
 }
 
 /**
@@ -318,11 +381,11 @@ export function logoutAdmin() {
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
-    const res = await fetch(`${API_BASE}/stats?_t=${Date.now()}`, { 
+    const res = await fetch(`${API_BASE}/stats?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
-    if (!res.ok) throw new Error('Status: ' + res.status);
+    if (!res.ok) throw new Error("Status: " + res.status);
     const text = await res.text();
     const json = JSON.parse(text);
     return json.data;
@@ -335,7 +398,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       pending_bookings: 1,
       total_blogs: 3,
       total_testimonials: 6,
-      total_gallery: 4
+      total_gallery: 4,
     };
   }
 }
@@ -343,11 +406,17 @@ export async function getDashboardStats(): Promise<DashboardStats> {
 /**
  * Cek koneksi live ke MySQL Hostinger
  */
-export async function testDatabaseConnection(): Promise<{ connected: boolean; message: string; database?: string; tables_count?: number; config?: any }> {
+export async function testDatabaseConnection(): Promise<{
+  connected: boolean;
+  message: string;
+  database?: string;
+  tables_count?: number;
+  config?: any;
+}> {
   try {
     const res = await fetch(`${API_BASE}/test-db?_t=${Date.now()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
     const text = await res.text();
     let json: any = null;
@@ -356,20 +425,23 @@ export async function testDatabaseConnection(): Promise<{ connected: boolean; me
     } catch {
       return {
         connected: false,
-        message: 'Endpoint backend API belum ter-deploy di server Hostinger (Status HTTP ' + res.status + '). Silakan push ke GitHub terlebih dahulu.'
+        message:
+          "Endpoint backend API belum ter-deploy di server Hostinger (Status HTTP " +
+          res.status +
+          "). Silakan push ke GitHub terlebih dahulu.",
       };
     }
     return {
-      connected: json.connected ?? (res.ok && json.status === 'success'),
-      message: json.message || (res.ok ? 'Koneksi sukses' : 'Koneksi gagal'),
+      connected: json.connected ?? (res.ok && json.status === "success"),
+      message: json.message || (res.ok ? "Koneksi sukses" : "Koneksi gagal"),
       database: json.database,
       tables_count: json.tables_count,
-      config: json.config
+      config: json.config,
     };
   } catch (err: any) {
     return {
       connected: false,
-      message: 'Gagal menghubungi server API: ' + err.message
+      message: "Gagal menghubungi server API: " + err.message,
     };
   }
 }
@@ -377,11 +449,15 @@ export async function testDatabaseConnection(): Promise<{ connected: boolean; me
 /**
  * Eksekusi inisialisasi tabel otomatis (setup.php)
  */
-export async function runDatabaseSetup(): Promise<{ success: boolean; message: string; tables?: string[] }> {
+export async function runDatabaseSetup(): Promise<{
+  success: boolean;
+  message: string;
+  tables?: string[];
+}> {
   try {
-    const res = await fetch(`${API_BASE}/setup`, { 
-      method: 'POST', 
-      headers: getAuthHeaders() 
+    const res = await fetch(`${API_BASE}/setup`, {
+      method: "POST",
+      headers: getAuthHeaders(),
     });
     const text = await res.text();
     let json: any = null;
@@ -390,19 +466,22 @@ export async function runDatabaseSetup(): Promise<{ success: boolean; message: s
     } catch {
       return {
         success: false,
-        message: 'Setup script belum tersedia di server Hostinger (Status HTTP ' + res.status + '). Silakan push ke GitHub terlebih dahulu.'
+        message:
+          "Setup script belum tersedia di server Hostinger (Status HTTP " +
+          res.status +
+          "). Silakan push ke GitHub terlebih dahulu.",
       };
     }
     if (json.success !== false) notifyDataChanged();
     return {
       success: json.success ?? res.ok,
       message: json.message,
-      tables: json.tables
+      tables: json.tables,
     };
   } catch (err: any) {
     return {
       success: false,
-      message: 'Gagal mengeksekusi setup: ' + err.message
+      message: "Gagal mengeksekusi setup: " + err.message,
     };
   }
 }
@@ -410,23 +489,30 @@ export async function runDatabaseSetup(): Promise<{ success: boolean; message: s
 // -----------------------------------------------------------------------------
 // HELPER: SAFE JSON PARSER UNTUK RESPONSE MUTASI
 // -----------------------------------------------------------------------------
-async function parseResponseJson(res: Response, defaultSuccessMsg: string = 'Operasi berhasil'): Promise<any> {
+async function parseResponseJson(
+  res: Response,
+  defaultSuccessMsg: string = "Operasi berhasil",
+): Promise<any> {
   const text = await res.text();
   try {
     const json = JSON.parse(text);
-    if (typeof json === 'object' && json !== null) {
-      if (typeof json.success === 'undefined') {
-        json.success = res.ok && json.status === 'success';
+    if (typeof json === "object" && json !== null) {
+      if (typeof json.success === "undefined") {
+        json.success = res.ok && json.status === "success";
       }
       if (!json.message) {
-        json.message = res.ok ? defaultSuccessMsg : 'Operasi gagal diproses server.';
+        json.message = res.ok
+          ? defaultSuccessMsg
+          : "Operasi gagal diproses server.";
       }
     }
     return json;
   } catch {
     return {
       success: res.ok,
-      message: res.ok ? defaultSuccessMsg : `Respons server tidak valid (HTTP ${res.status})`
+      message: res.ok
+        ? defaultSuccessMsg
+        : `Respons server tidak valid (HTTP ${res.status})`,
     };
   }
 }
@@ -434,47 +520,54 @@ async function parseResponseJson(res: Response, defaultSuccessMsg: string = 'Ope
 // -----------------------------------------------------------------------------
 // CRUD PRODUK & GENSET
 // -----------------------------------------------------------------------------
-export async function createProduct(product: Partial<Product>): Promise<{ success: boolean; message: string }> {
+export async function createProduct(
+  product: Partial<Product>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/products`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(product)
+      body: JSON.stringify(product),
     });
-    const json = await parseResponseJson(res, 'Produk berhasil ditambahkan.');
+    const json = await parseResponseJson(res, "Produk berhasil ditambahkan.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function updateProduct(id: string, product: Partial<Product>): Promise<{ success: boolean; message: string }> {
+export async function updateProduct(
+  id: string,
+  product: Partial<Product>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/products/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(product)
+      body: JSON.stringify(product),
     });
-    const json = await parseResponseJson(res, 'Produk berhasil diperbarui.');
+    const json = await parseResponseJson(res, "Produk berhasil diperbarui.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteProduct(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteProduct(
+  id: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/products/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'Produk berhasil dihapus.');
+    const json = await parseResponseJson(res, "Produk berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
@@ -484,256 +577,310 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; mes
 export async function getBookings(status?: string): Promise<BookingRecord[]> {
   try {
     const params = new URLSearchParams();
-    if (status && status !== 'Semua') params.append('status', status);
-    params.append('_t', Date.now().toString());
+    if (status && status !== "Semua") params.append("status", status);
+    params.append("_t", Date.now().toString());
 
-    const res = await fetch(`${API_BASE}/bookings?${params.toString()}`, { 
+    const res = await fetch(`${API_BASE}/bookings?${params.toString()}`, {
       headers: getAuthHeaders(),
-      cache: 'no-store',
+      cache: "no-store",
     });
-    if (!res.ok) throw new Error('HTTP error: ' + res.status);
+    if (!res.ok) throw new Error("HTTP error: " + res.status);
     const text = await res.text();
     let json: any = null;
-    try { json = JSON.parse(text); } catch { return []; }
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return [];
+    }
     return json.data || [];
   } catch (err) {
-    console.warn('Gagal memuat booking:', err);
+    console.warn("Gagal memuat booking:", err);
     return [];
   }
 }
 
-export async function updateBookingStatus(id: number | string, status: string): Promise<{ success: boolean; message: string }> {
+export async function updateBookingStatus(
+  id: number | string,
+  status: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/bookings/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status }),
     });
-    const json = await parseResponseJson(res, 'Status pesanan berhasil diubah.');
+    const json = await parseResponseJson(
+      res,
+      "Status pesanan berhasil diubah.",
+    );
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteBooking(id: number | string): Promise<{ success: boolean; message: string }> {
+export async function deleteBooking(
+  id: number | string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/bookings/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'Pesanan berhasil dihapus.');
+    const json = await parseResponseJson(res, "Pesanan berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
 // -----------------------------------------------------------------------------
 // CRUD ARTIKEL & BLOG
 // -----------------------------------------------------------------------------
-export async function createBlogPost(post: Partial<BlogPost>): Promise<{ success: boolean; message: string }> {
+export async function createBlogPost(
+  post: Partial<BlogPost>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/blogs`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(post)
+      body: JSON.stringify(post),
     });
-    const json = await parseResponseJson(res, 'Artikel berhasil diterbitkan.');
+    const json = await parseResponseJson(res, "Artikel berhasil diterbitkan.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function updateBlogPost(id: string, post: Partial<BlogPost>): Promise<{ success: boolean; message: string }> {
+export async function updateBlogPost(
+  id: string,
+  post: Partial<BlogPost>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/blogs/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(post)
+      body: JSON.stringify(post),
     });
-    const json = await parseResponseJson(res, 'Artikel berhasil diperbarui.');
+    const json = await parseResponseJson(res, "Artikel berhasil diperbarui.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteBlogPost(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteBlogPost(
+  id: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/blogs/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'Artikel berhasil dihapus.');
+    const json = await parseResponseJson(res, "Artikel berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
 // -----------------------------------------------------------------------------
 // CRUD PORTOFOLIO / GALERI
 // -----------------------------------------------------------------------------
-export async function createGalleryItem(item: Partial<GalleryItem>): Promise<{ success: boolean; message: string }> {
+export async function createGalleryItem(
+  item: Partial<GalleryItem>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/gallery`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(item)
+      body: JSON.stringify(item),
     });
-    const json = await parseResponseJson(res, 'Portofolio berhasil ditambahkan.');
+    const json = await parseResponseJson(
+      res,
+      "Portofolio berhasil ditambahkan.",
+    );
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function updateGalleryItem(id: string, item: Partial<GalleryItem>): Promise<{ success: boolean; message: string }> {
+export async function updateGalleryItem(
+  id: string,
+  item: Partial<GalleryItem>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/gallery/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(item)
+      body: JSON.stringify(item),
     });
-    const json = await parseResponseJson(res, 'Portofolio berhasil diperbarui.');
+    const json = await parseResponseJson(
+      res,
+      "Portofolio berhasil diperbarui.",
+    );
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteGalleryItem(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteGalleryItem(
+  id: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/gallery/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'Portofolio berhasil dihapus.');
+    const json = await parseResponseJson(res, "Portofolio berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
 // -----------------------------------------------------------------------------
 // CRUD TESTIMONI
 // -----------------------------------------------------------------------------
-export async function createTestimonialAdmin(data: Partial<Testimonial>): Promise<{ success: boolean; message: string }> {
+export async function createTestimonialAdmin(
+  data: Partial<Testimonial>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/testimonials`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'Testimoni berhasil ditambahkan.');
+    const json = await parseResponseJson(
+      res,
+      "Testimoni berhasil ditambahkan.",
+    );
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function updateTestimonial(id: string, data: Partial<Testimonial>): Promise<{ success: boolean; message: string }> {
+export async function updateTestimonial(
+  id: string,
+  data: Partial<Testimonial>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/testimonials/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'Testimoni berhasil diperbarui.');
+    const json = await parseResponseJson(res, "Testimoni berhasil diperbarui.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteTestimonial(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteTestimonial(
+  id: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/testimonials/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'Testimoni berhasil dihapus.');
+    const json = await parseResponseJson(res, "Testimoni berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
 // -----------------------------------------------------------------------------
 // CRUD FAQS
 // -----------------------------------------------------------------------------
-export async function createFaq(data: Partial<FAQItem>): Promise<{ success: boolean; message: string }> {
+export async function createFaq(
+  data: Partial<FAQItem>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/faqs`, {
-      method: 'POST',
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'FAQ berhasil ditambahkan.');
+    const json = await parseResponseJson(res, "FAQ berhasil ditambahkan.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function updateFaq(id: string, data: Partial<FAQItem>): Promise<{ success: boolean; message: string }> {
+export async function updateFaq(
+  id: string,
+  data: Partial<FAQItem>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/faqs/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'FAQ berhasil diperbarui.');
+    const json = await parseResponseJson(res, "FAQ berhasil diperbarui.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
-export async function deleteFaq(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteFaq(
+  id: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/faqs/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: getAuthHeaders(),
     });
-    const json = await parseResponseJson(res, 'FAQ berhasil dihapus.');
+    const json = await parseResponseJson(res, "FAQ berhasil dihapus.");
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
 // -----------------------------------------------------------------------------
 // UPDATE INFORMASI PERUSAHAAN
 // -----------------------------------------------------------------------------
-export async function updateCompanySettings(data: Partial<CompanySettings>): Promise<{ success: boolean; message: string }> {
+export async function updateCompanySettings(
+  data: Partial<CompanySettings>,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(`${API_BASE}/company`, {
-      method: 'PUT',
+      method: "PUT",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'Pengaturan perusahaan berhasil disimpan.');
+    const json = await parseResponseJson(
+      res,
+      "Pengaturan perusahaan berhasil disimpan.",
+    );
     if (json.success !== false) notifyDataChanged();
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
 
@@ -741,7 +888,7 @@ export async function updateCompanySettings(data: Partial<CompanySettings>): Pro
 // UPLOAD FILE & GAMBAR KE SERVER (public/uploads/)
 // -----------------------------------------------------------------------------
 export async function uploadImageFile(file: File): Promise<{
-  status: 'success' | 'error';
+  status: "success" | "error";
   message?: string;
   url: string;
   full_url?: string;
@@ -749,90 +896,101 @@ export async function uploadImageFile(file: File): Promise<{
   size?: number;
 }> {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append("image", file);
 
-  const token = localStorage.getItem('sgc_admin_token');
+  const token = localStorage.getItem("sgc_admin_token");
   const headers: HeadersInit = {
-    'Accept': 'application/json',
+    Accept: "application/json",
   };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   let response: Response;
   try {
     response = await fetch(`${API_BASE}/upload`, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: formData,
     });
     if (!response.ok && response.status === 404) {
       response = await fetch(`${API_BASE}/upload.php`, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: formData,
       });
     }
   } catch {
     response = await fetch(`${API_BASE}/upload.php`, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: formData,
     });
   }
 
-  const json = await parseResponseJson(response, 'Gambar berhasil diunggah.');
-  if (!response.ok || json.status === 'error' || json.success === false) {
-    throw new Error(json.message || 'Gagal mengunggah file gambar ke server.');
+  const json = await parseResponseJson(response, "Gambar berhasil diunggah.");
+  if (!response.ok || json.status === "error" || json.success === false) {
+    throw new Error(json.message || "Gagal mengunggah file gambar ke server.");
   }
 
   return {
-    status: 'success',
+    status: "success",
     url: json.url || `/uploads/${json.filename}`,
     full_url: json.full_url,
-    filename: json.filename || '',
+    filename: json.filename || "",
     message: json.message,
-    size: json.size
+    size: json.size,
   };
 }
 
 /**
  * Menghapus file gambar tertentu dari server uploads (jika tidak dipakai lagi)
  */
-export async function deleteImageFile(urlOrFilename: string): Promise<{ success: boolean; message: string }> {
+export async function deleteImageFile(
+  urlOrFilename: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const headers = getAuthHeaders();
     let response = await fetch(`${API_BASE}/upload`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers,
       body: JSON.stringify({ url: urlOrFilename }),
     });
     if (!response.ok && response.status === 404) {
       response = await fetch(`${API_BASE}/upload.php`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers,
         body: JSON.stringify({ url: urlOrFilename }),
       });
     }
-    const json = await parseResponseJson(response, 'File gambar berhasil dihapus.');
-    return { success: response.ok && json.status === 'success', message: json.message || 'Selesai' };
+    const json = await parseResponseJson(
+      response,
+      "File gambar berhasil dihapus.",
+    );
+    return {
+      success: response.ok && json.status === "success",
+      message: json.message || "Selesai",
+    };
   } catch (err: any) {
-    return { success: false, message: err.message || 'Gagal menghapus gambar.' };
+    return {
+      success: false,
+      message: err.message || "Gagal menghapus gambar.",
+    };
   }
 }
 
-
-export async function updateAdminProfile(data: any): Promise<{ success: boolean; message: string; user?: any }> {
+export async function updateAdminProfile(
+  data: any,
+): Promise<{ success: boolean; message: string; user?: any }> {
   try {
-    const res = await fetch("/auth/profile", {
-      method: 'PUT',
+    const res = await fetch(`${API_BASE}/auth/profile`, {
+      method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    const json = await parseResponseJson(res, 'Profil berhasil diperbarui.');
+    const json = await parseResponseJson(res, "Profil berhasil diperbarui.");
     return json;
   } catch (err: any) {
-    return { success: false, message: err.message || 'Koneksi gagal' };
+    return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
-
