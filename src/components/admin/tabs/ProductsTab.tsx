@@ -99,8 +99,8 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
       price: p.price || 0,
       image_url: p.image_url || p.image || "",
       description: p.description || "",
-      kva: p.kva ?? "",
-      kw: p.kw ?? "",
+      // kva: p.kva ?? "",
+      // kw: p.kw ?? "",
       is_available: p.is_available ?? true,
       sort_order: (p as any).sort_order ?? 0,
     });
