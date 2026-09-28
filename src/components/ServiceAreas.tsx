@@ -206,17 +206,58 @@ export const ServiceAreas: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto mb-12"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Melayani Kota Cirebon &amp; Se-Wilayah Ciayumajakuning
-          </h2>
-          <p className="mt-4 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-            Didukung armada towing dan truk pengangkut pribadi siap
-            memobilisasi genset tepat waktu langsung ke titik lokasi acara
-            Anda. Geser kartu untuk melihat seluruh wilayah cakupan kami.
-          </p>
+          <div className="max-w-2xl text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Melayani Kota Cirebon &amp; Se-Wilayah Ciayumajakuning
+            </h2>
+            <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+              Didukung armada towing dan truk pengangkut pribadi siap
+              memobilisasi genset tepat waktu langsung ke titik lokasi acara
+              Anda.
+            </p>
+          </div>
+
+          {/* Left / Right Scroll Buttons */}
+          <div className="flex items-center gap-2 shrink-0 self-start md:self-auto">
+            <button
+              onClick={() => scroll("left")}
+              disabled={!canScrollLeft}
+              aria-label="Scroll Area ke Kiri"
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                canScrollLeft
+                  ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => scroll("right")}
+              disabled={!canScrollRight}
+              aria-label="Scroll Area ke Kanan"
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${
+                canScrollRight
+                  ? "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 hover:bg-amber-500 hover:text-slate-950 hover:border-amber-500 shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-300 dark:text-slate-700 cursor-not-allowed"
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </motion.div>
+
+        {/* Scroll Control Bar & Navigation Hint */}
+        <div className="flex items-center justify-between mb-4 px-1">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <MoveHorizontal className="w-4 h-4 text-amber-500 animate-pulse" />
+            <span className="font-medium">
+              Geser kartu ke kanan dan kiri untuk melihat wilayah cakupan
+            </span>
+          </div>
+        </div>
 
         {/* Scrollable Areas Cards (Supports Left & Right Drag, Swipe, Wheel & Buttons) */}
         <div
@@ -225,7 +266,7 @@ export const ServiceAreas: React.FC = () => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 select-none scroll-smooth ${
+          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 select-none scroll-smooth ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={{
@@ -243,7 +284,7 @@ export const ServiceAreas: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.15 }}
               transition={{ duration: 0.45, delay: idx * 0.08 }}
-              className={`w-[84vw] sm:w-[350px] md:w-[360px] h-auto shrink-0 rounded-2xl p-6 sm:p-8 border transition-all flex flex-col justify-center text-center ${
+              className={`w-[84vw] sm:w-[350px] md:w-[360px] h-auto shrink-0 snap-center rounded-2xl p-6 sm:p-8 border transition-all flex flex-col justify-center text-center ${
                 area.featured
                   ? "bg-white dark:bg-slate-900 border-amber-400 dark:border-amber-600/60 shadow-lg shadow-amber-500/5"
                   : "bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700"
