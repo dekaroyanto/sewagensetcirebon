@@ -203,8 +203,6 @@ if ($resource === 'products') {
             $product = $stmt->fetch();
             if ($product) {
                 $product['price'] = (float)$product['price'];
-                $product['kva'] = $product['kva'] ? (int)$product['kva'] : null;
-                $product['kw'] = $product['kw'] ? (int)$product['kw'] : null;
                 $product['is_available'] = (bool)$product['is_available'];
                 sendJsonResponse(['status' => 'success', 'data' => $product]);
             }
@@ -231,8 +229,6 @@ if ($resource === 'products') {
             $rows = $stmt->fetchAll();
             foreach ($rows as &$r) {
                 $r['price'] = (float)$r['price'];
-                $r['kva'] = $r['kva'] ? (int)$r['kva'] : null;
-                $r['kw'] = $r['kw'] ? (int)$r['kw'] : null;
                 $r['is_available'] = (bool)$r['is_available'];
             }
             sendJsonResponse(['status' => 'success', 'count' => count($rows), 'data' => $rows]);
@@ -247,13 +243,11 @@ if ($resource === 'products') {
         $price = (float)($data['price'] ?? 0);
         $imageUrl = $data['image_url'] ?? ($data['image'] ?? 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800');
         $desc = $data['description'] ?? '';
-        $kva = !empty($data['kva']) ? (int)$data['kva'] : null;
-        $kw = !empty($data['kw']) ? (int)$data['kw'] : null;
         $isAvail = isset($data['is_available']) ? (int)$data['is_available'] : 1;
         $sortOrder = isset($data['sort_order']) ? (int)$data['sort_order'] : 0;
 
-        $stmt = $pdo->prepare("INSERT INTO `products` (`id`, `name`, `product_type`, `price`, `image_url`, `description`, `kva`, `kw`, `is_available`, `sort_order`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$prodId, $name, $type, $price, $imageUrl, $desc, $kva, $kw, $isAvail, $sortOrder]);
+        $stmt = $pdo->prepare("INSERT INTO `products` (`id`, `name`, `product_type`, `price`, `image_url`, `description`, `is_available`, `sort_order`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$prodId, $name, $type, $price, $imageUrl, $desc, $isAvail, $sortOrder]);
 
         sendJsonResponse(['status' => 'success', 'message' => 'Produk berhasil ditambahkan!', 'id' => $prodId], 201);
     }
@@ -268,7 +262,7 @@ if ($resource === 'products') {
         $fields = [];
         $params = [];
 
-        $allowed = ['name', 'product_type', 'price', 'image_url', 'description', 'kva', 'kw', 'is_available', 'sort_order'];
+        $allowed = ['name', 'product_type', 'price', 'image_url', 'description', 'is_available', 'sort_order'];
         foreach ($allowed as $f) {
             if (isset($data[$f])) {
                 $fields[] = "`$f` = ?";

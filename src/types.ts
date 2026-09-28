@@ -9,9 +9,6 @@ export interface Product {
   image_url: string; // TEXT
   description: string; // TEXT (textarea containing specs & full details)
   image?: string;
-  kva?: number;
-  kw?: number;
-  pk?: number;
   phase?: string;
   tag?: string;
   categoryLabel?: string;

@@ -37,8 +37,8 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   useEffect(() => {
     loadProductsData();
     const handleSync = () => loadProductsData();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   // Spotlight units directly from database
@@ -55,9 +55,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
   const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Safe normalized active index
-  const safeActiveIndex = carouselItems.length > 0 
-    ? Math.min(activeIndex, carouselItems.length - 1) 
-    : 0;
+  const safeActiveIndex =
+    carouselItems.length > 0
+      ? Math.min(activeIndex, carouselItems.length - 1)
+      : 0;
 
   // Auto slide rotation
   useEffect(() => {
@@ -256,7 +257,8 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               Belum Ada Unit di Database
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-              Semua katalog sekarang dimuat langsung dari database. Tambahkan data produk melalui Dashboard Admin.
+              Semua katalog sekarang dimuat langsung dari database. Tambahkan
+              data produk melalui Dashboard Admin.
             </p>
           </div>
         ) : (
@@ -281,182 +283,183 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                   offset -= carouselItems.length;
                 }
 
-              const isActive = offset === 0;
-              const isPrev = offset === -1;
-              const isNext = offset === 1;
-              const isVisible = Math.abs(offset) <= 2;
+                const isActive = offset === 0;
+                const isPrev = offset === -1;
+                const isNext = offset === 1;
+                const isVisible = Math.abs(offset) <= 2;
 
-              if (!isVisible) return null;
+                if (!isVisible) return null;
 
-              // 3D positioning styles
-              let translateX = "0%";
-              let translateZ = 0;
-              let rotateY = 0;
-              let scale = 1;
-              let opacity = 1;
-              let zIndex = 10;
+                // 3D positioning styles
+                let translateX = "0%";
+                let translateZ = 0;
+                let rotateY = 0;
+                let scale = 1;
+                let opacity = 1;
+                let zIndex = 10;
 
-              if (isActive) {
-                translateX = "0%";
-                translateZ = 70;
-                rotateY = 0;
-                scale = 1;
-                opacity = 1;
-                zIndex = 30;
-              } else if (isPrev) {
-                translateX = "-66%";
-                translateZ = -80;
-                rotateY = 22;
-                scale = 0.86;
-                opacity = 0.82;
-                zIndex = 20;
-              } else if (isNext) {
-                translateX = "66%";
-                translateZ = -80;
-                rotateY = -22;
-                scale = 0.86;
-                opacity = 0.82;
-                zIndex = 20;
-              } else if (offset === -2) {
-                translateX = "-116%";
-                translateZ = -180;
-                rotateY = 32;
-                scale = 0.72;
-                opacity = 0.38;
-                zIndex = 10;
-              } else if (offset === 2) {
-                translateX = "116%";
-                translateZ = -180;
-                rotateY = -32;
-                scale = 0.72;
-                opacity = 0.38;
-                zIndex = 10;
-              }
+                if (isActive) {
+                  translateX = "0%";
+                  translateZ = 70;
+                  rotateY = 0;
+                  scale = 1;
+                  opacity = 1;
+                  zIndex = 30;
+                } else if (isPrev) {
+                  translateX = "-66%";
+                  translateZ = -80;
+                  rotateY = 22;
+                  scale = 0.86;
+                  opacity = 0.82;
+                  zIndex = 20;
+                } else if (isNext) {
+                  translateX = "66%";
+                  translateZ = -80;
+                  rotateY = -22;
+                  scale = 0.86;
+                  opacity = 0.82;
+                  zIndex = 20;
+                } else if (offset === -2) {
+                  translateX = "-116%";
+                  translateZ = -180;
+                  rotateY = 32;
+                  scale = 0.72;
+                  opacity = 0.38;
+                  zIndex = 10;
+                } else if (offset === 2) {
+                  translateX = "116%";
+                  translateZ = -180;
+                  rotateY = -32;
+                  scale = 0.72;
+                  opacity = 0.38;
+                  zIndex = 10;
+                }
 
-              return (
-                <motion.div
-                  key={item.id}
-                  onClick={() => handleSelectCard(idx)}
-                  drag={isActive ? "x" : false}
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.25}
-                  onDragStart={() => setIsDragging(true)}
-                  onDragEnd={(_, info) => {
-                    setIsDragging(false);
-                    if (info.offset.x < -40 || info.velocity.x < -250) {
-                      handleNext();
-                    } else if (info.offset.x > 40 || info.velocity.x > 250) {
-                      handlePrev();
-                    }
-                  }}
-                  animate={{
-                    x: translateX,
-                    z: translateZ,
-                    rotateY: rotateY,
-                    scale: scale,
-                    opacity: opacity,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 280,
-                    damping: 26,
-                    mass: 0.8,
-                  }}
-                  style={{
-                    zIndex,
-                    transformStyle: "preserve-3d",
-                    willChange: "transform, opacity",
-                  }}
-                  className={`absolute w-[290px] sm:w-[350px] md:w-[410px] h-[400px] sm:h-[440px] md:h-[470px] rounded-3xl cursor-pointer select-none ${
-                    isActive
-                      ? "shadow-2xl shadow-amber-500/20 ring-2 ring-amber-500 dark:ring-amber-400 bg-white dark:bg-slate-800"
-                      : "shadow-lg shadow-slate-300/50 dark:shadow-black/50 bg-slate-100 dark:bg-slate-850"
-                  }`}
-                >
-                  <div className="relative w-full h-full rounded-3xl overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800/95 dark:via-slate-850 dark:to-slate-900 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between p-5 sm:p-6 backdrop-blur-xl">
-                    {/* Card Top: Tags & Category Badge */}
-                    <div className="flex items-center justify-between gap-2 z-10">
-                      <span
-                        className={`px-3 py-1 rounded-xl font-black text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5 ${
-                          item.product_type === "ac"
-                            ? "bg-cyan-500 text-slate-950 font-bold"
+                return (
+                  <motion.div
+                    key={item.id}
+                    onClick={() => handleSelectCard(idx)}
+                    drag={isActive ? "x" : false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.25}
+                    onDragStart={() => setIsDragging(true)}
+                    onDragEnd={(_, info) => {
+                      setIsDragging(false);
+                      if (info.offset.x < -40 || info.velocity.x < -250) {
+                        handleNext();
+                      } else if (info.offset.x > 40 || info.velocity.x > 250) {
+                        handlePrev();
+                      }
+                    }}
+                    animate={{
+                      x: translateX,
+                      z: translateZ,
+                      rotateY: rotateY,
+                      scale: scale,
+                      opacity: opacity,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 280,
+                      damping: 26,
+                      mass: 0.8,
+                    }}
+                    style={{
+                      zIndex,
+                      transformStyle: "preserve-3d",
+                      willChange: "transform, opacity",
+                    }}
+                    className={`absolute w-[290px] sm:w-[350px] md:w-[410px] h-[400px] sm:h-[440px] md:h-[470px] rounded-3xl cursor-pointer select-none ${
+                      isActive
+                        ? "shadow-2xl shadow-amber-500/20 ring-2 ring-amber-500 dark:ring-amber-400 bg-white dark:bg-slate-800"
+                        : "shadow-lg shadow-slate-300/50 dark:shadow-black/50 bg-slate-100 dark:bg-slate-850"
+                    }`}
+                  >
+                    <div className="relative w-full h-full rounded-3xl overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-800/95 dark:via-slate-850 dark:to-slate-900 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between p-5 sm:p-6 backdrop-blur-xl">
+                      {/* Card Top: Tags & Category Badge */}
+                      <div className="flex items-center justify-between gap-2 z-10">
+                        <span
+                          className={`px-3 py-1 rounded-xl font-black text-xs tracking-wider uppercase shadow-xs flex items-center gap-1.5 ${
+                            item.product_type === "ac"
+                              ? "bg-cyan-500 text-slate-950 font-bold"
+                              : item.product_type === "paket"
+                                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                                : "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950"
+                          }`}
+                        >
+                          <Zap className="w-3 h-3 fill-current" />
+                          {item.product_type === "ac"
+                            ? "AC Standing"
                             : item.product_type === "paket"
-                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
-                              : "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950"
-                        }`}
-                      >
-                        <Zap className="w-3 h-3 fill-current" />
-                        {item.product_type === "ac"
-                          ? `${item.pk ? `${item.pk} PK` : "AC Standing"}`
-                          : item.product_type === "paket"
-                            ? "Paket Wedding"
-                            : `${item.kva} kVA`}
-                      </span>
-
-                      
-                    </div>
-
-                    {/* Card Middle: 3D Product Visual */}
-                    <div className="relative my-auto w-full aspect-16/10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-700/50 group shadow-inner">
-                      <img
-                        src={item.image_url || item.image}
-                        alt={item.name}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-
-                      {/* Gradient sheen overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60 dark:opacity-80" />
-
-                      {/* Spec Overlay Pill */}
-                      <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] font-medium text-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-lg bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-xs backdrop-blur-md">
-                        <span className="flex items-center gap-1 truncate font-semibold">
-                          <Cpu className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                          <span className="truncate">{ item.name}</span>
-                        </span>
-                        <span className="font-mono text-amber-700 dark:text-amber-400 font-bold shrink-0 ml-2">
-                          {item.kw ? `${item.kw} kW` : (item.phase || '3 Phase')}
+                              ? "Paket Wedding"
+                              : "Genset Silent"}
                         </span>
                       </div>
-                    </div>
 
-                    {/* Card Bottom: Info & Action */}
-                    <div className="space-y-3 z-10 pt-1 text-left">
-                      <div>
-                        <div className="text-[10px] font-mono font-bold tracking-widest text-amber-700 dark:text-amber-400 uppercase">
-                          {item.tag || item.categoryLabel || item.product_type}
+                      {/* Card Middle: 3D Product Visual */}
+                      <div className="relative my-auto w-full aspect-16/10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-700/50 group shadow-inner">
+                        <img
+                          src={item.image_url || item.image}
+                          alt={item.name}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+
+                        {/* Gradient sheen overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60 dark:opacity-80" />
+
+                        {/* Spec Overlay Pill */}
+                        {/* <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[11px] font-medium text-slate-800 dark:text-slate-300 px-2.5 py-1 rounded-lg bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-xs backdrop-blur-md">
+                          <span className="flex items-center gap-1 truncate font-semibold">
+                            <Cpu className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                            <span className="truncate">{item.name}</span>
+                          </span>
+                          <span className="font-mono text-amber-700 dark:text-amber-400 font-bold shrink-0 ml-2">
+                            {item.phase || "3 Phase"}
+                          </span>
+                        </div> */}
+                      </div>
+
+                      {/* Card Bottom: Info & Action */}
+                      <div className="space-y-3 z-10 pt-1 text-left">
+                        <div>
+                          <div className="text-[10px] font-mono font-bold tracking-widest text-amber-700 dark:text-amber-400 uppercase">
+                            {item.tag ||
+                              item.categoryLabel ||
+                              item.product_type}
+                          </div>
+                          <h3 className="font-display font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-tight mt-0.5 line-clamp-1">
+                            {item.name}
+                          </h3>
+                          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
+                            {item.description?.split("\n")?.[0] ||
+                              "Cocok untuk event & industri"}
+                          </p>
                         </div>
-                        <h3 className="font-display font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-tight mt-0.5 line-clamp-1">
-                          {item.name}
-                        </h3>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
-                          {item.description?.split('\n')?.[0] || "Cocok untuk event & industri"}
-                        </p>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                  </motion.div>
+                );
+              })}
+            </div>
 
-          {/* Dots Indicator */}
-          <div className="flex items-center justify-center gap-2 mt-6">
-            {carouselItems.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleSelectCard(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`h-2 rounded-full transition-all duration-500 ease-out cursor-pointer ${
-                  activeIndex === idx
-                    ? "w-8 bg-amber-500 dark:bg-amber-400 shadow-sm shadow-amber-500/50"
-                    : "w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-500"
-                }`}
-              />
-            ))}
+            {/* Dots Indicator */}
+            <div className="flex items-center justify-center gap-2 mt-6">
+              {carouselItems.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSelectCard(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-500 ease-out cursor-pointer ${
+                    activeIndex === idx
+                      ? "w-8 bg-amber-500 dark:bg-amber-400 shadow-sm shadow-amber-500/50"
+                      : "w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-500"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
     </section>
   );

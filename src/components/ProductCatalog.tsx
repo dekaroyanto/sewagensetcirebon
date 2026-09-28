@@ -167,7 +167,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ onSelectGensetFo
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
                           <span className="text-slate-400 block text-[10px]">Daya Output</span>
-                          <span className="font-bold text-slate-800">{product.kw} kW ({product.phase.split(' ')[0]})</span>
+                          <span className="font-bold text-slate-800">{product.phase ? product.phase.split(' ')[0] : '3 Phase'}</span>
                         </div>
                         <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
                           <span className="text-slate-400 block text-[10px]">Peredam Suara</span>

@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Edit3, 
-  Trash2, 
-  Zap, 
-  Snowflake, 
-  Package, 
-  Sliders, 
-  Check, 
-  X, 
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  Search,
+  Edit3,
+  Trash2,
+  Zap,
+  Snowflake,
+  Package,
+  Sliders,
+  Check,
+  X,
   Image as ImageIcon,
   DollarSign,
   AlertTriangle,
-  RotateCcw
-} from 'lucide-react';
-import { Product, ProductType } from '../../../types';
-import { getProducts, createProduct, updateProduct, deleteProduct } from '../../../utils/api';
-import { formatCurrency } from '../../../utils/format';
-import { ImageUploadField } from '../ImageUploadField';
+  RotateCcw,
+} from "lucide-react";
+import { Product, ProductType } from "../../../types";
+import {
+  getProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "../../../utils/api";
+import { formatCurrency } from "../../../utils/format";
+import { ImageUploadField } from "../ImageUploadField";
 
 interface ProductsTabProps {
   onToast: (msg: string) => void;
@@ -27,9 +32,9 @@ interface ProductsTabProps {
 export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -38,14 +43,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
   // Form fields
   const [formData, setFormData] = useState({
-    id: '',
-    name: '',
-    product_type: 'genset' as ProductType,
+    id: "",
+    name: "",
+    product_type: "genset" as ProductType,
     price: 0,
-    image_url: '',
-    description: '',
-    kva: '' as any,
-    kw: '' as any,
+    image_url: "",
+    description: "",
     is_available: true,
     sort_order: 0,
   });
@@ -65,19 +68,20 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   useEffect(() => {
     loadProducts();
     const handleSync = () => loadProducts();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   const openAddModal = () => {
     setEditingProduct(null);
     setFormData({
-      id: 'sgc-' + Date.now().toString().slice(-6),
-      name: '',
-      product_type: 'genset',
+      id: "sgc-" + Date.now().toString().slice(-6),
+      name: "",
+      product_type: "genset",
       price: 500000,
-      image_url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800',
-      description: 'Kapasitas Daya:\nMesin:\nTipe Listrik: 3 Phase (380V/220V)\nTingkat Suara: Super Silent\n\nPaket Sewa Sudah Termasuk:\n• 1 Unit Genset Silent\n• Kabel Power Standar\n• Operator Teknisi Standby',
+      image_url: "",
+      description:
+        "Kapasitas Daya:\nMesin:\nTipe Listrik: 3 Phase (380V/220V)\nTingkat Suara: Super Silent\n\nPaket Sewa Sudah Termasuk:\n• 1 Unit Genset Silent\n• Kabel Power Standar\n• Operator Teknisi Standby",
       kva: 20,
       kw: 16,
       is_available: true,
@@ -91,12 +95,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
     setFormData({
       id: p.id,
       name: p.name,
-      product_type: p.product_type || 'genset',
+      product_type: p.product_type || "genset",
       price: p.price || 0,
-      image_url: p.image_url || p.image || '',
-      description: p.description || '',
-      kva: p.kva ?? '',
-      kw: p.kw ?? '',
+      image_url: p.image_url || p.image || "",
+      description: p.description || "",
+      kva: p.kva ?? "",
+      kw: p.kw ?? "",
       is_available: p.is_available ?? true,
       sort_order: (p as any).sort_order ?? 0,
     });
@@ -106,7 +110,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name) {
-      onToast('Nama produk wajib diisi.');
+      onToast("Nama produk wajib diisi.");
       return;
     }
 
@@ -118,42 +122,46 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
         price: Number(formData.price),
         image_url: formData.image_url,
         description: formData.description,
-        kva: formData.kva ? Number(formData.kva) : undefined,
-        kw: formData.kw ? Number(formData.kw) : undefined,
         is_available: formData.is_available,
         sort_order: Number(formData.sort_order),
       };
 
       if (editingProduct) {
         // 1. UPDATE INSTAN DI STATE LOKAL (OPTIMISTIC UPDATE)
-        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...payload } as Product : p));
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === editingProduct.id ? ({ ...p, ...payload } as Product) : p,
+          ),
+        );
         setIsModalOpen(false);
 
         const res = await updateProduct(editingProduct.id, payload);
         if (res.success) {
           onToast(`Produk "${formData.name}" berhasil diperbarui!`);
         } else {
-          onToast('Peringatan: ' + res.message);
+          onToast("Peringatan: " + res.message);
         }
         await loadProducts();
       } else {
-        const newId = formData.id || 'sgc-' + Date.now();
+        const newId = formData.id || "sgc-" + Date.now();
         payload.id = newId;
 
         // 1. TAMBAH INSTAN DI STATE LOKAL (OPTIMISTIC UPDATE)
-        setProducts(prev => [payload as Product, ...prev]);
+        setProducts((prev) => [payload as Product, ...prev]);
         setIsModalOpen(false);
 
         const res = await createProduct(payload);
         if (res.success) {
-          onToast(`Produk "${formData.name}" berhasil ditambahkan ke database!`);
+          onToast(
+            `Produk "${formData.name}" berhasil ditambahkan ke database!`,
+          );
         } else {
-          onToast('Peringatan: ' + res.message);
+          onToast("Peringatan: " + res.message);
         }
         await loadProducts();
       }
     } catch (err: any) {
-      onToast('Error: ' + err.message);
+      onToast("Error: " + err.message);
       await loadProducts();
     } finally {
       setSubmitting(false);
@@ -163,26 +171,29 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   const handleDelete = async (id: string) => {
     try {
       // 1. HAPUS INSTAN DARI STATE LOKAL (OPTIMISTIC DELETE)
-      setProducts(prev => prev.filter(p => p.id !== id));
+      setProducts((prev) => prev.filter((p) => p.id !== id));
       setDeleteConfirmId(null);
 
       const res = await deleteProduct(id);
       if (res.success) {
-        onToast('Produk berhasil dihapus dari database.');
+        onToast("Produk berhasil dihapus dari database.");
       } else {
-        onToast('Gagal menghapus: ' + (res.message || 'Terjadi kesalahan'));
+        onToast("Gagal menghapus: " + (res.message || "Terjadi kesalahan"));
       }
       await loadProducts();
     } catch (err: any) {
-      onToast('Error: ' + err.message);
+      onToast("Error: " + err.message);
       await loadProducts();
     }
   };
 
-  const filtered = products.filter(p => {
-    const matchCat = selectedCategory === 'all' || p.product_type === selectedCategory;
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                        (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filtered = products.filter((p) => {
+    const matchCat =
+      selectedCategory === "all" || p.product_type === selectedCategory;
+    const matchSearch =
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description &&
+        p.description.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchCat && matchSearch;
   });
 
@@ -196,7 +207,8 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
             <span>Katalog Genset & Unit Pendingin</span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Kelola data produk, harga sewa, spesifikasi mesin, dan ketersediaan unit di Hostinger MySQL
+            Kelola data produk, harga sewa, spesifikasi mesin, dan ketersediaan
+            unit di Hostinger MySQL
           </p>
         </div>
 
@@ -206,7 +218,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
             className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors cursor-pointer"
             title="Muat Ulang Data"
           >
-            <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RotateCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
           <button
             onClick={openAddModal}
@@ -223,12 +235,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
         {/* Category Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
           {[
-            { id: 'all', label: 'Semua Kategori', icon: Sliders },
-            { id: 'genset', label: 'Genset Silent', icon: Zap },
-            { id: 'ac', label: 'AC & Misty Fan', icon: Snowflake },
-            { id: 'paket', label: 'Paket Hemat', icon: Package },
-            { id: 'aksesoris', label: 'Aksesoris ATS', icon: Sliders },
-          ].map(cat => {
+            { id: "all", label: "Semua Kategori", icon: Sliders },
+            { id: "genset", label: "Genset Silent", icon: Zap },
+            { id: "ac", label: "AC & Misty Fan", icon: Snowflake },
+            { id: "paket", label: "Paket Hemat", icon: Package },
+            { id: "aksesoris", label: "Aksesoris ATS", icon: Sliders },
+          ].map((cat) => {
             const Icon = cat.icon;
             const active = selectedCategory === cat.id;
             return (
@@ -237,8 +249,8 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
                   active
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                    : 'bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800'
+                    ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
+                    : "bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -266,7 +278,9 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
         {loading ? (
           <div className="py-16 text-center text-slate-400 flex flex-col items-center gap-3">
             <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs">Memuat katalog dari database MySQL Hostinger...</span>
+            <span className="text-xs">
+              Memuat katalog dari database MySQL Hostinger...
+            </span>
           </div>
         ) : filtered.length === 0 ? (
           <div className="py-16 text-center text-slate-500 text-xs">
@@ -279,15 +293,18 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                 <tr>
                   <th className="py-3 px-4 font-semibold">Produk / Unit</th>
                   <th className="py-3 px-4 font-semibold">Kategori</th>
-                  <th className="py-3 px-4 font-semibold">Kapasitas</th>
+                  {/* <th className="py-3 px-4 font-semibold">Kapasitas</th> */}
                   <th className="py-3 px-4 font-semibold">Tarif Sewa</th>
                   <th className="py-3 px-4 font-semibold">Status Unit</th>
                   <th className="py-3 px-4 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-slate-300">
-                {filtered.map(p => (
-                  <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
+                {filtered.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="hover:bg-slate-800/30 transition-colors"
+                  >
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-700/60">
@@ -296,12 +313,15 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                             alt={p.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {
-                              (e.target as any).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800';
+                              (e.target as any).src =
+                                "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800";
                             }}
                           />
                         </div>
                         <div>
-                          <div className="font-bold text-white text-sm">{p.name}</div>
+                          <div className="font-bold text-white text-sm">
+                            {p.name}
+                          </div>
                           <div className="text-[11px] text-slate-500 font-mono truncate max-w-[220px]">
                             ID: {p.id}
                           </div>
@@ -309,45 +329,64 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
-                        p.product_type === 'genset' 
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                          : p.product_type === 'ac'
-                          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30'
-                          : p.product_type === 'paket'
-                          ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30'
-                          : 'bg-slate-800 text-slate-400 border border-slate-700'
-                      }`}>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
+                          p.product_type === "genset"
+                            ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                            : p.product_type === "ac"
+                              ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30"
+                              : p.product_type === "paket"
+                                ? "bg-purple-500/10 text-purple-400 border border-purple-500/30"
+                                : "bg-slate-800 text-slate-400 border border-slate-700"
+                        }`}
+                      >
                         {p.product_type}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4">
+                    {/* <td className="py-3.5 px-4">
                       {p.kva ? (
-                        <div className="font-semibold text-slate-200">{p.kva} kVA <span className="text-slate-500 font-normal">({p.kw || Math.round(p.kva * 0.8)} kW)</span></div>
+                        <div className="font-semibold text-slate-200">
+                          {p.kva} kVA{" "}
+                          <span className="text-slate-500 font-normal">
+                            ({p.kw || Math.round(p.kva * 0.8)} kW)
+                          </span>
+                        </div>
                       ) : p.pk ? (
-                        <div className="font-semibold text-cyan-300">{p.pk} PK</div>
+                        <div className="font-semibold text-cyan-300">
+                          {p.pk} PK
+                        </div>
                       ) : (
                         <span className="text-slate-500">-</span>
                       )}
-                    </td>
+                    </td> */}
                     <td className="py-3.5 px-4">
                       {p.price > 0 ? (
                         <div className="font-bold text-amber-400 text-sm">
                           {formatCurrency(p.price)}
-                          <span className="text-[10px] text-slate-500 font-normal ml-1">/acara</span>
+                          <span className="text-[10px] text-slate-500 font-normal ml-1">
+                            /acara
+                          </span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic">Call WhatsApp</span>
+                        <span className="text-slate-400 italic">
+                          Call WhatsApp
+                        </span>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                        p.is_available !== false 
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${p.is_available !== false ? 'bg-emerald-400' : 'bg-rose-400'}`} />
-                        {p.is_available !== false ? 'Tersedia' : 'Sedang Disewa'}
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
+                          p.is_available !== false
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                            : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${p.is_available !== false ? "bg-emerald-400" : "bg-rose-400"}`}
+                        />
+                        {p.is_available !== false
+                          ? "Tersedia"
+                          : "Sedang Disewa"}
                       </span>
                     </td>
                     <td className="py-3.5 px-4 text-right">
@@ -383,9 +422,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
             <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-white mb-1">Hapus Produk Ini?</h3>
+            <h3 className="text-base font-bold text-white mb-1">
+              Hapus Produk Ini?
+            </h3>
             <p className="text-xs text-slate-400 mb-6">
-              Produk dengan ID <strong>{deleteConfirmId}</strong> akan dihapus permanen dari database Hostinger Anda.
+              Produk dengan ID <strong>{deleteConfirmId}</strong> akan dihapus
+              permanen dari database Hostinger Anda.
             </p>
             <div className="flex gap-2">
               <button
@@ -412,7 +454,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
             <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <Zap className="w-4 h-4 text-amber-500" />
-                <span>{editingProduct ? 'Edit Data Produk' : 'Tambah Produk / Genset Baru'}</span>
+                <span>
+                  {editingProduct
+                    ? "Edit Data Produk"
+                    : "Tambah Produk / Genset Baru"}
+                </span>
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -422,50 +468,77 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden">
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-col flex-1 overflow-hidden"
+            >
               <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Nama Produk / Unit *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Contoh: Genset Silent 45 kVA (36 kW)"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                    required
-                  />
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="block text-slate-400 font-semibold mb-1">
+                      Nama Produk / Unit *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      placeholder="Contoh: Genset Silent 45 kVA (36 kW)"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                      required
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Kategori Produk *</label>
-                  <select
-                    value={formData.product_type}
-                    onChange={(e) => setFormData({ ...formData, product_type: e.target.value as ProductType })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
-                  >
-                    <option value="genset">Genset Silent</option>
-                    <option value="ac">AC Standing Floor & Misty Fan</option>
-                    <option value="paket">Paket Bundling Wedding/Hajatan</option>
-                    <option value="aksesoris">Aksesoris (Panel ATS / Kabel)</option>
-                  </select>
-                </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">
+                      Kategori Produk *
+                    </label>
+                    <select
+                      value={formData.product_type}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          product_type: e.target.value as ProductType,
+                        })
+                      }
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                    >
+                      <option value="genset">Genset Silent</option>
+                      <option value="ac">AC Standing Floor & Misty Fan</option>
+                      <option value="paket">
+                        Paket Bundling Wedding/Hajatan
+                      </option>
+                      <option value="aksesoris">
+                        Aksesoris (Panel ATS / Kabel)
+                      </option>
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-slate-400 font-semibold mb-1">Tarif Sewa (Rp per Hari/Acara)</label>
-                  <input
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
-                    placeholder="0 jika hubungi WhatsApp"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  />
-                  <span className="text-[10px] text-slate-500 mt-1 block">
-                    {formData.price > 0 ? formatCurrency(formData.price) : '0 = Hubungi WhatsApp untuk penawaran khusus'}
-                  </span>
-                </div>
+                  <div>
+                    <label className="block text-slate-400 font-semibold mb-1">
+                      Tarif Sewa (Rp per Hari/Acara)
+                    </label>
+                    <input
+                      type="number"
+                      value={formData.price}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          price: Number(e.target.value),
+                        })
+                      }
+                      placeholder="0 jika hubungi WhatsApp"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    />
+                    <span className="text-[10px] text-slate-500 mt-1 block">
+                      {formData.price > 0
+                        ? formatCurrency(formData.price)
+                        : "0 = Hubungi WhatsApp untuk penawaran khusus"}
+                    </span>
+                  </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                  {/* <div className="grid grid-cols-2 gap-2">
                   <div>
                     <label className="block text-slate-400 font-semibold mb-1">Kapasitas (kVA)</label>
                     <input
@@ -486,44 +559,60 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     />
                   </div>
-                </div>
+                </div> */}
 
-                <div className="sm:col-span-2">
-                  <ImageUploadField
-                    label="Foto / Gambar Unit Genset"
-                    value={formData.image_url}
-                    onChange={(url) => setFormData({ ...formData, image_url: url })}
-                    required
-                    helpText="Format JPG, PNG, WEBP, GIF (Rekomendasi foto unit asli atau genset di lapangan)"
-                    onNotify={onToast}
-                  />
-                </div>
+                  <div className="sm:col-span-2">
+                    <ImageUploadField
+                      label="Foto / Gambar Unit Genset"
+                      value={formData.image_url}
+                      onChange={(url) =>
+                        setFormData({ ...formData, image_url: url })
+                      }
+                      required
+                      helpText="Format JPG, PNG, WEBP, GIF (Rekomendasi foto unit asli atau genset di lapangan)"
+                      onNotify={onToast}
+                    />
+                  </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-slate-400 font-semibold mb-1">Deskripsi Spesifikasi & Paket</label>
-                  <textarea
-                    rows={5}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Rincian mesin, kapasitas tangki, konsumsi BBM, peruntukan acara, kelengkapan kabel & operator..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
-                  />
-                </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-slate-400 font-semibold mb-1">
+                      Deskripsi Spesifikasi & Paket
+                    </label>
+                    <textarea
+                      rows={5}
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder="Rincian mesin, kapasitas tangki, konsumsi BBM, peruntukan acara, kelengkapan kabel & operator..."
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
+                    />
+                  </div>
 
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="is_avail"
-                    checked={formData.is_available}
-                    onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })}
-                    className="w-4 h-4 text-amber-500 rounded bg-slate-950 border-slate-800 focus:ring-0 cursor-pointer"
-                  />
-                  <label htmlFor="is_avail" className="text-slate-300 font-medium cursor-pointer">
-                    Unit Siap & Tersedia untuk Disewa
-                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="is_avail"
+                      checked={formData.is_available}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          is_available: e.target.checked,
+                        })
+                      }
+                      className="w-4 h-4 text-amber-500 rounded bg-slate-950 border-slate-800 focus:ring-0 cursor-pointer"
+                    />
+                    <label
+                      htmlFor="is_avail"
+                      className="text-slate-300 font-medium cursor-pointer"
+                    >
+                      Unit Siap & Tersedia untuk Disewa
+                    </label>
+                  </div>
                 </div>
-              </div>
-
               </div>
 
               <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
@@ -547,7 +636,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                   ) : (
                     <>
                       <Check className="w-4 h-4" />
-                      <span>{editingProduct ? 'Simpan Perubahan' : 'Tambahkan ke Katalog'}</span>
+                      <span>
+                        {editingProduct
+                          ? "Simpan Perubahan"
+                          : "Tambahkan ke Katalog"}
+                      </span>
                     </>
                   )}
                 </button>

@@ -1,15 +1,15 @@
-import React, { useState, useRef, ChangeEvent, DragEvent } from 'react';
-import { 
-  UploadCloud, 
-  Image as ImageIcon, 
-  X, 
-  Loader2, 
-  CheckCircle2, 
-  Link as LinkIcon, 
+import React, { useState, useRef, ChangeEvent, DragEvent } from "react";
+import {
+  UploadCloud,
+  Image as ImageIcon,
+  X,
+  Loader2,
+  CheckCircle2,
+  Link as LinkIcon,
   AlertCircle,
-  FileImage
-} from 'lucide-react';
-import { uploadImageFile } from '../../utils/api';
+  FileImage,
+} from "lucide-react";
+import { uploadImageFile } from "../../utils/api";
 
 interface ImageUploadFieldProps {
   label: string;
@@ -17,7 +17,7 @@ interface ImageUploadFieldProps {
   onChange: (url: string) => void;
   required?: boolean;
   helpText?: string;
-  onNotify?: (msg: string, type?: 'success' | 'error' | 'info') => void;
+  onNotify?: (msg: string, type?: "success" | "error" | "info") => void;
 }
 
 export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
@@ -25,8 +25,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
   value,
   onChange,
   required = false,
-  helpText = 'Format JPG, PNG, WEBP, GIF, SVG (Maks. 10 MB)',
-  onNotify
+  helpText = "Format JPG, PNG, WEBP, GIF, SVG (Maks. 10 MB)",
+  onNotify,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -40,15 +40,15 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     if (file.size > maxBytes) {
       const err = `Ukuran file ${(file.size / (1024 * 1024)).toFixed(1)} MB melebihi batas maksimum 10 MB.`;
       setUploadError(err);
-      if (onNotify) onNotify(err, 'error');
+      if (onNotify) onNotify(err, "error");
       return;
     }
 
     // 2. Validate MIME type
-    if (!file.type.startsWith('image/')) {
-      const err = 'File yang dipilih bukan gambar yang valid.';
+    if (!file.type.startsWith("image/")) {
+      const err = "File yang dipilih bukan gambar yang valid.";
       setUploadError(err);
-      if (onNotify) onNotify(err, 'error');
+      if (onNotify) onNotify(err, "error");
       return;
     }
 
@@ -60,17 +60,20 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
       // Update form state with uploaded image path (e.g. /uploads/sgc_...)
       onChange(result.url);
       if (onNotify) {
-        onNotify(`Gambar "${file.name}" berhasil diunggah ke server!`, 'success');
+        onNotify(
+          `Gambar "${file.name}" berhasil diunggah ke server!`,
+          "success",
+        );
       }
     } catch (err: any) {
-      console.error('Upload error:', err);
-      const msg = err.message || 'Gagal mengunggah file gambar ke hosting.';
+      console.error("Upload error:", err);
+      const msg = err.message || "Gagal mengunggah file gambar ke hosting.";
       setUploadError(msg);
-      if (onNotify) onNotify(msg, 'error');
+      if (onNotify) onNotify(msg, "error");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
     }
   };
@@ -104,7 +107,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     }
   };
 
-  const isLocalUpload = value && value.startsWith('/uploads/');
+  const isLocalUpload = value && value.startsWith("/uploads/");
 
   return (
     <div className="space-y-2">
@@ -122,7 +125,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           className="text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors flex items-center gap-1 cursor-pointer"
         >
           <LinkIcon className="w-3 h-3" />
-          <span>{showManualUrl ? 'Sembunyikan URL manual' : 'Atau input link URL'}</span>
+          <span>
+            {showManualUrl ? "Sembunyikan URL manual" : "Atau input link URL"}
+          </span>
         </button>
       </div>
 
@@ -147,7 +152,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               onError={(e) => {
                 // fallback placeholder if image cannot be loaded
-                (e.target as any).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400';
+                (e.target as any).src =
+                  "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400";
               }}
             />
             {isLocalUpload && (
@@ -160,13 +166,15 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           {/* Details & Actions */}
           <div className="flex-1 min-w-0 w-full space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                isLocalUpload 
-                  ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' 
-                  : 'bg-slate-800 text-slate-300 border border-slate-700'
-              }`}>
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                  isLocalUpload
+                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                    : "bg-slate-800 text-slate-300 border border-slate-700"
+                }`}
+              >
                 <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                {isLocalUpload ? 'File Server Hostinger' : 'URL Eksternal'}
+                {isLocalUpload ? "File berhasil diunggah" : "URL Eksternal"}
               </span>
               <span className="text-[11px] text-slate-400 font-mono truncate max-w-[240px]">
                 {value}
@@ -174,7 +182,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             </div>
 
             <p className="text-xs text-slate-400">
-              Gambar siap digunakan dan otomatis tersimpan saat Anda menekan tombol simpan formulir.
+              Gambar siap digunakan dan otomatis tersimpan saat Anda menekan
+              tombol simpan formulir.
             </p>
 
             <div className="flex items-center gap-2 pt-1">
@@ -199,7 +208,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
               <button
                 type="button"
-                onClick={() => onChange('')}
+                onClick={() => onChange("")}
                 className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
@@ -217,15 +226,19 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           onDrop={handleDrop}
           className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
             isDragging
-              ? 'border-amber-400 bg-amber-500/10'
-              : 'border-slate-800 hover:border-amber-500/50 bg-slate-950/60 hover:bg-slate-900/40'
-          } ${isUploading ? 'opacity-70 pointer-events-none' : ''}`}
+              ? "border-amber-400 bg-amber-500/10"
+              : "border-slate-800 hover:border-amber-500/50 bg-slate-950/60 hover:bg-slate-900/40"
+          } ${isUploading ? "opacity-70 pointer-events-none" : ""}`}
         >
           {isUploading ? (
             <div className="flex flex-col items-center justify-center py-3 space-y-2">
               <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-              <div className="text-xs font-bold text-white">Sedang mengunggah gambar ke server Hostinger...</div>
-              <div className="text-[11px] text-slate-400">Menyimpan ke folder public/uploads/</div>
+              <div className="text-xs font-bold text-white">
+                Sedang mengunggah gambar ke server Hostinger...
+              </div>
+              <div className="text-[11px] text-slate-400">
+                Menyimpan ke folder public/uploads/
+              </div>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-2 space-y-2">

@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
-import { Lock, User, ArrowLeft, ShieldCheck, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
-import { loginAdmin } from '../../utils/api';
-import { AdminUser } from '../../types';
+import React, { useState } from "react";
+import {
+  Lock,
+  User,
+  ArrowLeft,
+  ShieldCheck,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Sparkles,
+} from "lucide-react";
+import { loginAdmin } from "../../utils/api";
+import { AdminUser } from "../../types";
 
 interface AdminLoginProps {
   onLoginSuccess: (user: AdminUser) => void;
   onBackToHome: () => void;
 }
 
-export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackToHome }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export const AdminLogin: React.FC<AdminLoginProps> = ({
+  onLoginSuccess,
+  onBackToHome,
+}) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +30,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      setError('Harap masukkan username dan password.');
+      setError("Harap masukkan username dan password.");
       return;
     }
 
@@ -31,13 +43,15 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
     if (res.success && res.user) {
       onLoginSuccess(res.user);
     } else {
-      setError(res.message || 'Login gagal. Periksa username dan password Anda.');
+      setError(
+        res.message || "Login gagal. Periksa username dan password Anda.",
+      );
     }
   };
 
   const handleFillDemo = () => {
-    setUsername('admin');
-    setPassword('admin123');
+    setUsername("admin");
+    setPassword("admin123");
     setError(null);
   };
 
@@ -56,10 +70,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           <span>Kembali ke Website Utama</span>
         </button>
-
-        <span className="text-xs px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-amber-400 font-medium">
-          SGC Control Center
-        </span>
       </div>
 
       {/* Login Card */}
@@ -113,8 +123,12 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 onClick={() => setShowPassword(!showPassword)}
                 className="text-xs text-slate-400 hover:text-amber-400 flex items-center gap-1 cursor-pointer"
               >
-                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                {showPassword ? 'Sembunyikan' : 'Tampilkan'}
+                {showPassword ? (
+                  <EyeOff className="w-3.5 h-3.5" />
+                ) : (
+                  <Eye className="w-3.5 h-3.5" />
+                )}
+                {showPassword ? "Sembunyikan" : "Tampilkan"}
               </button>
             </div>
             <div className="relative">
@@ -122,7 +136,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
                 <Lock className="w-4 h-4" />
               </div>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -152,7 +166,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
         </form>
 
         {/* Demo Credentials Helper Box */}
-        <div className="mt-8 pt-6 border-t border-slate-800/80">
+        {/* <div className="mt-8 pt-6 border-t border-slate-800/80">
           <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
             <span className="flex items-center gap-1.5 font-medium text-slate-300">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
@@ -176,7 +190,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess, onBackTo
           <p className="text-[11px] text-slate-500 mt-2 text-center">
             *Dapat diubah di tabel <code className="text-slate-400">admin_users</code> pada phpMyAdmin Hostinger
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
