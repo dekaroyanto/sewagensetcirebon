@@ -19,15 +19,30 @@ import { Toast } from './components/Toast';
 import { GensetProduct } from './types';
 import { resetBodyScroll } from './utils/scrollLock';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { getCompanyInfo } from './utils/api';
 
 function MainApp() {
   const [currentPage, setCurrentPage] = useState<'home' | 'katalog' | 'artikel' | 'portofolio' | 'admin'>('home');
+  const [companyReady, setCompanyReady] = useState(false);
+  const [updateKey, setUpdateKey] = useState(0);
   const [activeSection, setActiveSection] = useState<string>('beranda');
   const [selectedGenset, setSelectedGenset] = useState<GensetProduct | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Detect URL parameter, hash, or path for Admin Dashboard access
   useEffect(() => {
+    const initApp = async () => {
+      await getCompanyInfo();
+      setCompanyReady(true);
+    };
+    initApp();
+
+    const handleDataChanged = async () => {
+      await getCompanyInfo();
+      setUpdateKey(prev => prev + 1);
+    };
+    window.addEventListener('sgc_data_changed', handleDataChanged);
+
     const checkUrlRoute = () => {
       const path = window.location.pathname;
       const hash = window.location.hash;
@@ -39,7 +54,10 @@ function MainApp() {
     };
     checkUrlRoute();
     window.addEventListener('popstate', checkUrlRoute);
-    return () => window.removeEventListener('popstate', checkUrlRoute);
+    return () => {
+      window.removeEventListener('sgc_data_changed', handleDataChanged);
+      window.removeEventListener('popstate', checkUrlRoute);
+    };
   }, []);
 
   const showToast = (msg: string) => {
@@ -117,8 +135,16 @@ function MainApp() {
     return <AdminDashboard onBackToHome={() => handleNavigate('beranda')} />;
   }
 
+  if (!companyReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#070a0f] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white transition-colors duration-200">
+    <div key={updateKey} className="min-h-screen bg-slate-50 dark:bg-[#070a0f] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white transition-colors duration-200">
       {/* Header & Sticky Navigation */}
       <Navbar
         currentPage={currentPage}

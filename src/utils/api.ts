@@ -284,7 +284,10 @@ export async function getCompanyInfo(): Promise<typeof COMPANY_INFO> {
     } catch {
       return COMPANY_INFO;
     }
-    return { ...COMPANY_INFO, ...json.data };
+    if (json && json.data) {
+      Object.assign(COMPANY_INFO, json.data);
+    }
+    return COMPANY_INFO;
   } catch (err) {
     return COMPANY_INFO;
   }

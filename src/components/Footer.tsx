@@ -30,7 +30,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Main Footer Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-300 dark:border-slate-800">
           {/* Col 1: Brand & Bio */}
-          <div className="lg:col-span-4 space-y-4">
+          <div className="lg:col-span-5 space-y-4">
             <div className="pb-1">
               <SGCLogo variant="horizontal" size="md" />
             </div>
@@ -44,7 +44,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </div>
 
           {/* Col 2: Quick Links */}
-          <div className="lg:col-span-2 space-y-3">
+          <div className="lg:col-span-3 space-y-3">
             <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
               Navigasi Cepat
             </h4>
@@ -72,8 +72,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          {/* Col 3: Capacities Ready */}
-          <div className="lg:col-span-3 space-y-3">
+          {/* Col 3: Contact Info */}
+          <div className="lg:col-span-4 space-y-3">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              Hubungi Kami
+            </h4>
             <div className="flex items-start gap-2.5">
               <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
               <span>{COMPANY_INFO.address}</span>
@@ -87,30 +90,6 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
               <span>{COMPANY_INFO.email}</span>
-            </div>
-          </div>
-
-          {/* Col 4: Area Coverage & WhatsApp Call */}
-          <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-              Area Layanan Utama
-            </h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              Kota Cirebon (Kejaksan, Kesambi, Harjamukti, Lemahwungkuk,
-              Pekalipan), Kab. Cirebon, Kuningan, Majalengka (Kertajati),
-              Indramayu.
-            </p>
-
-            <div className="pt-2">
-              <a
-                href={getGeneralWhatsAppUrl()}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center gap-2 shadow-sm transition-colors"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Hubungi WA Admin Langsung</span>
-              </a>
             </div>
           </div>
         </div>
