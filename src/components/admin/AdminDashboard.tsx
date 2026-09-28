@@ -21,6 +21,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Info,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { AdminLogin } from "./AdminLogin";
 import { OverviewTab } from "./tabs/OverviewTab";
@@ -54,6 +56,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState<ToastItem | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('sgc_admin_theme') || 'dark';
+    setTheme(savedTheme as 'light' | 'dark');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   const showToast = (
     msg: string,
@@ -96,9 +109,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   if (authChecking) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-200 flex flex-col items-center justify-center gap-3">
         <div className="w-8 h-8 border-3 border-amber-500 border-t-transparent rounded-full animate-spin" />
-        <span className="text-xs text-slate-400 tracking-wider">
+        <span className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 tracking-wider">
           Memeriksa autentikasi admin...
         </span>
       </div>
@@ -139,27 +152,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-amber-500 selection:text-white relative">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col selection:bg-amber-500 selection:text-slate-900 dark:text-white relative">
       {/* Toast Alert Notifikasi Sukses / Error CRUD */}
       {toast && (
         <div className="fixed top-5 right-5 z-[100] max-w-sm sm:max-w-md w-[calc(100%-2.5rem)] animate-in fade-in slide-in-from-top-4 duration-300">
           <div
             className={`p-4 rounded-2xl border shadow-2xl backdrop-blur-2xl flex items-start gap-3.5 relative overflow-hidden ${
               toast.type === "success"
-                ? "bg-slate-900/95 border-emerald-500/50 shadow-emerald-950/60 text-white"
+                ? "bg-white/95 dark:bg-slate-900/95 border-emerald-500/50 shadow-emerald-950/60 text-slate-900 dark:text-white"
                 : toast.type === "error"
-                  ? "bg-slate-900/95 border-rose-500/50 shadow-rose-950/60 text-white"
-                  : "bg-slate-900/95 border-amber-500/50 shadow-amber-950/60 text-white"
+                  ? "bg-white/95 dark:bg-slate-900/95 border-rose-500/50 shadow-rose-950/60 text-slate-900 dark:text-white"
+                  : "bg-white/95 dark:bg-slate-900/95 border-amber-500/50 shadow-amber-950/60 text-slate-900 dark:text-white"
             }`}
           >
             {/* Icon status */}
             <div
               className={`p-2 rounded-xl shrink-0 ${
                 toast.type === "success"
-                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                  ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
                   : toast.type === "error"
-                    ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
-                    : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                    ? "bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30"
+                    : "bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30"
               }`}
             >
               {toast.type === "success" && (
@@ -175,10 +188,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <span
                   className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                     toast.type === "success"
-                      ? "bg-emerald-500/20 text-emerald-300"
+                      ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
                       : toast.type === "error"
-                        ? "bg-rose-500/20 text-rose-300"
-                        : "bg-amber-500/20 text-amber-300"
+                        ? "bg-rose-500/20 text-rose-700 dark:text-rose-300"
+                        : "bg-amber-500/20 text-amber-700 dark:text-amber-300"
                   }`}
                 >
                   {toast.type === "success"
@@ -188,7 +201,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       : "Informasi"}
                 </span>
               </div>
-              <p className="text-xs text-slate-100 font-medium mt-1 leading-relaxed">
+              <p className="text-xs text-slate-800 dark:text-slate-100 font-medium mt-1 leading-relaxed">
                 {toast.message}
               </p>
             </div>
@@ -196,14 +209,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Close button */}
             <button
               onClick={() => setToast(null)}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              className="text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white p-1 rounded-lg hover:bg-slate-100 dark:bg-slate-800 transition-colors cursor-pointer shrink-0"
               title="Tutup Notifikasi"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Progress line */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-800">
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800">
               <div
                 className={`h-full ${
                   toast.type === "success"
@@ -219,11 +232,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       )}
 
       {/* Top Header Bar */}
-      <header className="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg bg-slate-900 text-slate-400 hover:text-white cursor-pointer"
+            className="md:hidden p-2 rounded-lg bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer"
           >
             {mobileMenuOpen ? (
               <X className="w-5 h-5" />
@@ -237,7 +250,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               SGC
             </div>
             <div>
-              <div className="font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
+              <div className="font-bold text-sm tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span>Admin Dashboard</span>
               </div>
             </div>
@@ -245,29 +258,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          {/* <button
             onClick={onBackToHome}
-            className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-medium flex items-center gap-1.5 border border-slate-800 transition-colors cursor-pointer group"
+            className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium flex items-center gap-1.5 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
             <span className="hidden sm:inline">Lihat Website Utama</span>
-          </button>
+          </button> */}
 
-          <div className="h-4 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
 
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs font-bold text-white leading-tight">
+            <button
+              onClick={() => {
+                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                setTheme(newTheme);
+                if (newTheme === 'dark') {
+                  document.documentElement.classList.add('dark');
+                  localStorage.setItem('sgc_admin_theme', 'dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  localStorage.setItem('sgc_admin_theme', 'light');
+                }
+              }}
+              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
+              title="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
+            <div className="hidden sm:flex flex-col text-right ml-2">
+              <span className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
                 {currentUser.full_name || currentUser.username}
               </span>
-              <span className="text-[10px] text-slate-400 capitalize">
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 capitalize">
                 {currentUser.role}
               </span>
             </div>
 
             <button
               onClick={handleLogout}
-              className="p-2 rounded-lg bg-slate-900 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer ml-1"
               title="Logout Sesi Admin"
             >
               <LogOut className="w-4 h-4" />
@@ -280,20 +311,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       <div className="flex-1 flex max-w-[1600px] w-full mx-auto relative">
         {/* Mobile Sidebar Overlay */}
         {mobileMenuOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/60 z-20 md:hidden backdrop-blur-sm top-[61px]"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}
-        
+
         {/* Sidebar Navigation */}
         <aside
-          className={`fixed md:sticky top-[61px] inset-y-0 left-0 z-30 w-64 bg-slate-950/95 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-r border-slate-800/80 p-4 shrink-0 transition-transform duration-200 md:translate-x-0 ${
+          className={`fixed md:sticky top-[61px] inset-y-0 left-0 z-30 w-64 bg-slate-50/95 dark:bg-slate-950/95 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-r border-slate-200/80 dark:border-slate-800/80 p-4 shrink-0 transition-transform duration-200 md:translate-x-0 ${
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           } h-[calc(100vh-61px)] flex flex-col justify-between overflow-y-auto`}
         >
           <div className="space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-2">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-500 dark:text-slate-400 px-3 py-2">
               Menu Manajemen
             </div>
 
@@ -311,13 +342,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     active
                       ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold"
                       : item.isHighlight
-                        ? "bg-amber-500/10 text-amber-300 hover:bg-amber-500/20 border border-amber-500/20"
-                        : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
+                        ? "bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 border border-amber-500/20"
+                        : "text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 hover:bg-white/60 dark:bg-slate-900/60"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`w-4 h-4 ${active ? "text-slate-950" : item.isHighlight ? "text-amber-400" : "text-slate-400"}`}
+                      className={`w-4 h-4 ${active ? "text-slate-950" : item.isHighlight ? "text-amber-600 dark:text-amber-400" : "text-slate-600 dark:text-slate-500 dark:text-slate-400"}`}
                     />
                     <span>{item.label}</span>
                   </div>
@@ -328,13 +359,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
 
           {/* Quick System Indicator */}
-          {/* <div className="pt-4 border-t border-slate-800/80 space-y-2">
-            <div className="bg-slate-900/80 rounded-xl p-3 border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          {/* <div className="pt-4 border-t border-slate-200/80 dark:border-slate-800/80 space-y-2">
+            <div className="bg-white/80 dark:bg-slate-900/80 rounded-xl p-3 border border-slate-200/80 dark:border-slate-800/80 text-[11px] text-slate-600 dark:text-slate-500 dark:text-slate-400 space-y-1">
+              <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                 <span>Backend API Siap</span>
               </div>
-              <div className="text-[10px] text-slate-400">
+              <div className="text-[10px] text-slate-600 dark:text-slate-500 dark:text-slate-400">
                 Mode: Hostinger MySQL Production
               </div>
             </div>
@@ -359,10 +390,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {activeTab === "faqs" && <FaqsTab onToast={showToast} />}
           {activeTab === "company" && <CompanyTab onToast={showToast} />}
           {activeTab === "profile" && currentUser && (
-            <ProfileTab 
-              user={currentUser} 
-              onUpdateUser={setCurrentUser} 
-              onToast={showToast} 
+            <ProfileTab
+              user={currentUser}
+              onUpdateUser={setCurrentUser}
+              onToast={showToast}
             />
           )}
           {activeTab === "database" && <DatabaseTab onToast={showToast} />}

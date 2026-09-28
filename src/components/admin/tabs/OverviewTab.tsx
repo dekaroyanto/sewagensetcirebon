@@ -122,7 +122,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3.5">
-            <div className={`p-2.5 rounded-xl ${dbStatus.connected ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+            <div className={`p-2.5 rounded-xl ${dbStatus.connected ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/20 text-amber-600 dark:text-amber-400'}`}>
               <Database className="w-5 h-5" />
             </div>
             <div>
@@ -131,12 +131,12 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   {dbStatus.connected ? 'Koneksi Database MySQL Hostinger Aktif' : 'Status Koneksi Database Hostinger'}
                 </span>
                 <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
-                  dbStatus.connected ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                  dbStatus.connected ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
                 }`}>
                   {dbStatus.connected ? 'Connected' : 'Offline / Standby'}
                 </span>
               </div>
-              <p className="text-xs text-slate-300 dark:text-slate-400 mt-1">
+              <p className="text-xs text-slate-600 dark:text-slate-300 dark:text-slate-400 mt-1">
                 {dbStatus.message} {dbStatus.database && `(Database: ${dbStatus.database}, ${dbStatus.tables || 0} tabel aktif)`}
               </p>
             </div>
@@ -146,14 +146,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <button
               onClick={checkDb}
               disabled={dbStatus.loading}
-              className="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-xs font-medium text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
+              className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:bg-slate-700/80 text-xs font-medium text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${dbStatus.loading ? 'animate-spin' : ''}`} />
               <span>Cek Koneksi</span>
             </button>
             <button
               onClick={() => onNavigateTab('database')}
-              className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-amber-500/30"
+              className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-amber-500/30"
             >
               <span>Setup Database</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -165,113 +165,113 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {/* Total Genset */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-700 transition-colors">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-300 dark:border-slate-700 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-500 dark:text-slate-400">
               Total Genset
             </span>
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
               <Zap className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white tracking-tight">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {stats?.total_genset ?? 0}
           </div>
         </div>
 
         {/* Total AC */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-700 transition-colors">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-300 dark:border-slate-700 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-500 dark:text-slate-400">
               AC & Pendingin
             </span>
             <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
               <Snowflake className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white tracking-tight">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {stats?.total_ac ?? 0}
           </div>
         </div>
 
         {/* Total Booking */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-700 transition-colors">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-300 dark:border-slate-700 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-500 dark:text-slate-400">
               Total Pesanan
             </span>
             <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
               <CalendarCheck className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white tracking-tight">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {stats?.total_bookings ?? 0}
           </div>
         </div>
 
         {/* Pending Booking */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-amber-500/40 transition-colors relative overflow-hidden">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-amber-500/40 transition-colors relative overflow-hidden">
           <div className="absolute top-0 right-0 w-2 h-2 rounded-bl-lg bg-amber-500" />
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-amber-400">
+            <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
               Perlu Tindakan
             </span>
-            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+            <div className="p-2 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-amber-400 tracking-tight">
+          <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
             {stats?.pending_bookings ?? 0}
           </div>
         </div>
 
         {/* Total Artikel */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-700 transition-colors">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-300 dark:border-slate-700 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-500 dark:text-slate-400">
               Artikel Blog
             </span>
             <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
               <FileText className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white tracking-tight">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {stats?.total_blogs ?? 0}
           </div>
         </div>
 
         {/* Testimoni */}
-        <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-700 transition-colors">
+        <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4.5 hover:border-slate-300 dark:border-slate-700 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-500 dark:text-slate-400">
               Testimoni
             </span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
               <MessageSquareQuote className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-bold text-white tracking-tight">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {stats?.total_testimonials ?? 0}
           </div>
         </div>
       </div>
 
       {/* Recent Bookings Table */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6">
+      <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <CalendarCheck className="w-5 h-5 text-amber-500" />
               <span>Pesanan Terbaru yang Masuk</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mt-0.5">
               Data pemesanan real-time dari website yang tersimpan di database
               MySQL
             </p>
           </div>
           <button
             onClick={() => onNavigateTab("bookings")}
-            className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:text-amber-300 flex items-center gap-1 cursor-pointer"
           >
             <span>Lihat Semua Pesanan</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -279,13 +279,13 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
 
         {recentBookings.length === 0 ? (
-          <div className="text-center py-10 text-slate-500 text-sm">
+          <div className="text-center py-10 text-slate-600 dark:text-slate-500 text-sm">
             Belum ada data pesanan baru di database.
           </div>
         ) : (
           <div className="overflow-x-auto pb-4">
             <table className="w-full text-left text-xs min-w-[700px] whitespace-nowrap">
-              <thead className="bg-slate-950/60 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+              <thead className="bg-slate-50 dark:bg-slate-950/60 text-slate-600 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-3 px-4 font-semibold">Kode / Tgl</th>
                   <th className="py-3 px-4 font-semibold">Nama Pemesan</th>
@@ -295,45 +295,45 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                   <th className="py-3 px-4 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-600 dark:text-slate-300">
                 {recentBookings.map((b) => (
                   <tr
                     key={b.id}
-                    className="hover:bg-slate-800/30 transition-colors"
+                    className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors"
                   >
                     <td className="py-3 px-4">
-                      <div className="font-mono font-bold text-amber-400">
+                      <div className="font-mono font-bold text-amber-600 dark:text-amber-400">
                         {b.booking_code}
                       </div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
+                      <div className="text-[11px] text-slate-600 dark:text-slate-500 mt-0.5">
                         {b.start_date}
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <div className="font-semibold text-white">
+                      <div className="font-semibold text-slate-900 dark:text-white">
                         {b.full_name}
                       </div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="text-[11px] text-slate-600 dark:text-slate-500 dark:text-slate-400">
                         {b.phone}
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <div className="font-medium text-slate-200">
+                      <div className="font-medium text-slate-700 dark:text-slate-200">
                         {b.selected_genset_name || "Unit Genset"}
                       </div>
-                      <div className="text-[11px] text-slate-400">
+                      <div className="text-[11px] text-slate-600 dark:text-slate-500 dark:text-slate-400">
                         {b.duration} • {b.rental_type}
                       </div>
                     </td>
                     <td className="py-3 px-4">
                       <div
-                        className="flex items-center gap-1 text-slate-300 truncate max-w-[200px]"
+                        className="flex items-center gap-1 text-slate-600 dark:text-slate-300 truncate max-w-[200px]"
                         title={b.event_location}
                       >
-                        <MapPin className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        <MapPin className="w-3.5 h-3.5 text-slate-600 dark:text-slate-500 shrink-0" />
                         <span>{b.district_cirebon}</span>
                       </div>
-                      <div className="text-[11px] text-slate-500 truncate max-w-[200px]">
+                      <div className="text-[11px] text-slate-600 dark:text-slate-500 truncate max-w-[200px]">
                         {b.event_location}
                       </div>
                     </td>
@@ -345,43 +345,43 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                         }
                         className={`text-xs font-semibold px-2.5 py-1 rounded-lg border focus:outline-none cursor-pointer ${
                           b.status === "Menunggu Konfirmasi"
-                            ? "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
                             : b.status === "Dikonfirmasi"
                               ? "bg-blue-500/10 text-blue-400 border-blue-500/30"
                               : b.status === "Sedang Berjalan"
                                 ? "bg-purple-500/10 text-purple-400 border-purple-500/30"
                                 : b.status === "Selesai"
-                                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                                  : "bg-rose-500/10 text-rose-400 border-rose-500/30"
+                                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                                  : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30"
                         }`}
                       >
                         <option
                           value="Menunggu Konfirmasi"
-                          className="bg-slate-900 text-amber-400"
+                          className="bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400"
                         >
                           Menunggu
                         </option>
                         <option
                           value="Dikonfirmasi"
-                          className="bg-slate-900 text-blue-400"
+                          className="bg-white dark:bg-slate-900 text-blue-400"
                         >
                           Dikonfirmasi
                         </option>
                         <option
                           value="Sedang Berjalan"
-                          className="bg-slate-900 text-purple-400"
+                          className="bg-white dark:bg-slate-900 text-purple-400"
                         >
                           Berjalan
                         </option>
                         <option
                           value="Selesai"
-                          className="bg-slate-900 text-emerald-400"
+                          className="bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400"
                         >
                           Selesai
                         </option>
                         <option
                           value="Dibatalkan"
-                          className="bg-slate-900 text-rose-400"
+                          className="bg-white dark:bg-slate-900 text-rose-600 dark:text-rose-400"
                         >
                           Dibatalkan
                         </option>
@@ -390,7 +390,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                     <td className="py-3 px-4 text-right">
                       <button
                         onClick={() => openWhatsAppCustomer(b)}
-                        className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors cursor-pointer inline-flex items-center gap-1 text-xs"
+                        className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-colors cursor-pointer inline-flex items-center gap-1 text-xs"
                         title="Chat Pelanggan di WhatsApp"
                       >
                         <Phone className="w-3.5 h-3.5" />

@@ -1,13 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { 
-  Zap, 
-  Search, 
-  SlidersHorizontal, 
-  VolumeX, 
-  Fuel, 
-  Check, 
-  Sparkles, 
-  MessageSquare, 
+import React, { useState, useMemo, useEffect } from "react";
+import {
+  Zap,
+  Search,
+  SlidersHorizontal,
+  VolumeX,
+  Fuel,
+  Check,
+  Sparkles,
+  MessageSquare,
   ArrowLeft,
   X,
   Gauge,
@@ -16,14 +16,21 @@ import {
   ShieldCheck,
   Truck,
   UserCheck,
-  CheckCircle2
-} from 'lucide-react';
-import { GensetProduct } from '../types';
-import { getProductWhatsAppUrl, getGeneralWhatsAppUrl } from '../utils/whatsapp';
-import { formatPrice, getProductTypeBadge, getProductTypeLabel } from '../utils/format';
-import { BookingModal } from './BookingModal';
-import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
-import { getProducts } from '../utils/api';
+  CheckCircle2,
+} from "lucide-react";
+import { GensetProduct } from "../types";
+import {
+  getProductWhatsAppUrl,
+  getGeneralWhatsAppUrl,
+} from "../utils/whatsapp";
+import {
+  formatPrice,
+  getProductTypeBadge,
+  getProductTypeLabel,
+} from "../utils/format";
+import { BookingModal } from "./BookingModal";
+import { useBodyScrollLock, resetBodyScroll } from "../utils/scrollLock";
+import { getProducts } from "../utils/api";
 
 interface CatalogPageProps {
   onBackToHome: () => void;
@@ -31,17 +38,19 @@ interface CatalogPageProps {
   onToast: (msg: string) => void;
 }
 
-export const CatalogPage: React.FC<CatalogPageProps> = ({ 
+export const CatalogPage: React.FC<CatalogPageProps> = ({
   onBackToHome,
   onSelectGensetForBooking,
-  onToast
+  onToast,
 }) => {
   const [products, setProducts] = useState<GensetProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [activeModalGenset, setActiveModalGenset] = useState<GensetProduct | null>(null);
-  const [bookingModalProduct, setBookingModalProduct] = useState<GensetProduct | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [activeModalGenset, setActiveModalGenset] =
+    useState<GensetProduct | null>(null);
+  const [bookingModalProduct, setBookingModalProduct] =
+    useState<GensetProduct | null>(null);
 
   // Load dynamic products from MySQL API
   const loadDynamicProducts = () => {
@@ -54,8 +63,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   useEffect(() => {
     loadDynamicProducts();
     const handleSync = () => loadDynamicProducts();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   // Prevent background scroll safely when any modal is active
@@ -69,21 +78,21 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   }, []);
 
   const categories = [
-    { id: 'all', label: 'Semua Produk' },
-    { id: 'genset', label: '⚡ Genset Silent' },
-    { id: 'ac', label: '❄️ AC Standing & Pendingin' },
-    { id: 'paket', label: '🎉 Paket Wedding' },
-    { id: 'aksesoris', label: '🔌 Aksesoris & Distribusi' },
+    { id: "all", label: "Semua Produk" },
+    { id: "genset", label: "⚡ Genset Silent" },
+    { id: "ac", label: "❄️ AC Standing & Pendingin" },
+    { id: "paket", label: "🎉 Paket Wedding" },
+    { id: "aksesoris", label: "🔌 Aksesoris & Distribusi" },
   ];
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchCategory = 
-        selectedCategory === 'all' || 
-        product.product_type === selectedCategory;
+      const matchCategory =
+        selectedCategory === "all" || product.product_type === selectedCategory;
 
       const query = searchQuery.toLowerCase().trim();
-      const matchSearch = !query ||
+      const matchSearch =
+        !query ||
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
         product.product_type.toLowerCase().includes(query);
@@ -95,7 +104,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen py-8 sm:py-12 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Top Breadcrumbs & Back Button */}
         <div className="flex items-center justify-between gap-4 mb-6">
           <button
@@ -107,22 +115,24 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </button>
 
           <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-            <span>Beranda</span> <span className="mx-1">/</span> <strong className="text-slate-800 dark:text-slate-200">Katalog Genset Silent & AC Cirebon</strong>
+            <span>Beranda</span> <span className="mx-1">/</span>{" "}
+            <strong className="text-slate-800 dark:text-slate-200">
+              Katalog Genset Silent & AC Cirebon
+            </strong>
           </div>
         </div>
 
         {/* Page Banner Header */}
         <div className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-slate-800 shadow-xs mb-10 relative overflow-hidden">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs font-bold uppercase tracking-wider mb-3">
-              <Zap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span>Daftar Unit &amp; Paket Spesifikasi Lengkap</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-slate-900 dark:text-white tracking-tight">
               Katalog Sewa Genset Silent &amp; AC Standing Cirebon
             </h1>
             <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Jelajahi seluruh armada genset kedap suara (10 - 500+ kVA), AC standing (3 &amp; 5 PK), blower misty fan kabut, hingga paket bundling wedding hemat. Semua unit dalam kondisi prima, super bersih, include instalasi dan teknisi standby.
+              Jelajahi seluruh armada genset kedap suara (10 - 500+ kVA), AC
+              standing (3 &amp; 5 PK) hingga paket bundling hemat. Semua unit
+              dalam kondisi prima, super bersih, include instalasi dan teknisi
+              standby.
             </p>
           </div>
 
@@ -145,7 +155,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         {/* Filter & Search Bar */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-xs mb-8 space-y-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            
             {/* Search Input */}
             <div className="relative w-full md:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -158,7 +167,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               />
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => setSearchQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -174,15 +183,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                     selectedCategory === cat.id
-                      ? 'bg-amber-500 text-slate-950 shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                      ? "bg-amber-500 text-slate-950 shadow-xs"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                   }`}
                 >
                   {cat.label}
                 </button>
               ))}
             </div>
-
           </div>
         </div>
 
@@ -205,10 +213,12 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
                   />
-                  
+
                   {/* Floating Product Type Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider shadow-sm ${badge.badgeClass}`}>
+                    <span
+                      className={`px-2.5 py-1 rounded-md text-[10px] font-extrabold uppercase tracking-wider shadow-sm ${badge.badgeClass}`}
+                    >
                       {badge.label}
                     </span>
                   </div>
@@ -216,7 +226,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   {/* Price Banner Overlay */}
                   <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/95 via-slate-950/50 to-transparent p-4 flex items-end justify-between text-white">
                     <div>
-                      <span className="text-[10px] text-slate-300 block font-medium">Estimasi Tarif:</span>
+                      <span className="text-[10px] text-slate-300 block font-medium">
+                        Estimasi Tarif:
+                      </span>
                       <span className="text-base sm:text-lg font-display font-extrabold text-amber-400 leading-none">
                         {formattedPrice}
                       </span>
@@ -247,7 +259,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-[10px] text-slate-400 block uppercase font-semibold">Status Unit:</span>
+                        <span className="text-[10px] text-slate-400 block uppercase font-semibold">
+                          Status Unit:
+                        </span>
                         <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                           Siap Kirim 24 Jam
@@ -281,7 +295,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                       </a>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
@@ -295,29 +308,36 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               Butuh Paket Gabungan Genset Silent + AC Standing untuk Acara Anda?
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Konsultasikan ukuran tenda, kapasitas tamu, dan rincian alat pesta langsung dengan tim teknisi kami untuk rekomendasi kapasitas daya dan PK AC yang pas.
+              Konsultasikan ukuran tenda, kapasitas tamu, dan rincian alat pesta
+              langsung dengan tim teknisi kami untuk rekomendasi kapasitas daya
+              dan PK AC yang pas.
             </p>
           </div>
 
           <button
             type="button"
-            onClick={() => setBookingModalProduct(products.find(p => p.product_type === 'paket') || products[0] || null)}
+            onClick={() =>
+              setBookingModalProduct(
+                products.find((p) => p.product_type === "paket") ||
+                  products[0] ||
+                  null,
+              )
+            }
             className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center gap-2 shadow-sm shrink-0 transition-colors cursor-pointer"
           >
-            <Zap className="w-4 h-4 fill-slate-950" />
+            {/* <Zap className="w-4 h-4 fill-slate-950" /> */}
             <span>Formulir Booking Cepat</span>
           </button>
         </div>
-
       </div>
 
       {/* Modal Detail Spec Sheet */}
       {activeModalGenset && (
-        <div 
+        <div
           className="fixed inset-0 z-50 overflow-y-auto overscroll-contain bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-in fade-in"
           onClick={() => setActiveModalGenset(null)}
         >
-          <div 
+          <div
             className="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl sm:max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92vh] flex flex-col my-auto animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
@@ -325,7 +345,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             <div className="flex items-start justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur-xs shrink-0">
               <div className="flex-1 pr-3">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${getProductTypeBadge(activeModalGenset.product_type).badgeClass}`}>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${getProductTypeBadge(activeModalGenset.product_type).badgeClass}`}
+                  >
                     {getProductTypeLabel(activeModalGenset.product_type)}
                   </span>
                   <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
@@ -347,7 +369,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
             {/* Modal Body (Scrollable with full specifications from description textarea) */}
             <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-xs sm:text-sm flex-1 overscroll-contain">
-              
               {/* Compact Product Snapshot Card (Image is compact thumbnail) */}
               <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-slate-200/80 dark:border-slate-700/80 flex flex-row items-center gap-3.5 sm:gap-5">
                 {/* Restrained Thumbnail Image */}
@@ -378,7 +399,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   </div>
 
                   <div className="mt-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                    Estimasi Tarif: <span className="font-extrabold text-amber-600 dark:text-amber-400">{formatPrice(activeModalGenset.price)}</span>
+                    Estimasi Tarif:{" "}
+                    <span className="font-extrabold text-amber-600 dark:text-amber-400">
+                      {formatPrice(activeModalGenset.price)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -403,29 +427,38 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   <div className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
                     <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span className="leading-snug">Operator &amp; Teknisi Berpengalaman Standby Acara</span>
+                    <span className="leading-snug">
+                      Operator &amp; Teknisi Berpengalaman Standby Acara
+                    </span>
                   </div>
                   <div className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
                     <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span className="leading-snug">Kabel Power Standar Tembaga Berkualitas SNI</span>
+                    <span className="leading-snug">
+                      Kabel Power Standar Tembaga Berkualitas SNI
+                    </span>
                   </div>
                   <div className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
                     <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span className="leading-snug">Mobilisasi Pengiriman Cepat ke Seluruh Ciayumajakuning</span>
+                    <span className="leading-snug">
+                      Mobilisasi Pengiriman Cepat ke Seluruh Ciayumajakuning
+                    </span>
                   </div>
                   <div className="flex items-start gap-2 p-2.5 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/40 text-slate-700 dark:text-slate-300">
                     <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                    <span className="leading-snug">Gratis Instalasi &amp; Uji Beban Listrik di Lokasi</span>
+                    <span className="leading-snug">
+                      Gratis Instalasi &amp; Uji Beban Listrik di Lokasi
+                    </span>
                   </div>
                 </div>
               </div>
-
             </div>
 
             {/* Modal Footer (Clean & Ergonomic Action Bar) */}
             <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
               <div className="text-center sm:text-left">
-                <span className="text-[10px] text-slate-400 block uppercase font-semibold">Estimasi Tarif Sewa:</span>
+                <span className="text-[10px] text-slate-400 block uppercase font-semibold">
+                  Estimasi Tarif Sewa:
+                </span>
                 <span className="font-extrabold text-sm sm:text-base text-amber-600 dark:text-amber-400">
                   {formatPrice(activeModalGenset.price)}
                 </span>
@@ -455,7 +488,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 </button>
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -468,7 +500,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           onToast={onToast}
         />
       )}
-
     </div>
   );
 };

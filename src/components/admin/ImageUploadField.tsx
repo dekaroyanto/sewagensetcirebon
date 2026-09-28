@@ -113,7 +113,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
     <div className="space-y-2">
       {/* Label & Top Bar */}
       <div className="flex items-center justify-between">
-        <label className="block text-slate-300 font-semibold text-xs flex items-center gap-1.5">
+        <label className="block text-slate-600 dark:text-slate-300 font-semibold text-xs flex items-center gap-1.5">
           <FileImage className="w-3.5 h-3.5 text-amber-500" />
           <span>{label}</span>
           {required && <span className="text-rose-500 font-bold">*</span>}
@@ -122,7 +122,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         <button
           type="button"
           onClick={() => setShowManualUrl(!showManualUrl)}
-          className="text-[11px] text-amber-400 hover:text-amber-300 font-medium transition-colors flex items-center gap-1 cursor-pointer"
+          className="text-[11px] text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:text-amber-300 font-medium transition-colors flex items-center gap-1 cursor-pointer"
         >
           <LinkIcon className="w-3 h-3" />
           <span>
@@ -142,9 +142,9 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
       {/* Image Preview Card (if value exists) */}
       {value ? (
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-3.5 flex flex-col sm:flex-row items-center gap-4 relative overflow-hidden group">
+        <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 flex flex-col sm:flex-row items-center gap-4 relative overflow-hidden group">
           {/* Thumbnail preview */}
-          <div className="relative w-full sm:w-28 h-28 rounded-xl bg-slate-900 overflow-hidden border border-slate-800 shrink-0">
+          <div className="relative w-full sm:w-28 h-28 rounded-xl bg-white dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-slate-800 shrink-0">
             <img
               src={value}
               alt="Preview"
@@ -169,19 +169,19 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               <span
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                   isLocalUpload
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "bg-slate-800 text-slate-300 border border-slate-700"
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700"
                 }`}
               >
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 {isLocalUpload ? "File berhasil diunggah" : "URL Eksternal"}
               </span>
-              <span className="text-[11px] text-slate-400 font-mono truncate max-w-[240px]">
+              <span className="text-[11px] text-slate-600 dark:text-slate-500 dark:text-slate-400 font-mono truncate max-w-[240px]">
                 {value}
               </span>
             </div>
 
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400">
               Gambar siap digunakan dan otomatis tersimpan saat Anda menekan
               tombol simpan formulir.
             </p>
@@ -191,7 +191,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
                 type="button"
                 disabled={isUploading}
                 onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-500 dark:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
               >
                 {isUploading ? (
                   <>
@@ -209,7 +209,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               <button
                 type="button"
                 onClick={() => onChange("")}
-                className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-rose-950/40 text-slate-400 hover:text-rose-400 border border-slate-800 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-950/40 text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>Hapus</span>
@@ -227,36 +227,36 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
             isDragging
               ? "border-amber-400 bg-amber-500/10"
-              : "border-slate-800 hover:border-amber-500/50 bg-slate-950/60 hover:bg-slate-900/40"
+              : "border-slate-200 dark:border-slate-800 hover:border-amber-500/50 bg-slate-50 dark:bg-slate-950/60 hover:bg-white dark:bg-slate-900/40"
           } ${isUploading ? "opacity-70 pointer-events-none" : ""}`}
         >
           {isUploading ? (
             <div className="flex flex-col items-center justify-center py-3 space-y-2">
               <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
-              <div className="text-xs font-bold text-white">
+              <div className="text-xs font-bold text-slate-900 dark:text-white">
                 Sedang mengunggah gambar ke server Hostinger...
               </div>
-              <div className="text-[11px] text-slate-400">
+              <div className="text-[11px] text-slate-600 dark:text-slate-500 dark:text-slate-400">
                 Menyimpan ke folder public/uploads/
               </div>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-2 space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center transition-transform group-hover:scale-110">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center transition-transform group-hover:scale-110">
                 <UploadCloud className="w-6 h-6" />
               </div>
 
               <div>
-                <span className="text-xs font-bold text-white block">
+                <span className="text-xs font-bold text-slate-900 dark:text-white block">
                   Klik untuk pilih file gambar atau seret (drag & drop) ke sini
                 </span>
-                <span className="text-[11px] text-slate-500 mt-0.5 block">
+                <span className="text-[11px] text-slate-600 dark:text-slate-500 mt-0.5 block">
                   {helpText}
                 </span>
               </div>
 
               <div className="pt-1">
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-amber-400 text-xs font-semibold shadow-xs">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-amber-600 dark:text-amber-400 text-xs font-semibold shadow-xs">
                   <ImageIcon className="w-3.5 h-3.5" />
                   <span>Pilih dari Laptop / HP</span>
                 </span>
@@ -268,8 +268,8 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
       {/* Manual URL Input Fallback (Toggleable) */}
       {showManualUrl && (
-        <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-1.5 animate-in fade-in duration-200">
-          <label className="block text-[11px] font-semibold text-slate-400">
+        <div className="bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-1.5 animate-in fade-in duration-200">
+          <label className="block text-[11px] font-semibold text-slate-600 dark:text-slate-500 dark:text-slate-400">
             Atau masukkan link URL gambar (misal Unsplash atau CDN lain):
           </label>
           <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder="https://images.unsplash.com/... atau /uploads/..."
-              className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+              className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500"
             />
           </div>
         </div>
@@ -286,7 +286,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
       {/* Error Message */}
       {uploadError && (
-        <div className="flex items-center gap-1.5 text-rose-400 text-xs bg-rose-950/30 border border-rose-900/50 p-2.5 rounded-xl">
+        <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 text-xs bg-rose-950/30 border border-rose-900/50 p-2.5 rounded-xl">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{uploadError}</span>
         </div>

@@ -240,7 +240,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
               id="teaser-explore-catalog-btn"
               className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md hover:shadow-amber-500/25 transition-all flex items-center gap-2 cursor-pointer group"
             >
-              <Zap className="w-4 h-4 fill-slate-950" />
+              {/* <Zap className="w-4 h-4 fill-slate-950" /> */}
               <span>Lihat Katalog</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -251,7 +251,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
         {carouselItems.length === 0 ? (
           <div className="py-16 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 my-6">
             <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center mb-3">
-              <Zap className="w-7 h-7" />
+              {/* <Zap className="w-7 h-7" /> */}
             </div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Belum Ada Unit di Database

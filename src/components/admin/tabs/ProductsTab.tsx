@@ -211,13 +211,13 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-500" />
             <span>Katalog Genset & Unit Pendingin</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mt-0.5">
             Kelola data produk, harga sewa, spesifikasi mesin, dan ketersediaan
             unit di Hostinger MySQL
           </p>
@@ -226,14 +226,14 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={loadProducts}
-            className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
             title="Muat Ulang Data"
           >
             <RotateCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
           <button
             onClick={openAddModal}
-            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-amber-500/20"
+            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 dark:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg shadow-amber-500/20"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Produk Baru</span>
@@ -261,7 +261,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                 className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
                   active
                     ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20"
-                    : "bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800"
+                    : "bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800"
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -273,34 +273,34 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
         {/* Search Input */}
         <div className="relative min-w-[260px]">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-600 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari unit atau kapasitas..."
-            className="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            className="w-full bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
           />
         </div>
       </div>
 
       {/* Product List Table / Cards */}
-      <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl overflow-hidden">
+      <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl overflow-hidden">
         {loading ? (
-          <div className="py-16 text-center text-slate-400 flex flex-col items-center gap-3">
+          <div className="py-16 text-center text-slate-600 dark:text-slate-500 dark:text-slate-400 flex flex-col items-center gap-3">
             <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
             <span className="text-xs">
               Memuat katalog dari database MySQL Hostinger...
             </span>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-slate-500 text-xs">
+          <div className="py-16 text-center text-slate-600 dark:text-slate-500 text-xs">
             Tidak ada produk yang cocok dengan pencarian atau filter saat ini.
           </div>
         ) : (
           <div className="overflow-x-auto pb-4">
             <table className="w-full text-left text-xs min-w-[700px] whitespace-nowrap">
-              <thead className="bg-slate-950/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+              <thead className="bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 text-slate-600 dark:text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-200 dark:border-slate-800">
                 <tr>
                   <th className="py-3 px-4 font-semibold">Produk / Unit</th>
                   <th className="py-3 px-4 font-semibold">Kategori</th>
@@ -310,15 +310,15 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                   <th className="py-3 px-4 font-semibold text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-600 dark:text-slate-300">
                 {filtered.map((p) => (
                   <tr
                     key={p.id}
-                    className="hover:bg-slate-800/30 transition-colors"
+                    className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors"
                   >
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-slate-800 overflow-hidden shrink-0 border border-slate-700/60">
+                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700/60">
                           <img
                             src={p.image_url || p.image}
                             alt={p.name}
@@ -330,10 +330,10 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                           />
                         </div>
                         <div>
-                          <div className="font-bold text-white text-sm">
+                          <div className="font-bold text-slate-900 dark:text-white text-sm">
                             {p.name}
                           </div>
-                          <div className="text-[11px] text-slate-500 font-mono truncate max-w-[220px]">
+                          <div className="text-[11px] text-slate-600 dark:text-slate-500 font-mono truncate max-w-[220px]">
                             ID: {p.id}
                           </div>
                         </div>
@@ -343,12 +343,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
                           p.product_type === "genset"
-                            ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
                             : p.product_type === "ac"
                               ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/30"
                               : p.product_type === "paket"
                                 ? "bg-purple-500/10 text-purple-400 border border-purple-500/30"
-                                : "bg-slate-800 text-slate-400 border border-slate-700"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700"
                         }`}
                       >
                         {p.product_type}
@@ -356,9 +356,9 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                     </td>
                     {/* <td className="py-3.5 px-4">
                       {p.kva ? (
-                        <div className="font-semibold text-slate-200">
+                        <div className="font-semibold text-slate-700 dark:text-slate-200">
                           {p.kva} kVA{" "}
-                          <span className="text-slate-500 font-normal">
+                          <span className="text-slate-600 dark:text-slate-500 font-normal">
                             ({p.kw || Math.round(p.kva * 0.8)} kW)
                           </span>
                         </div>
@@ -367,19 +367,19 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                           {p.pk} PK
                         </div>
                       ) : (
-                        <span className="text-slate-500">-</span>
+                        <span className="text-slate-600 dark:text-slate-500">-</span>
                       )}
                     </td> */}
                     <td className="py-3.5 px-4">
                       {p.price > 0 ? (
-                        <div className="font-bold text-amber-400 text-sm">
+                        <div className="font-bold text-amber-600 dark:text-amber-400 text-sm">
                           {formatCurrency(p.price)}
-                          <span className="text-[10px] text-slate-500 font-normal ml-1">
+                          <span className="text-[10px] text-slate-600 dark:text-slate-500 font-normal ml-1">
                             /acara
                           </span>
                         </div>
                       ) : (
-                        <span className="text-slate-400 italic">
+                        <span className="text-slate-600 dark:text-slate-500 dark:text-slate-400 italic">
                           Call WhatsApp
                         </span>
                       )}
@@ -388,12 +388,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
                           p.is_available !== false
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                            : "bg-rose-500/10 text-rose-400 border border-rose-500/20"
+                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+                            : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
                         }`}
                       >
                         <span
-                          className={`w-1.5 h-1.5 rounded-full ${p.is_available !== false ? "bg-emerald-400" : "bg-rose-400"}`}
+                          className={`w-1.5 h-1.5 rounded-full ${p.is_available !== false ? "bg-emerald-500 dark:bg-emerald-400" : "bg-rose-500 dark:bg-rose-400"}`}
                         />
                         {p.is_available !== false
                           ? "Tersedia"
@@ -404,14 +404,14 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           onClick={() => openEditModal(p)}
-                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer border border-slate-700"
+                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
                           title="Edit Produk"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setDeleteConfirmId(p.id)}
-                          className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 transition-colors cursor-pointer border border-rose-500/20"
+                          className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer border border-rose-500/20"
                           title="Hapus Produk"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -428,28 +428,28 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
-            <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mx-auto mb-4">
+        <div className="fixed inset-0 z-50 bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
+            <div className="w-12 h-12 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-base font-bold text-white mb-1">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
               Hapus Produk Ini?
             </h3>
-            <p className="text-xs text-slate-400 mb-6">
+            <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mb-6">
               Produk dengan ID <strong>{deleteConfirmId}</strong> akan dihapus
               permanen dari database Hostinger Anda.
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold cursor-pointer"
               >
                 Batal
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="flex-1 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-slate-900 dark:text-white text-xs font-bold cursor-pointer"
               >
                 Hapus Sekarang
               </button>
@@ -460,10 +460,10 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
       {/* Add / Edit Product Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800 shrink-0 bg-slate-900">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
+        <div className="fixed inset-0 z-50 bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <Zap className="w-4 h-4 text-amber-500" />
                 <span>
                   {editingProduct
@@ -473,7 +473,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer"
+                className="p-1 rounded-lg text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -486,7 +486,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
               <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
-                    <label className="block text-slate-400 font-semibold mb-1">
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
                       Nama Produk / Unit *
                     </label>
                     <input
@@ -496,13 +496,13 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       placeholder="Contoh: Genset Silent 45 kVA (36 kW)"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 font-semibold mb-1">
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
                       Kategori Produk *
                     </label>
                     <select
@@ -513,7 +513,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                           product_type: e.target.value as ProductType,
                         })
                       }
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     >
                       <option value="genset">Genset Silent</option>
                       <option value="ac">AC Standing Floor & Misty Fan</option>
@@ -527,7 +527,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 font-semibold mb-1">
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
                       Tarif Sewa (Rp per Hari/Acara)
                     </label>
                     <input
@@ -540,9 +540,9 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                         })
                       }
                       placeholder="0 jika hubungi WhatsApp"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     />
-                    <span className="text-[10px] text-slate-500 mt-1 block">
+                    <span className="text-[10px] text-slate-600 dark:text-slate-500 mt-1 block">
                       {formData.price > 0
                         ? formatCurrency(formData.price)
                         : "0 = Hubungi WhatsApp untuk penawaran khusus"}
@@ -551,23 +551,23 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
 
                   {/* <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-400 font-semibold mb-1">Kapasitas (kVA)</label>
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Kapasitas (kVA)</label>
                     <input
                       type="number"
                       value={formData.kva}
                       onChange={(e) => setFormData({ ...formData, kva: e.target.value })}
                       placeholder="Contoh: 60"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 font-semibold mb-1">Daya (kW / PK)</label>
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Daya (kW / PK)</label>
                     <input
                       type="number"
                       value={formData.kw}
                       onChange={(e) => setFormData({ ...formData, kw: e.target.value })}
                       placeholder="Contoh: 48"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div> */}
@@ -586,7 +586,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-slate-400 font-semibold mb-1">
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
                       Deskripsi Spesifikasi & Paket
                     </label>
                     <textarea
@@ -599,7 +599,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                         })
                       }
                       placeholder="Rincian mesin, kapasitas tangki, konsumsi BBM, peruntukan acara, kelengkapan kabel & operator..."
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
+                      className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-amber-500 leading-relaxed font-mono"
                     />
                   </div>
 
@@ -614,11 +614,11 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                           is_available: e.target.checked,
                         })
                       }
-                      className="w-4 h-4 text-amber-500 rounded bg-slate-950 border-slate-800 focus:ring-0 cursor-pointer"
+                      className="w-4 h-4 text-amber-500 rounded bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 focus:ring-0 cursor-pointer"
                     />
                     <label
                       htmlFor="is_avail"
-                      className="text-slate-300 font-medium cursor-pointer"
+                      className="text-slate-600 dark:text-slate-300 font-medium cursor-pointer"
                     >
                       Unit Siap & Tersedia untuk Disewa
                     </label>
@@ -626,18 +626,18 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-800 bg-slate-900/90 backdrop-blur-sm shrink-0">
+              <div className="flex justify-end gap-2 px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 backdrop-blur-sm shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-500 dark:bg-amber-400 text-slate-950 font-bold flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50"
                 >
                   {submitting ? (
                     <>

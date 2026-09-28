@@ -80,20 +80,20 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200 max-w-4xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/60 border border-slate-800/80 p-5 rounded-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 p-5 rounded-2xl">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Building className="w-5 h-5 text-amber-500" />
             <span>Pengaturan Kontak & Profil Perusahaan</span>
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mt-0.5">
             Perubahan nomor WhatsApp, telepon, dan alamat akan langsung sinkron ke seluruh halaman website
           </p>
         </div>
 
         <button
           onClick={loadData}
-          className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors cursor-pointer self-start sm:self-auto"
+          className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer self-start sm:self-auto"
           title="Muat Ulang"
         >
           <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -101,22 +101,22 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
       </div>
 
       {loading ? (
-        <div className="py-16 text-center text-slate-400 flex flex-col items-center gap-3 bg-slate-900/60 border border-slate-800 rounded-2xl">
+        <div className="py-16 text-center text-slate-600 dark:text-slate-500 dark:text-slate-400 flex flex-col items-center gap-3 bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl">
           <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
           <span className="text-xs">Memuat pengaturan dari database...</span>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Card 1: Primary Contact */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-              <Phone className="w-4 h-4 text-emerald-400" />
+          <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+              <Phone className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>Kontak Utama & Layanan Pelanggan</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">
                   Nomor WhatsApp Utama (Target Pesanan / Booking) *
                 </label>
                 <input
@@ -124,16 +124,16 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
                   value={formData.whatsappNumber}
                   onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
                   placeholder="08170696959"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
                   required
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">
+                <span className="text-[11px] text-slate-600 dark:text-slate-500 mt-1 block">
                   *Nomor ini menerima seluruh rincian pemesanan dari form website.
                 </span>
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">
                   Nomor Telepon Kantor / Hotline
                 </label>
                 <input
@@ -141,12 +141,12 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder="08170696959"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white font-mono focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">
                   Email Perusahaan / Penawaran
                 </label>
                 <input
@@ -154,12 +154,12 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="gensetcirebon.rental@gmail.com"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">
                   Jam Operasional & Standby
                 </label>
                 <input
@@ -167,91 +167,91 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
                   value={formData.operatingHours}
                   onChange={(e) => setFormData({ ...formData, operatingHours: e.target.value })}
                   placeholder="24 Jam Nonstop Setiap Hari"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Card 2: Company Identity & Location */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+          <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
               <MapPin className="w-4 h-4 text-amber-500" />
               <span>Identitas & Lokasi Kantor Workshop</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Nama Perusahaan / Brand</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Nama Perusahaan / Brand</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Singkatan Brand</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Singkatan Brand</label>
                 <input
                   type="text"
                   value={formData.shortName}
                   onChange={(e) => setFormData({ ...formData, shortName: e.target.value })}
                   placeholder="SGC"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-slate-300 font-semibold mb-1">Tagline Utama Website</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Tagline Utama Website</label>
                 <input
                   type="text"
                   value={formData.tagline}
                   onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-slate-300 font-semibold mb-1">Alamat Kantor / Garasi Armada</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Alamat Kantor / Garasi Armada</label>
                 <textarea
                   rows={2}
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Kota Cirebon, Jawa Barat, Indonesia"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Card 3: Social Media */}
-          <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-6 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
+          <div className="bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 space-y-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
               <Share2 className="w-4 h-4 text-cyan-400" />
               <span>Media Sosial</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Akun Instagram</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Akun Instagram</label>
                 <input
                   type="text"
                   value={formData.instagram || ''}
                   onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
                   placeholder="@sewagensetcirebon"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Halaman Facebook</label>
+                <label className="block text-slate-600 dark:text-slate-300 font-semibold mb-1">Halaman Facebook</label>
                 <input
                   type="text"
                   value={formData.facebook || ''}
                   onChange={(e) => setFormData({ ...formData, facebook: e.target.value })}
                   placeholder="Sewa Genset Cirebon"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-white focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                 />
               </div>
             </div>
@@ -262,7 +262,7 @@ export const CompanyTab: React.FC<CompanyTabProps> = ({ onToast }) => {
             <button
               type="submit"
               disabled={submitting}
-              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50 transition-all transform active:scale-95"
+              className="px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-500 dark:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50 transition-all transform active:scale-95"
             >
               {submitting ? (
                 <>
