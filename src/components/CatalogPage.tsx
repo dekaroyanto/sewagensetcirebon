@@ -131,8 +131,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </h1>
             <p className="mt-3 text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
               Jelajahi seluruh armada genset kedap suara (10 - 500+ kVA), AC
-              standing (3 &amp; 5 PK) hingga paket bundling hemat. Semua unit
-              dalam kondisi prima, super bersih, include instalasi dan teknisi
+              standing 5 PK hingga paket bundling hemat. Semua unit dalam
+              kondisi prima, super bersih, include instalasi dan teknisi
               standby.
             </p>
           </div>
@@ -177,7 +177,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </div>
 
             {/* Category Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
+            {/* <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
@@ -191,7 +191,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                   {cat.label}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -375,7 +375,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 {/* Restrained Thumbnail Image */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs">
                   <img
-                    src={getImageUrl(activeModalGenset.image_url || activeModalGenset.image)}
+                    src={getImageUrl(
+                      activeModalGenset.image_url || activeModalGenset.image,
+                    )}
                     alt={activeModalGenset.name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
