@@ -16,6 +16,22 @@ import { COMPANY_INFO } from "../data/company";
 export const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 /**
+ * Format image URL from database to absolute URL pointing to backend
+ */
+export function getImageUrl(imagePath?: string): string {
+  if (!imagePath) return "";
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("data:") || imagePath.startsWith("blob:")) {
+    return imagePath;
+  }
+  // Remove leading slash if exists
+  const cleanPath = imagePath.replace(/^\//, "");
+  if (cleanPath.startsWith("api/")) {
+    return `/${cleanPath}`;
+  }
+  return `${API_BASE}/${cleanPath}`;
+}
+
+/**
  * Global event dispatcher to automatically notify all components to re-fetch latest data
  */
 export function notifyDataChanged() {
