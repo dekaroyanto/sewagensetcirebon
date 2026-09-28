@@ -37,9 +37,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
               Pusat rental dan persewaan genset silent (10 - 500+ kVA) serta AC
-              standing floor (3 &amp; 5 PK). Menyediakan unit berkualitas prima,
-              super dingin, super hening, instalasi rapi, dan teknisi standby 24
-              jam.
+              standing floor 5 PK. Menyediakan unit berkualitas prima, super
+              dingin, super hening, instalasi rapi, dan teknisi standby 24 jam.
             </p>
           </div>
 
@@ -52,6 +51,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {[
                 { id: "beranda", label: "Beranda Utama" },
                 { id: "katalog", label: "Katalog Genset & AC" },
+                { id: "pricelist", label: "Daftar Harga Sewa" },
                 { id: "booking", label: "Form Booking WA" },
                 { id: "portofolio", label: "Portofolio Acara" },
                 { id: "keunggulan", label: "Keunggulan SGC" },

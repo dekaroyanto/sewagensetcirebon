@@ -6,12 +6,12 @@ import heroBgImg from "../assets/images/hero_light_industrial_bg_1788333143328.j
 
 interface HeroProps {
   onExploreCatalog: () => void;
-  onGoToBooking: () => void;
+  onViewPricelist: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
   onExploreCatalog,
-  onGoToBooking,
+  onViewPricelist,
 }) => {
   return (
     <section className="relative overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pt-12 pb-14 lg:pt-20 lg:pb-20 border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
@@ -57,10 +57,9 @@ export const Hero: React.FC<HeroProps> = ({
                 </strong>{" "}
                 dan pendingin{" "}
                 <strong className="text-slate-900 dark:text-white font-bold">
-                  AC Standing 3 &amp; 5 PK
+                  AC Standing 5 PK
                 </strong>
-                . Unit 3D industrial silent canopy, teknisi standby, dan
-                instalasi lengkap.
+                . Teknisi standby, dan instalasi lengkap.
               </p>
             </div>
 
@@ -68,12 +67,12 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button
                 type="button"
-                onClick={onGoToBooking}
+                onClick={onViewPricelist}
                 id="hero-booking-btn"
                 className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-slate-950 font-extrabold text-sm shadow-sm flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 {/* <Zap className="w-4 h-4 fill-slate-950" /> */}
-                <span>Konsultasi &amp; Sewa Unit</span>
+                <span>Lihat Harga Sewa</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 

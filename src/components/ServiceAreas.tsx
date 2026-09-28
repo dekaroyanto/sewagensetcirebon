@@ -101,6 +101,42 @@ export const ServiceAreas: React.FC = () => {
         "Proyek Infrastruktur Pesisir, Hajatan Besar, Cold Storage, Pabrik",
       featured: false,
     },
+    {
+      title: "Kabupaten Brebes",
+      type: "Wilayah Penyangga Pantura",
+      districts: [
+        "Brebes",
+        "Tanjung",
+        "Bulakamba",
+        "Wanasari",
+        "Ketanggungan",
+        "Jatibarang",
+        "Losari",
+        "Bumiayu",
+      ],
+      deliveryTime: "90 - 150 Menit Siap Tiba",
+      popularUsage:
+        "Hajatan & Pernikahan, Gudang & Industri, Proyek Infrastruktur, Acara Outdoor",
+      featured: false,
+    },
+    {
+      title: "Kota & Kabupaten Tegal",
+      type: "Wilayah Pantura & Industri",
+      districts: [
+        "Tegal Barat",
+        "Tegal Timur",
+        "Adiwerna",
+        "Dukuhturi",
+        "Talang",
+        "Slawi",
+        "Kramat",
+        "Lebaksiu",
+      ],
+      deliveryTime: "90 - 150 Menit Siap Tiba",
+      popularUsage:
+        "Pabrik & Gudang, Pernikahan, Hajatan Besar, Proyek Konstruksi, Event Outdoor",
+      featured: false,
+    },
   ];
 
   // Scroll Container Ref & State for Horizontal Navigation
@@ -254,7 +290,7 @@ export const ServiceAreas: React.FC = () => {
               }`}
             >
               <div>
-                <div className="flex items-center justify-between gap-2 mb-3">
+                {/* <div className="flex items-center justify-between gap-2 mb-3">
                   <span
                     className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
                       area.featured
@@ -270,14 +306,14 @@ export const ServiceAreas: React.FC = () => {
                     {area.deliveryTime.split(" ")[0]}{" "}
                     {area.deliveryTime.split(" ")[1]}
                   </span>
-                </div>
+                </div> */}
 
                 <h3 className="text-lg font-display font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-amber-500 shrink-0" />
                   <span>{area.title}</span>
                 </h3>
 
-                <div className="mt-3">
+                {/* <div className="mt-3">
                   <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">
                     Kecamatan Populer:
                   </div>
@@ -291,7 +327,7 @@ export const ServiceAreas: React.FC = () => {
                       </span>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
                   <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
@@ -302,24 +338,6 @@ export const ServiceAreas: React.FC = () => {
                   </p>
                 </div>
               </div>
-
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <Truck className="w-3.5 h-3.5 text-amber-500" />
-                  <span>{area.deliveryTime}</span>
-                </span>
-
-                <a
-                  href={getGeneralWhatsAppUrl(
-                    `Halo Admin SGC, saya mau tanya sewa genset untuk lokasi di wilayah ${area.title}`,
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Cek Ongkir &amp; Jadwal</span>
-                </a>
-              </div>
             </motion.div>
           ))}
         </div>
@@ -327,4 +345,3 @@ export const ServiceAreas: React.FC = () => {
     </section>
   );
 };
-

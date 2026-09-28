@@ -12,7 +12,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { SGCLogo } from './SGCLogo';
 
 interface NavbarProps {
-  currentPage: 'home' | 'katalog' | 'artikel' | 'portofolio';
+  currentPage: 'home' | 'katalog' | 'artikel' | 'portofolio' | 'pricelist';
   activeSection: string;
   onNavigate: (target: string) => void;
 }
@@ -33,6 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, activeSection, onNa
   const navLinks = [
     { id: 'beranda', label: 'Beranda' },
     { id: 'katalog', label: 'Katalog' },
+    { id: 'pricelist', label: 'Daftar Harga' },
     { id: 'portofolio', label: 'Portofolio' },
     { id: 'artikel', label: 'Artikel & Tips' },
     { id: 'faq', label: 'FAQ' },
@@ -66,6 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, activeSection, onNa
           <div className="hidden md:flex items-center gap-1 lg:gap-2">
             {navLinks.map((link) => {
               const isActive = (currentPage === 'katalog' && link.id === 'katalog') ||
+                (currentPage === 'pricelist' && link.id === 'pricelist') ||
                 (currentPage === 'artikel' && link.id === 'artikel') ||
                 (currentPage === 'portofolio' && link.id === 'portofolio') ||
                 (currentPage === 'home' && activeSection === link.id);
@@ -110,6 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, activeSection, onNa
             <div className="space-y-1">
               {navLinks.map((link) => {
                 const isActive = (currentPage === 'katalog' && link.id === 'katalog') ||
+                  (currentPage === 'pricelist' && link.id === 'pricelist') ||
                   (currentPage === 'artikel' && link.id === 'artikel') ||
                   (currentPage === 'portofolio' && link.id === 'portofolio') ||
                   (currentPage === 'home' && activeSection === link.id);

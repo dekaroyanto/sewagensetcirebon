@@ -428,10 +428,10 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                           <h3 className="font-display font-extrabold text-base sm:text-lg text-slate-900 dark:text-white leading-tight mt-0.5 line-clamp-1">
                             {item.name}
                           </h3>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
+                          {/* <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-1 mt-1">
                             {item.description?.split("\n")?.[0] ||
                               "Cocok untuk event & industri"}
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                     </div>

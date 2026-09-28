@@ -5,7 +5,8 @@ import { ProductType } from "../types";
  * Returns 'Harga Negotiable' for UI display to hide exact prices
  */
 export function formatPrice(price: number): string {
-  return "Chat Admin Untuk Harga Sewa";
+  if (!price || price <= 0) return "Hubungi WA";
+  return "Rp " + Number(price).toLocaleString("id-ID");
 }
 
 /**
