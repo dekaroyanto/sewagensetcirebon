@@ -158,6 +158,39 @@ if ($resource === 'auth') {
         $user = $stmt->fetch();
         sendJsonResponse(['status' => 'success', 'user' => $user]);
     }
+
+    if ($action === 'profile' && $method === 'PUT') {
+        $headers = getallheaders();
+        $auth = verifyAuthToken($headers);
+        if (!$auth) {
+            sendJsonResponse(['status' => 'error', 'message' => 'Sesi tidak valid atau telah berakhir.'], 401);
+        }
+        
+        $input = getJsonInput();
+        $username = trim($input['username'] ?? '');
+        $fullName = trim($input['full_name'] ?? '');
+        $email = trim($input['email'] ?? '');
+        $password = trim($input['password'] ?? '');
+
+        if (empty($username) || empty($fullName)) {
+            sendJsonResponse(['status' => 'error', 'message' => 'Username dan Nama Lengkap wajib diisi.'], 400);
+        }
+
+        if (!empty($password)) {
+            $hashed = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $pdo->prepare("UPDATE `admin_users` SET `username` = ?, `full_name` = ?, `email` = ?, `password_hash` = ? WHERE `id` = ?");
+            $stmt->execute([$username, $fullName, $email, $hashed, $auth['user_id']]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE `admin_users` SET `username` = ?, `full_name` = ?, `email` = ? WHERE `id` = ?");
+            $stmt->execute([$username, $fullName, $email, $auth['user_id']]);
+        }
+        
+        $stmt2 = $pdo->prepare("SELECT id, username, email, full_name, role FROM `admin_users` WHERE id = ?");
+        $stmt2->execute([$auth['user_id']]);
+        $user = $stmt2->fetch();
+        
+        sendJsonResponse(['status' => 'success', 'message' => 'Profil berhasil diperbarui.', 'user' => $user]);
+    }
 }
 
 // -----------------------------------------------------------------------------

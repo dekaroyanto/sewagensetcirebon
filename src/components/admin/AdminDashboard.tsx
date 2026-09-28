@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   ShieldCheck,
   Menu,
+  User,
   X,
   ExternalLink,
   ChevronRight,
@@ -31,6 +32,7 @@ import { TestimonialsTab } from "./tabs/TestimonialsTab";
 import { FaqsTab } from "./tabs/FaqsTab";
 import { CompanyTab } from "./tabs/CompanyTab";
 import { DatabaseTab } from "./tabs/DatabaseTab";
+import { ProfileTab } from "./tabs/ProfileTab";
 import { checkAdminAuth, logoutAdmin } from "../../utils/api";
 import { AdminUser } from "../../types";
 
@@ -127,6 +129,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: "testimonials", label: "Ulasan Klien", icon: MessageSquareQuote },
     { id: "faqs", label: "Tanya Jawab (FAQ)", icon: HelpCircle },
     { id: "company", label: "Kontak Perusahaan", icon: Building },
+    { id: "profile", label: "Pengaturan Akun", icon: User },
     // {
     //   id: "database",
     //   label: "Database Hostinger",
@@ -347,6 +350,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           )}
           {activeTab === "faqs" && <FaqsTab onToast={showToast} />}
           {activeTab === "company" && <CompanyTab onToast={showToast} />}
+          {activeTab === "profile" && currentUser && (
+            <ProfileTab 
+              user={currentUser} 
+              onUpdateUser={setCurrentUser} 
+              onToast={showToast} 
+            />
+          )}
           {activeTab === "database" && <DatabaseTab onToast={showToast} />}
         </main>
       </div>

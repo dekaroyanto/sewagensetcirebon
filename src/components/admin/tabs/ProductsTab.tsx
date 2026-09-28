@@ -287,8 +287,8 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
             Tidak ada produk yang cocok dengan pencarian atau filter saat ini.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto pb-4">
+            <table className="w-full text-left text-xs min-w-[700px] whitespace-nowrap">
               <thead className="bg-slate-950/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
                 <tr>
                   <th className="py-3 px-4 font-semibold">Produk / Unit</th>

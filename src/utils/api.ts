@@ -821,3 +821,18 @@ export async function deleteImageFile(urlOrFilename: string): Promise<{ success:
   }
 }
 
+
+export async function updateAdminProfile(data: any): Promise<{ success: boolean; message: string; user?: any }> {
+  try {
+    const res = await fetch("/auth/profile", {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    });
+    const json = await parseResponseJson(res, 'Profil berhasil diperbarui.');
+    return json;
+  } catch (err: any) {
+    return { success: false, message: err.message || 'Koneksi gagal' };
+  }
+}
+
