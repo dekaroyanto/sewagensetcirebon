@@ -1,4 +1,5 @@
 import React from 'react';
+import sgcLogoImg from '../assets/images/sgc_logo_transparent.png';
 
 interface SGCLogoProps {
   variant?: 'emblem' | 'horizontal' | 'vertical' | 'full';
@@ -37,7 +38,7 @@ export const SGCLogo: React.FC<SGCLogoProps> = ({
   const renderEmblem = (customClass = '') => (
     <div className={`relative shrink-0 ${customClass || emblemSizes[size] || 'w-10 h-10'}`}>
       <img
-        src="/src/assets/images/sgc_logo_transparent.png"
+        src={sgcLogoImg}
         alt="SGC Logo"
         className="w-full h-full object-contain drop-shadow-sm select-none dark:invert dark:hue-rotate-180 dark:contrast-125"
       />
