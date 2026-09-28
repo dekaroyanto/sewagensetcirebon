@@ -283,60 +283,24 @@ export const ServiceAreas: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.15 }}
               transition={{ duration: 0.45, delay: idx * 0.08 }}
-              className={`w-[84vw] sm:w-[350px] md:w-[360px] shrink-0 snap-center sm:snap-start rounded-2xl p-5 sm:p-6 border transition-all flex flex-col justify-between ${
+              className={`w-[84vw] sm:w-[350px] md:w-[360px] h-auto shrink-0 snap-center rounded-2xl p-6 sm:p-8 border transition-all flex flex-col justify-center text-center ${
                 area.featured
                   ? "bg-white dark:bg-slate-900 border-amber-400 dark:border-amber-600/60 shadow-lg shadow-amber-500/5"
                   : "bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700"
               }`}
             >
-              <div>
-                {/* <div className="flex items-center justify-between gap-2 mb-3">
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                      area.featured
-                        ? "bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800"
-                        : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                    }`}
-                  >
-                    {area.type}
-                  </span>
+              <h3 className="text-xl font-display font-extrabold text-slate-900 dark:text-white flex items-center justify-center gap-2">
+                <MapPin className="w-6 h-6 text-amber-500 shrink-0" />
+                <span>{area.title}</span>
+              </h3>
 
-                  <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                    <Clock className="w-3.5 h-3.5" />
-                    {area.deliveryTime.split(" ")[0]}{" "}
-                    {area.deliveryTime.split(" ")[1]}
-                  </span>
-                </div> */}
-
-                <h3 className="text-lg font-display font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-amber-500 shrink-0" />
-                  <span>{area.title}</span>
-                </h3>
-
-                {/* <div className="mt-3">
-                  <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">
-                    Kecamatan Populer:
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {area.districts.map((d, i) => (
-                      <span
-                        key={i}
-                        className="text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700"
-                      >
-                        {d}
-                      </span>
-                    ))}
-                  </div>
-                </div> */}
-
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
-                  <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">
-                    Sering Digunakan Untuk:
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    {area.popularUsage}
-                  </p>
+              <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">
+                  Sering Digunakan Untuk:
                 </div>
+                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                  {area.popularUsage}
+                </p>
               </div>
             </motion.div>
           ))}
