@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Edit3, 
-  Trash2, 
-  Image as ImageIcon, 
-  MapPin, 
-  Zap, 
-  Check, 
-  X, 
-  RotateCcw 
-} from 'lucide-react';
-import { GalleryItem } from '../../../types';
-import { getGallery, createGalleryItem, updateGalleryItem, deleteGalleryItem } from '../../../utils/api';
-import { ImageUploadField } from '../ImageUploadField';
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  Search,
+  Edit3,
+  Trash2,
+  Image as ImageIcon,
+  MapPin,
+  Zap,
+  Check,
+  X,
+  RotateCcw,
+} from "lucide-react";
+import { GalleryItem } from "../../../types";
+import {
+  getGallery,
+  createGalleryItem,
+  updateGalleryItem,
+  deleteGalleryItem,
+} from "../../../utils/api";
+import { ImageUploadField } from "../ImageUploadField";
 import { getImageUrl } from "../../../utils/api";
 
 interface GalleryTabProps {
@@ -23,8 +28,8 @@ interface GalleryTabProps {
 export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>("Semua");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,15 +50,15 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
   // Form
   const [formData, setFormData] = useState({
-    title: '',
-    category: 'Wedding & Resepsi' as any,
-    location: 'Kota Cirebon',
-    gensetUsed: 'Genset Silent 60 kVA SGC',
-    image: 'https://images.unsplash.com/photo-1563841930606-67e2bce48b78?w=800',
-    client: '',
-    duration: '1 Hari',
-    peakLoad: '40 kW',
-    description: '',
+    title: "",
+    category: "Wedding & Resepsi" as any,
+    location: "Kota Cirebon",
+    gensetUsed: "Genset Silent 60 kVA SGC",
+    image: "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?w=800",
+    client: "",
+    duration: "1 Hari",
+    peakLoad: "40 kW",
+    description: "",
   });
 
   const loadData = async () => {
@@ -71,22 +76,23 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
   useEffect(() => {
     loadData();
     const handleSync = () => loadData();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   const openAddModal = () => {
     setEditingItem(null);
     setFormData({
-      title: '',
-      category: 'Wedding & Resepsi',
-      location: 'Kota Cirebon',
-      gensetUsed: 'Genset Silent 60 kVA',
-      image: 'https://images.unsplash.com/photo-1563841930606-67e2bce48b78?w=800',
-      client: '',
-      duration: '1 Hari',
-      peakLoad: '40 kW',
-      description: 'Penyediaan daya listrik stabil untuk acara.',
+      title: "",
+      category: "Wedding & Resepsi",
+      location: "Kota Cirebon",
+      gensetUsed: "Genset Silent 60 kVA",
+      image:
+        "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?w=800",
+      client: "",
+      duration: "1 Hari",
+      peakLoad: "40 kW",
+      description: "Penyediaan daya listrik stabil untuk acara.",
     });
     setIsModalOpen(true);
   };
@@ -99,10 +105,10 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
       location: item.location,
       gensetUsed: item.gensetUsed,
       image: item.image,
-      client: item.client || '',
-      duration: item.duration || '',
-      peakLoad: item.peakLoad || '',
-      description: item.description || '',
+      client: item.client || "",
+      duration: item.duration || "",
+      peakLoad: item.peakLoad || "",
+      description: item.description || "",
     });
     setIsModalOpen(true);
   };
@@ -110,7 +116,7 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.image) {
-      onToast('Judul dan URL gambar wajib diisi.');
+      onToast("Judul dan URL gambar wajib diisi.");
       return;
     }
 
@@ -118,32 +124,36 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
     try {
       if (editingItem) {
         // Optimistic update
-        setItems(prev => prev.map(it => it.id === editingItem.id ? { ...it, ...formData } : it));
+        setItems((prev) =>
+          prev.map((it) =>
+            it.id === editingItem.id ? { ...it, ...formData } : it,
+          ),
+        );
         setIsModalOpen(false);
 
         const res = await updateGalleryItem(editingItem.id, formData);
         if (res.success) {
-          onToast('Portofolio berhasil diperbarui!');
+          onToast("Portofolio berhasil diperbarui!");
         } else {
-          onToast('Gagal update: ' + res.message);
+          onToast("Gagal update: " + res.message);
         }
         await loadData();
       } else {
-        const tempId = 'gal-' + Date.now();
+        const tempId = "gal-" + Date.now();
         const optimisticItem: GalleryItem = { id: tempId, ...formData };
-        setItems(prev => [optimisticItem, ...prev]);
+        setItems((prev) => [optimisticItem, ...prev]);
         setIsModalOpen(false);
 
         const res = await createGalleryItem(formData);
         if (res.success) {
-          onToast('Portofolio baru berhasil ditambahkan!');
+          onToast("Portofolio baru berhasil ditambahkan!");
         } else {
-          onToast('Gagal tambah: ' + res.message);
+          onToast("Gagal tambah: " + res.message);
         }
         await loadData();
       }
     } catch (err: any) {
-      onToast('Error: ' + err.message);
+      onToast("Error: " + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -151,22 +161,24 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
   const handleDelete = async (id: string) => {
     // Optimistic delete
-    setItems(prev => prev.filter(it => it.id !== id));
+    setItems((prev) => prev.filter((it) => it.id !== id));
     setDeleteConfirmId(null);
 
     const res = await deleteGalleryItem(id);
     if (res.success) {
-      onToast('Portofolio berhasil dihapus.');
+      onToast("Portofolio berhasil dihapus.");
     } else {
-      onToast('Gagal menghapus: ' + res.message);
+      onToast("Gagal menghapus: " + res.message);
     }
     await loadData();
   };
 
-  const filtered = items.filter(item => {
-    const matchCat = selectedCategory === 'Semua' || item.category === selectedCategory;
-    const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        item.location.toLowerCase().includes(searchQuery.toLowerCase());
+  const filtered = items.filter((item) => {
+    const matchCat =
+      selectedCategory === "Semua" || item.category === selectedCategory;
+    const matchSearch =
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.location.toLowerCase().includes(searchQuery.toLowerCase());
     return matchCat && matchSearch;
   });
 
@@ -180,7 +192,8 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
             <span>Galeri & Dokumentasi Portofolio</span>
           </h2>
           <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mt-0.5">
-            Dokumentasi proyek sukses pernikahan, konser musik, dan operasional industri di Cirebon
+            Dokumentasi proyek sukses pernikahan, konser musik, dan operasional
+            industri di Cirebon
           </p>
         </div>
 
@@ -190,7 +203,7 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
             className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
             title="Muat Ulang"
           >
-            <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RotateCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
           <button
             onClick={openAddModal}
@@ -214,8 +227,11 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map(item => (
-            <div key={item.id} className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-300 dark:border-slate-700 transition-all">
+          {filtered.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-300 dark:border-slate-700 transition-all"
+            >
               <div className="h-44 relative overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img
                   src={getImageUrl(item.image)}
@@ -244,7 +260,9 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
               </div>
 
               <div className="p-4 space-y-2">
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1">{item.title}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1">
+                  {item.title}
+                </h3>
                 <div className="flex items-center gap-1 text-slate-600 dark:text-slate-500 dark:text-slate-400 text-xs">
                   <MapPin className="w-3.5 h-3.5 text-slate-600 dark:text-slate-500 shrink-0" />
                   <span className="truncate">{item.location}</span>
@@ -271,21 +289,33 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
             <div className="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
               <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-amber-500" />
-                <span>{editingItem ? 'Edit Dokumentasi' : 'Tambah Foto Portofolio'}</span>
+                <span>
+                  {editingItem ? "Edit Dokumentasi" : "Tambah Foto Portofolio"}
+                </span>
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="flex flex-col flex-1 overflow-hidden">
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-col flex-1 overflow-hidden"
+            >
               <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
                 <div>
-                  <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Judul Acara / Proyek *</label>
+                  <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
+                    Judul Acara / Proyek *
+                  </label>
                   <input
                     type="text"
                     value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
                     placeholder="Contoh: Resepsi Pernikahan di Hotel Grage Cirebon"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     required
@@ -294,32 +324,51 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Kategori</label>
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
+                      Kategori
+                    </label>
                     <select
                       value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          category: e.target.value as any,
+                        })
+                      }
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     >
-                      <option value="Wedding & Resepsi">Wedding & Resepsi</option>
+                      <option value="Wedding & Resepsi">
+                        Wedding & Resepsi
+                      </option>
                       <option value="Konser & Musik">Konser & Musik</option>
-                      <option value="Proyek & Pembangunan">Proyek & Pembangunan</option>
-                      <option value="Pabrik & Industri">Pabrik & Industri</option>
-                      <option value="Instansi & Pemerintahan">Instansi & Pemerintahan</option>
+                      <option value="Proyek & Pembangunan">
+                        Proyek & Pembangunan
+                      </option>
+                      <option value="Pabrik & Industri">
+                        Pabrik & Industri
+                      </option>
+                      <option value="Instansi & Pemerintahan">
+                        Instansi & Pemerintahan
+                      </option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Lokasi Acara</label>
+                    <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
+                      Lokasi Acara
+                    </label>
                     <input
                       type="text"
                       value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, location: e.target.value })
+                      }
                       placeholder="Grage Hotel, Kota Cirebon"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                     />
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Genset / Unit yang Digunakan</label>
                   <input
                     type="text"
@@ -328,7 +377,7 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
                     placeholder="Genset Silent 60 kVA + 4 AC 5 PK"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                   />
-                </div>
+                </div> */}
 
                 <div>
                   <ImageUploadField
@@ -342,11 +391,15 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">Deskripsi Ringkas</label>
+                  <label className="block text-slate-600 dark:text-slate-500 dark:text-slate-400 font-semibold mb-1">
+                    Deskripsi Ringkas
+                  </label>
                   <textarea
                     rows={3}
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     placeholder="Penjelasan beban listrik, kestabilan voltase, atau testimoni singkat klien..."
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                   />
@@ -378,7 +431,9 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
       {deleteConfirmId && (
         <div className="fixed inset-0 z-50 bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">Hapus Portofolio?</h3>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
+              Hapus Portofolio?
+            </h3>
             <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mb-6">
               Item dokumentasi ini akan dihapus dari database.
             </p>
