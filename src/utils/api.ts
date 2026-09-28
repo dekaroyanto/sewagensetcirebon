@@ -16,19 +16,18 @@ import { COMPANY_INFO } from "../data/company";
 export const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
 /**
- * Format image URL from database to absolute URL pointing to backend
+ * Mendapatkan URL gambar penuh dari path relative (untuk menangani akses dari GitHub Pages ke Hostinger)
  */
-export function getImageUrl(imagePath?: string): string {
-  if (!imagePath) return "";
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("data:") || imagePath.startsWith("blob:")) {
-    return imagePath;
+export function getImageUrl(path?: string | null): string {
+  if (!path) return "";
+  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+    return path;
   }
-  // Remove leading slash if exists
-  const cleanPath = imagePath.replace(/^\//, "");
-  if (cleanPath.startsWith("api/")) {
-    return `/${cleanPath}`;
+  if (path.startsWith("/")) {
+    path = path.slice(1);
   }
-  return `${API_BASE}/${cleanPath}`;
+  // Memaksa pengaksesan file upload ke domain Hostinger jika web di-host di GitHub Pages
+  return `https://sewagensetcirebon.com/${path}`;
 }
 
 /**

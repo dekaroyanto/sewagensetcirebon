@@ -24,6 +24,7 @@ import {
 } from "../../../utils/api";
 import { formatCurrency } from "../../../utils/format";
 import { ImageUploadField } from "../ImageUploadField";
+import { getImageUrl } from "../../../utils/api";
 
 interface ProductsTabProps {
   onToast: (msg: string) => void;
@@ -320,7 +321,7 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700/60">
                           <img
-                            src={p.image_url || p.image}
+                            src={getImageUrl(p.image_url || p.image)}
                             alt={p.name}
                             className="w-full h-full object-cover"
                             onError={(e) => {

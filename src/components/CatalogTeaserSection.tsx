@@ -14,6 +14,7 @@ import {
 import { motion } from "motion/react";
 import { GensetProduct } from "../types";
 import { getProducts } from "../utils/api";
+import { getImageUrl } from "../utils/api";
 
 interface CatalogTeaserSectionProps {
   onOpenCatalog: () => void;
@@ -396,7 +397,7 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                       {/* Card Middle: 3D Product Visual */}
                       <div className="relative my-auto w-full aspect-16/10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-700/50 group shadow-inner">
                         <img
-                          src={item.image_url || item.image}
+                          src={getImageUrl(item.image_url || item.image)}
                           alt={item.name}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

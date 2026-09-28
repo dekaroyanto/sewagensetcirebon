@@ -266,16 +266,17 @@ export const ServiceAreas: React.FC = () => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 px-[calc((100vw-84vw)/2)] sm:px-1 -mx-4 sm:mx-0 select-none scroll-smooth ${
+          className={`flex overflow-x-auto overflow-y-hidden touch-pan-y snap-x snap-mandatory scrollbar-none gap-4 sm:gap-6 pb-6 pt-1 select-none scroll-smooth ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           style={{
             scrollBehavior: isDragging ? "auto" : "smooth",
             WebkitOverflowScrolling: "touch",
-            scrollPaddingLeft: "calc((100vw - 84vw) / 2)",
-            scrollPaddingRight: "calc((100vw - 84vw) / 2)",
           }}
         >
+          {/* Spacer Kiri agar card pertama bisa ke tengah */}
+          <div className="w-[calc(50vw-42vw)] sm:w-[calc(50%-175px)] md:w-[calc(50%-180px)] shrink-0" />
+
           {areas.map((area, idx) => (
             <motion.div
               key={idx}
@@ -304,6 +305,9 @@ export const ServiceAreas: React.FC = () => {
               </div>
             </motion.div>
           ))}
+
+          {/* Spacer Kanan agar card terakhir bisa ke tengah */}
+          <div className="w-[calc(50vw-42vw)] sm:w-[calc(50%-175px)] md:w-[calc(50%-180px)] shrink-0" />
         </div>
       </div>
     </section>

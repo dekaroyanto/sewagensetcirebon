@@ -31,6 +31,7 @@ import {
 import { BookingModal } from "./BookingModal";
 import { useBodyScrollLock, resetBodyScroll } from "../utils/scrollLock";
 import { getProducts } from "../utils/api";
+import { getImageUrl } from "../utils/api";
 
 interface CatalogPageProps {
   onBackToHome: () => void;
@@ -208,7 +209,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 {/* Product Card Image */}
                 <div className="relative aspect-16/10 overflow-hidden bg-slate-900">
                   <img
-                    src={product.image_url || product.image}
+                    src={getImageUrl(product.image_url || product.image)}
                     alt={product.name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
@@ -374,7 +375,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 {/* Restrained Thumbnail Image */}
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs">
                   <img
-                    src={activeModalGenset.image_url || activeModalGenset.image}
+                    src={getImageUrl(activeModalGenset.image_url || activeModalGenset.image)}
                     alt={activeModalGenset.name}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"

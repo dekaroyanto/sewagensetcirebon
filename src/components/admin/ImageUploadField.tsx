@@ -10,6 +10,7 @@ import {
   FileImage,
 } from "lucide-react";
 import { uploadImageFile } from "../../utils/api";
+import { getImageUrl } from "../../utils/api";
 
 interface ImageUploadFieldProps {
   label: string;
@@ -146,7 +147,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           {/* Thumbnail preview */}
           <div className="relative w-full sm:w-28 h-28 rounded-xl bg-white dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-slate-800 shrink-0">
             <img
-              src={value}
+              src={getImageUrl(value)}
               alt="Preview"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

@@ -19,6 +19,7 @@ import {
 import { COMPANY_INFO } from "../data/company";
 import { BlogPost } from "../types";
 import { getBlogPosts } from "../utils/api";
+import { getImageUrl } from "../utils/api";
 
 interface BlogPageProps {
   onBackToHome: () => void;
@@ -170,7 +171,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
             >
               <div className="lg:col-span-7 relative aspect-16/10 lg:aspect-auto overflow-hidden bg-slate-900">
                 <img
-                  src={featuredPost.image}
+                  src={getImageUrl(featuredPost.image)}
                   alt={featuredPost.title}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95"
@@ -290,7 +291,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                     <div>
                       <div className="relative aspect-16/9 overflow-hidden bg-slate-900">
                         <img
-                          src={post.image}
+                          src={getImageUrl(post.image)}
                           alt={post.title}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
@@ -453,7 +454,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
               {/* Cover Image */}
               <div className="rounded-xl overflow-hidden aspect-16/9 bg-slate-900">
                 <img
-                  src={activeArticle.image}
+                  src={getImageUrl(activeArticle.image)}
                   alt={activeArticle.title}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover"

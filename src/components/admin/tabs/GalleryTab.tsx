@@ -14,6 +14,7 @@ import {
 import { GalleryItem } from '../../../types';
 import { getGallery, createGalleryItem, updateGalleryItem, deleteGalleryItem } from '../../../utils/api';
 import { ImageUploadField } from '../ImageUploadField';
+import { getImageUrl } from "../../../utils/api";
 
 interface GalleryTabProps {
   onToast: (msg: string) => void;
@@ -217,7 +218,7 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
             <div key={item.id} className="bg-white/60 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden group hover:border-slate-300 dark:border-slate-700 transition-all">
               <div className="h-44 relative overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { 
+import { getImageUrl } from "../utils/api";
   Zap, 
   ArrowRight, 
   Sparkles, 
@@ -94,7 +95,7 @@ export const CatalogGuideSection: React.FC<CatalogGuideSectionProps> = ({
             >
               <div className="relative aspect-16/9 overflow-hidden bg-slate-950">
                 <img
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.title}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-100"
