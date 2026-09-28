@@ -9,8 +9,8 @@ import {
   AlertCircle,
   FileImage,
 } from "lucide-react";
-import { uploadImageFile } from "../../utils/api";
-import { getImageUrl } from "../../utils/api";
+import { uploadImageFile } from "../../../utils/api";
+import { getImageUrl } from "../../../utils/api";
 
 interface ImageUploadFieldProps {
   label: string;
