@@ -35,6 +35,17 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (selectedBooking || deleteConfirmId) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedBooking, deleteConfirmId]);
+
   const loadData = async () => {
     setLoading(true);
     try {

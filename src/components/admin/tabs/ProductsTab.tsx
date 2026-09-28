@@ -41,6 +41,17 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (isModalOpen || deleteConfirmId) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isModalOpen, deleteConfirmId]);
+
   // Form fields
   const [formData, setFormData] = useState({
     id: "",

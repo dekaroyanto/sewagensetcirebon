@@ -28,6 +28,17 @@ export const FaqsTab: React.FC<FaqsTabProps> = ({ onToast }) => {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (isModalOpen || deleteConfirmId) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isModalOpen, deleteConfirmId]);
+
   // Form
   const [formData, setFormData] = useState({
     category: 'Pemesanan & Syarat' as any,

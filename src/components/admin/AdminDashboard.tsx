@@ -277,7 +277,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </header>
 
       {/* Main Layout Body */}
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
+      <div className="flex-1 flex max-w-[1600px] w-full mx-auto relative">
+        {/* Mobile Sidebar Overlay */}
+        {mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black/60 z-20 md:hidden backdrop-blur-sm top-[61px]"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        
         {/* Sidebar Navigation */}
         <aside
           className={`fixed md:sticky top-[61px] inset-y-0 left-0 z-30 w-64 bg-slate-950/95 md:bg-transparent backdrop-blur-xl md:backdrop-blur-none border-r border-slate-800/80 p-4 shrink-0 transition-transform duration-200 md:translate-x-0 ${
