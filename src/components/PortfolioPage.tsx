@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   ArrowLeft,
@@ -6,13 +6,16 @@ import {
   MessageSquare,
   Calendar,
   Sparkles,
-  Zap
-} from 'lucide-react';
-import { GalleryItem } from '../types';
-import { getGeneralWhatsAppUrl, getPortfolioWhatsAppUrl } from '../utils/whatsapp';
-import { BookingModal } from './BookingModal';
-import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
-import { getGallery } from '../utils/api';
+  Zap,
+} from "lucide-react";
+import { GalleryItem } from "../types";
+import {
+  getGeneralWhatsAppUrl,
+  getPortfolioWhatsAppUrl,
+} from "../utils/whatsapp";
+import { BookingModal } from "./BookingModal";
+import { useBodyScrollLock, resetBodyScroll } from "../utils/scrollLock";
+import { getGallery } from "../utils/api";
 import { getImageUrl, handleImageError } from "../utils/api";
 
 interface PortfolioPageProps {
@@ -24,7 +27,7 @@ interface PortfolioPageProps {
 
 export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   onBackToHome,
-  onToast
+  onToast,
 }) => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
@@ -39,8 +42,8 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   useEffect(() => {
     loadGalleryData();
     const handleSync = () => loadGalleryData();
-    window.addEventListener('sgc_data_changed', handleSync);
-    return () => window.removeEventListener('sgc_data_changed', handleSync);
+    window.addEventListener("sgc_data_changed", handleSync);
+    return () => window.removeEventListener("sgc_data_changed", handleSync);
   }, []);
 
   // Lock background body scroll safely when any modal is open
@@ -56,7 +59,6 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen py-6 sm:py-10 animate-in fade-in duration-300 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         {/* Top Breadcrumbs & Back Button */}
         <div className="flex items-center justify-between gap-4 mb-5 sm:mb-8">
           <button
@@ -69,7 +71,10 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
           </button>
 
           <div className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-            <span>Beranda</span> <span className="mx-1">/</span> <strong className="text-slate-900 dark:text-white">Portofolio Acara &amp; Proyek</strong>
+            <span>Beranda</span> <span className="mx-1">/</span>{" "}
+            <strong className="text-slate-900 dark:text-white">
+              Portofolio Acara &amp; Proyek
+            </strong>
           </div>
         </div>
 
@@ -88,7 +93,9 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </h1>
 
             <p className="mt-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-              Dokumentasi nyata instalasi genset silent &amp; AC standing di berbagai acara resepsi pernikahan, konser musik, proyek konstruksi, dan fasilitas industri se-Ciayumajakuning.
+              Dokumentasi nyata instalasi genset silent &amp; AC standing di
+              berbagai acara resepsi pernikahan, konser musik, proyek
+              konstruksi, dan fasilitas industri se-Ciayumajakuning.
             </p>
           </div>
         </div>
@@ -97,7 +104,9 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
         {galleryItems.length === 0 ? (
           <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center border border-slate-200 dark:border-slate-800 shadow-xs max-w-md mx-auto my-6">
             <Sparkles className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">Belum Ada Dokumentasi Portofolio</h3>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
+              Belum Ada Dokumentasi Portofolio
+            </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Dokumentasi proyek &amp; instalasi genset akan segera diperbarui.
             </p>
@@ -159,7 +168,9 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </h2>
 
             <p className="mt-2 text-xs sm:text-sm text-slate-950/90 font-medium leading-relaxed">
-              Konsultasikan kebutuhan kapasitas genset silent dan pendingin ruangan Anda bersama tim teknisi SGC, atau langsung isi formulir pemesanan online.
+              Konsultasikan kebutuhan kapasitas genset silent dan pendingin
+              ruangan Anda bersama tim teknisi SGC, atau langsung isi formulir
+              pemesanan online.
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -172,7 +183,9 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
               </button>
 
               <a
-                href={getGeneralWhatsAppUrl('Konsultasi Kebutuhan Acara dari Halaman Portofolio')}
+                href={getGeneralWhatsAppUrl(
+                  "Konsultasi Kebutuhan Acara dari Halaman Portofolio",
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/90 hover:bg-white text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
@@ -183,7 +196,6 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Simple Portfolio Detail Modal */}
@@ -249,14 +261,17 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-slate-500 dark:text-slate-400">
                   {selectedItem.client && (
                     <span>
-                      Klien: <strong className="text-slate-700 dark:text-slate-200">{selectedItem.client}</strong>
+                      Klien:{" "}
+                      <strong className="text-slate-700 dark:text-slate-200">
+                        {selectedItem.client}
+                      </strong>
                     </span>
                   )}
-                  {selectedItem.duration && (
+                  {/* {selectedItem.duration && (
                     <span>
                       Durasi: <strong className="text-slate-700 dark:text-slate-200">{selectedItem.duration}</strong>
                     </span>
-                  )}
+                  )} */}
                 </div>
               )}
 
@@ -292,8 +307,6 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
           onToast={onToast}
         />
       )}
-
     </div>
   );
 };
-

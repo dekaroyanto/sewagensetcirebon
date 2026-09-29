@@ -20,6 +20,7 @@ import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { getGallery } from '../utils/api';
 import { getImageUrl, handleImageError } from "../utils/api";
+import { useBodyScrollLock } from "../utils/scrollLock";
 
 interface GallerySectionProps {
   onOpenPortfolio?: () => void;
@@ -30,6 +31,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
   const [selectedZoomPhoto, setSelectedZoomPhoto] = useState<GalleryItem | null>(null);
+  useBodyScrollLock(Boolean(selectedZoomPhoto));
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const dragStartX = useRef<number | null>(null);
   const autoPlayTimerRef = useRef<NodeJS.Timeout | null>(null);

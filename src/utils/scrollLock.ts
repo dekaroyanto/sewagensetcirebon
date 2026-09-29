@@ -29,6 +29,8 @@ export const lockBodyScroll = () => {
     }
 
     document.body.style.overflow = 'hidden';
+    document.body.setAttribute('data-modal-open', 'true');
+    window.dispatchEvent(new CustomEvent('sgc_modal_change', { detail: { isOpen: true } }));
   }
 
   activeLocks++;
@@ -46,6 +48,8 @@ export const unlockBodyScroll = () => {
     // Guaranteed restore to clean state
     document.body.style.overflow = originalOverflow === 'hidden' ? '' : originalOverflow;
     document.body.style.paddingRight = originalPaddingRight;
+    document.body.removeAttribute('data-modal-open');
+    window.dispatchEvent(new CustomEvent('sgc_modal_change', { detail: { isOpen: false } }));
   }
 };
 
@@ -59,6 +63,20 @@ export const resetBodyScroll = () => {
   originalPaddingRight = '';
   document.body.style.overflow = '';
   document.body.style.paddingRight = '';
+  document.body.removeAttribute('data-modal-open');
+  window.dispatchEvent(new CustomEvent('sgc_modal_change', { detail: { isOpen: false } }));
+};
+
+/**
+ * Check if any modal is currently locking the body or marked open
+ */
+export const isAnyModalOpen = (): boolean => {
+  if (typeof document === 'undefined') return false;
+  return (
+    activeLocks > 0 ||
+    document.body.getAttribute('data-modal-open') === 'true' ||
+    document.body.style.overflow === 'hidden'
+  );
 };
 
 /**

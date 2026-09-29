@@ -18,6 +18,7 @@ import { motion } from "motion/react";
 import { BlogPost } from "../types";
 import { getBlogPosts } from "../utils/api";
 import { getImageUrl, handleImageError } from "../utils/api";
+import { useBodyScrollLock } from "../utils/scrollLock";
 
 interface BlogHomePreviewProps {
   onOpenAllArticles: () => void;
@@ -32,6 +33,7 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
 }) => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
+  useBodyScrollLock(Boolean(activeArticle));
 
   const loadBlogData = () => {
     getBlogPosts().then((data) => {

@@ -21,6 +21,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { BookingFormData } from '../types';
 import { COMPANY_INFO } from '../data/company';
+import { useBodyScrollLock } from '../utils/scrollLock';
 
 interface ConfirmBookingModalProps {
   isOpen: boolean;
@@ -36,6 +37,7 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
   onConfirm
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;
 

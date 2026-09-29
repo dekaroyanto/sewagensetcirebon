@@ -259,8 +259,8 @@ function MainApp() {
         )}
       </main>
 
-      {/* Floating 24/7 WhatsApp Widget */}
-      <FloatingWhatsApp />
+      {/* Floating 24/7 WhatsApp Widget (Otomatis hilang saat ada modal aktif atau di portal admin) */}
+      {currentPage !== "admin" && <FloatingWhatsApp />}
 
       {/* Interactive Toast Alerts */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />

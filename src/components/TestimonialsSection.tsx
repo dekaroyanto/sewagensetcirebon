@@ -17,6 +17,7 @@ import {
 import { motion } from 'motion/react';
 import { Testimonial } from '../types';
 import { getTestimonials, submitTestimonial } from '../utils/api';
+import { useBodyScrollLock } from '../utils/scrollLock';
 
 interface TestimonialsSectionProps {
   onToast: (msg: string) => void;
@@ -26,6 +27,7 @@ export const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ onToas
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [filterRating, setFilterRating] = useState<number | 'all'>('all');
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
+  useBodyScrollLock(isAddReviewOpen);
 
   // Scroll Container Ref & State for Horizontal Navigation
   const scrollContainerRef = useRef<HTMLDivElement>(null);

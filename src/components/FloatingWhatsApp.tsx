@@ -1,12 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, X, Send, Sparkles, Phone, ShieldCheck, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { COMPANY_INFO } from '../data/company';
 import { SGCLogo } from './SGCLogo';
+import { isAnyModalOpen } from '../utils/scrollLock';
 
 export const FloatingWhatsApp: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [customMsg, setCustomMsg] = useState('');
+  const [isModalActive, setIsModalActive] = useState(false);
+
+  // Detect whenever any modal is open in the application
+  useEffect(() => {
+    const checkModalState = () => {
+      if (typeof document === 'undefined') return false;
+
+      // 1. Direct check using scrollLock helper or body style
+      if (isAnyModalOpen()) {
+        return true;
+      }
+
+      if (
+        document.body.getAttribute('data-modal-open') === 'true' ||
+        document.body.style.overflow === 'hidden'
+      ) {
+        return true;
+      }
+
+      // 2. Query any active modal in the DOM (excluding FloatingWhatsApp's own backdrop)
+      const modalElements = document.querySelectorAll(
+        '.fixed.inset-0.z-50, [role="dialog"], [data-modal="true"]'
+      );
+      return modalElements.length > 0;
+    };
+
+    const updateState = () => {
+      const active = checkModalState();
+      setIsModalActive(active);
+      if (active) {
+        setIsOpen(false);
+      }
+    };
+
+    updateState();
+
+    const onModalChange = (e: any) => {
+      const active = Boolean(e.detail?.isOpen ?? checkModalState());
+      setIsModalActive(active);
+      if (active) setIsOpen(false);
+    };
+    window.addEventListener('sgc_modal_change', onModalChange);
+
+    // MutationObserver to immediately detect modals mounting/unmounting
+    const observer = new MutationObserver(() => {
+      updateState();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class', 'data-modal-open'],
+    });
+
+    return () => {
+      window.removeEventListener('sgc_modal_change', onModalChange);
+      observer.disconnect();
+    };
+  }, []);
 
   const quickTopics = [
     'Halo, saya mau sewa genset untuk acara pernikahan',
@@ -22,17 +83,22 @@ export const FloatingWhatsApp: React.FC = () => {
     setIsOpen(false);
   };
 
+  // If any modal is active on screen, completely hide the floater button
+  if (isModalActive) {
+    return null;
+  }
+
   return (
     <>
       {/* Mobile Backdrop to prevent clipping and guarantee clean close */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[65] sm:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-35 sm:hidden animate-in fade-in duration-200"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      <div className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-[70] flex flex-col items-end">
+      <div className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end">
         
         {/* Pop-up Chat Assistant Box */}
         <AnimatePresence>

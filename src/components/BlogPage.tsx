@@ -20,6 +20,7 @@ import { COMPANY_INFO } from "../data/company";
 import { BlogPost } from "../types";
 import { getBlogPosts } from "../utils/api";
 import { getImageUrl, handleImageError } from "../utils/api";
+import { useBodyScrollLock } from "../utils/scrollLock";
 
 interface BlogPageProps {
   onBackToHome: () => void;
@@ -36,6 +37,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [activeArticle, setActiveArticle] = useState<BlogPost | null>(null);
+  useBodyScrollLock(Boolean(activeArticle));
 
   const loadBlogData = () => {
     getBlogPosts().then((data) => {
