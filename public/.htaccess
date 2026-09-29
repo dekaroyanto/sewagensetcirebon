@@ -15,6 +15,11 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
+    # Return 404 directly for missing static assets & uploads (prevent Hostinger CDN 422 error and HTML delivery)
+    RewriteCond %{REQUEST_URI} \.(jpg|jpeg|png|gif|webp|svg|ico|css|js|woff|woff2|ttf|eot)$ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/uploads/ [NC]
+    RewriteRule ^ - [R=404,L]
+
     # All other URLs fall back to React SPA index.html
     RewriteRule ^ index.html [L]
 </IfModule>

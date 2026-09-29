@@ -30,8 +30,7 @@ import {
 } from "../utils/format";
 import { BookingModal } from "./BookingModal";
 import { useBodyScrollLock, resetBodyScroll } from "../utils/scrollLock";
-import { getProducts } from "../utils/api";
-import { getImageUrl } from "../utils/api";
+import { getProducts, getImageUrl, handleImageError } from "../utils/api";
 
 interface CatalogPageProps {
   onBackToHome: () => void;
@@ -212,6 +211,12 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     src={getImageUrl(product.image_url || product.image)}
                     alt={product.name}
                     referrerPolicy="no-referrer"
+                    onError={(e) =>
+                      handleImageError(
+                        e,
+                        product.product_type === "ac" ? "ac" : "genset",
+                      )
+                    }
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
                   />
 
@@ -380,6 +385,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     )}
                     alt={activeModalGenset.name}
                     referrerPolicy="no-referrer"
+                    onError={(e) =>
+                      handleImageError(
+                        e,
+                        activeModalGenset.product_type === "ac"
+                          ? "ac"
+                          : "genset",
+                      )
+                    }
                     className="w-full h-full object-cover"
                   />
                 </div>

@@ -9,8 +9,7 @@ import {
   AlertCircle,
   FileImage,
 } from "lucide-react";
-import { uploadImageFile } from "../../utils/api";
-import { getImageUrl } from "../../utils/api";
+import { uploadImageFile, getImageUrl, handleImageError } from "../../utils/api";
 
 interface ImageUploadFieldProps {
   label: string;
@@ -151,11 +150,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               alt="Preview"
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              onError={(e) => {
-                // fallback placeholder if image cannot be loaded
-                (e.target as any).src =
-                  "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400";
-              }}
+              onError={(e) => handleImageError(e, "default")}
             />
             {isLocalUpload && (
               <div className="absolute top-1.5 left-1.5 bg-emerald-500/90 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-xs uppercase">

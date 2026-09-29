@@ -14,20 +14,83 @@ import { COMPANY_INFO } from "../data/company";
 
 // Di Hostinger, /api mengakses public_html/api/index.php secara langsung
 export const API_BASE = import.meta.env.VITE_API_URL || "/api";
+export const HOSTINGER_BASE_URL = "https://sewagensetcirebon.com";
+
+// Curated high-res fallbacks by category
+export const FALLBACK_IMAGES = {
+  genset:
+    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80",
+  ac: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&auto=format&fit=crop&q=80",
+  gallery:
+    "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80",
+  blog: "https://images.unsplash.com/photo-1636867759143-c28c1e909bd3?w=800&auto=format&fit=crop&q=80",
+  default:
+    "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&auto=format&fit=crop&q=80",
+};
 
 /**
- * Mendapatkan URL gambar penuh dari path relative (untuk menangani akses dari GitHub Pages ke Hostinger)
+ * Helper error handler untuk <img onError={...} />
+ * Otomatis mengganti gambar yang gagal dimuat dengan placeholder tanpa looping
+ */
+export function handleImageError(
+  e: React.SyntheticEvent<HTMLImageElement, Event>,
+  category: keyof typeof FALLBACK_IMAGES = "default",
+) {
+  const target = e.currentTarget;
+  const fallback = FALLBACK_IMAGES[category] || FALLBACK_IMAGES.default;
+  if (target.src !== fallback) {
+    target.onerror = null;
+    target.src = fallback;
+  }
+}
+
+/**
+ * Mendapatkan URL gambar yang valid baik di lingkungan Localhost (dev),
+ * domain production Hostinger (sewagensetcirebon.com), maupun GitHub Pages.
  */
 export function getImageUrl(path?: string | null): string {
-  if (!path) return "";
-  if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
-    return path;
+  if (!path || typeof path !== "string") return "";
+  const trimmed = path.trim();
+  if (!trimmed) return "";
+
+  // 1. Data URI atau Blob URI langsung dipakai
+  if (trimmed.startsWith("data:") || trimmed.startsWith("blob:")) {
+    return trimmed;
   }
-  if (path.startsWith("/")) {
-    path = path.slice(1);
+
+  // 2. Absolute URL (http:// atau https://)
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
   }
-  // Memaksa pengaksesan file upload ke domain Hostinger jika web di-host di GitHub Pages
-  return `https://sewagensetcirebon.com/${path}`;
+
+  // 3. Normalisasi path: bersihkan leading slashes
+  const cleanPath = trimmed.replace(/^\/+/, "");
+
+  // 4. File uploads (/uploads/...)
+  if (cleanPath.startsWith("uploads/")) {
+    if (typeof window !== "undefined") {
+      // Jika diakses dari GitHub Pages, wajib arahkan ke server Hostinger
+      if (window.location.hostname.includes("github.io")) {
+        return `${HOSTINGER_BASE_URL}/${cleanPath}`;
+      }
+
+      // Jika diakses di domain sewagensetcirebon.com:
+      // Gunakan URL relatif `/${cleanPath}` agar tercepat, same-origin, aman HTTPS
+      if (window.location.hostname.includes("sewagensetcirebon.com")) {
+        return `/${cleanPath}`;
+      }
+
+      // Jika di localhost / IP lokal:
+      // Vite proxy sudah disiapkan untuk `/uploads`, sehingga `/${cleanPath}` akan membaca
+      // file lokal di public/uploads/ TERLEBIH DAHULU (super cepat & bisa offline),
+      // dan bila tidak ada di lokal akan otomatis di-forward ke Hostinger server via proxy!
+      return `/${cleanPath}`;
+    }
+    return `/${cleanPath}`;
+  }
+
+  // 5. File statis lokal aplikasi (misal sgc-logo.svg atau assets/...)
+  return `/${cleanPath}`;
 }
 
 /**

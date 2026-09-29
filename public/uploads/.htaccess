@@ -21,3 +21,10 @@ Options -Indexes
         Allow from all
     </IfModule>
 </FilesMatch>
+
+# CORS Headers & Caching for uploaded assets
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>

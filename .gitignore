@@ -10,10 +10,12 @@ config.local.php
 api/config.local.php
 public/api/config.local.php
 
-# Ignore uploaded media files (preserve .gitkeep and .htaccess)
+# Ignore arbitrary uploaded media files, but preserve default uploaded assets
 public/uploads/*
 !public/uploads/.gitkeep
 !public/uploads/.htaccess
+!public/uploads/sgc_*
 uploads/*
 !uploads/.gitkeep
 !uploads/.htaccess
+!uploads/sgc_*

@@ -19,7 +19,7 @@ import {
 import { COMPANY_INFO } from "../data/company";
 import { BlogPost } from "../types";
 import { getBlogPosts } from "../utils/api";
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface BlogPageProps {
   onBackToHome: () => void;
@@ -174,6 +174,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                   src={getImageUrl(featuredPost.image)}
                   alt={featuredPost.title}
                   referrerPolicy="no-referrer"
+                  onError={(e) => handleImageError(e, "blog")}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95"
                 />
                 <div className="absolute top-4 left-4">
@@ -294,6 +295,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                           src={getImageUrl(post.image)}
                           alt={post.title}
                           referrerPolicy="no-referrer"
+                          onError={(e) => handleImageError(e, "blog")}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                         />
                         <div className="absolute top-3 left-3">
@@ -457,6 +459,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({
                   src={getImageUrl(activeArticle.image)}
                   alt={activeArticle.title}
                   referrerPolicy="no-referrer"
+                  onError={(e) => handleImageError(e, "blog")}
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -19,7 +19,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { GalleryItem } from '../types';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 import { getGallery } from '../utils/api';
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface GallerySectionProps {
   onOpenPortfolio?: () => void;
@@ -356,6 +356,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
                       src={getImageUrl(item.image)}
                       alt={item.title}
                       referrerPolicy="no-referrer"
+                      onError={(e) => handleImageError(e, "gallery")}
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
 
@@ -437,6 +438,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onOpenPortfolio 
                 src={getImageUrl(selectedZoomPhoto.image)}
                 alt={selectedZoomPhoto.title}
                 referrerPolicy="no-referrer"
+                onError={(e) => handleImageError(e, "gallery")}
                 className="w-full h-full object-cover"
               />
               <button

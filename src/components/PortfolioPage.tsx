@@ -13,7 +13,7 @@ import { getGeneralWhatsAppUrl, getPortfolioWhatsAppUrl } from '../utils/whatsap
 import { BookingModal } from './BookingModal';
 import { useBodyScrollLock, resetBodyScroll } from '../utils/scrollLock';
 import { getGallery } from '../utils/api';
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface PortfolioPageProps {
   onBackToHome: () => void;
@@ -116,6 +116,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
                     src={getImageUrl(item.image)}
                     alt={item.title}
                     loading="lazy"
+                    onError={(e) => handleImageError(e, "gallery")}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
@@ -200,6 +201,7 @@ export const PortfolioPage: React.FC<PortfolioPageProps> = ({
               <img
                 src={getImageUrl(selectedItem.image)}
                 alt={selectedItem.title}
+                onError={(e) => handleImageError(e, "gallery")}
                 className="w-full h-full object-cover"
               />
               <button

@@ -24,7 +24,7 @@ import {
 } from "../../../utils/api";
 import { formatCurrency } from "../../../utils/format";
 import { ImageUploadField } from "../ImageUploadField";
-import { getImageUrl } from "../../../utils/api";
+import { getImageUrl, handleImageError } from "../../../utils/api";
 
 interface ProductsTabProps {
   onToast: (msg: string) => void;
@@ -324,10 +324,12 @@ export const ProductsTab: React.FC<ProductsTabProps> = ({ onToast }) => {
                             src={getImageUrl(p.image_url || p.image)}
                             alt={p.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as any).src =
-                                "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800";
-                            }}
+                            onError={(e) =>
+                              handleImageError(
+                                e,
+                                p.product_type === "ac" ? "ac" : "genset",
+                              )
+                            }
                           />
                         </div>
                         <div>

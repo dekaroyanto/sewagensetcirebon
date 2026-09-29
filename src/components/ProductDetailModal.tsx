@@ -12,7 +12,7 @@ import { GensetProduct } from '../types';
 import { getProductQuickWhatsAppUrl } from '../utils/whatsapp';
 import { formatPrice, getProductTypeBadge, getProductTypeLabel } from '../utils/format';
 import { useBodyScrollLock } from '../utils/scrollLock';
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface ProductDetailModalProps {
   product: GensetProduct | null;
@@ -76,6 +76,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 src={getImageUrl(product.image_url || product.image)}
                 alt={product.name}
                 referrerPolicy="no-referrer"
+                onError={(e) =>
+                  handleImageError(
+                    e,
+                    product.product_type === "ac" ? "ac" : "genset",
+                  )
+                }
                 className="w-full h-full object-cover"
               />
             </div>

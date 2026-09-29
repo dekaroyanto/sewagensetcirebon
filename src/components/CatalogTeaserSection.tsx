@@ -14,7 +14,7 @@ import {
 import { motion } from "motion/react";
 import { GensetProduct } from "../types";
 import { getProducts } from "../utils/api";
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface CatalogTeaserSectionProps {
   onOpenCatalog: () => void;
@@ -400,6 +400,12 @@ export const CatalogTeaserSection: React.FC<CatalogTeaserSectionProps> = ({
                           src={getImageUrl(item.image_url || item.image)}
                           alt={item.name}
                           referrerPolicy="no-referrer"
+                          onError={(e) =>
+                            handleImageError(
+                              e,
+                              item.product_type === "ac" ? "ac" : "genset",
+                            )
+                          }
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
 

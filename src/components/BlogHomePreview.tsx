@@ -17,7 +17,7 @@ import {
 import { motion } from "motion/react";
 import { BlogPost } from "../types";
 import { getBlogPosts } from "../utils/api";
-import { getImageUrl } from "../utils/api";
+import { getImageUrl, handleImageError } from "../utils/api";
 
 interface BlogHomePreviewProps {
   onOpenAllArticles: () => void;
@@ -245,6 +245,7 @@ export const BlogHomePreview: React.FC<BlogHomePreviewProps> = ({
                         src={getImageUrl(post.image)}
                         alt={post.title}
                         referrerPolicy="no-referrer"
+                        onError={(e) => handleImageError(e, "blog")}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
                       />
                       <div className="absolute top-3 left-3">

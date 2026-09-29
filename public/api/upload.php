@@ -161,6 +161,17 @@ if ($file) {
     $slug = preg_replace('/[^a-zA-Z0-9_-]/', '', substr($originalName, 0, 20));
     $slug = $slug ?: 'img';
     $savedFilename = 'sgc_' . $slug . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+
+    // Support specifying exact sanitized filename if requested
+    $customName = $_POST['custom_filename'] ?? ($_POST['filename'] ?? null);
+    if ($customName) {
+        $cleanCustom = preg_replace('/[^a-zA-Z0-9_.-]/', '', basename($customName));
+        $customExt = strtolower(pathinfo($cleanCustom, PATHINFO_EXTENSION));
+        if (!empty($cleanCustom) && in_array($customExt, $allowedExtensions)) {
+            $savedFilename = $cleanCustom;
+        }
+    }
+
     $targetPath = $uploadDir . '/' . $savedFilename;
 
     if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -189,6 +200,17 @@ if ($file) {
         }
 
         $savedFilename = 'sgc_upload_' . date('Ymd_His') . '_' . bin2hex(random_bytes(3)) . '.' . $ext;
+
+        // Support specifying exact sanitized filename if requested
+        $customName = $rawInput['custom_filename'] ?? ($rawInput['filename'] ?? ($_POST['custom_filename'] ?? null));
+        if ($customName) {
+            $cleanCustom = preg_replace('/[^a-zA-Z0-9_.-]/', '', basename($customName));
+            $customExt = strtolower(pathinfo($cleanCustom, PATHINFO_EXTENSION));
+            if (!empty($cleanCustom) && in_array($customExt, $allowedExtensions)) {
+                $savedFilename = $cleanCustom;
+            }
+        }
+
         $targetPath = $uploadDir . '/' . $savedFilename;
         if (@file_put_contents($targetPath, $decoded) === false) {
             sendJsonResponse(['status' => 'error', 'message' => 'Gagal menyimpan file base64 ke disk server.'], 500);

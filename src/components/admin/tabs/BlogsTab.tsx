@@ -16,7 +16,7 @@ import {
 import { BlogPost } from '../../../types';
 import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../../../utils/api';
 import { ImageUploadField } from '../ImageUploadField';
-import { getImageUrl } from "../../../utils/api";
+import { getImageUrl, handleImageError } from "../../../utils/api";
 
 interface BlogsTabProps {
   onToast: (msg: string) => void;
@@ -280,7 +280,13 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-14 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700">
-                          <img src={getImageUrl(b.image)} alt={b.title} className="w-full h-full object-cover" />
+                          <img
+                            src={getImageUrl(b.image)}
+                            alt={b.title}
+                            referrerPolicy="no-referrer"
+                            onError={(e) => handleImageError(e, "blog")}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div>
                           <div className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1">{b.title}</div>

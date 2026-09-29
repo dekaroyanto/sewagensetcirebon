@@ -19,7 +19,7 @@ import {
   deleteGalleryItem,
 } from "../../../utils/api";
 import { ImageUploadField } from "../ImageUploadField";
-import { getImageUrl } from "../../../utils/api";
+import { getImageUrl, handleImageError } from "../../../utils/api";
 
 interface GalleryTabProps {
   onToast: (msg: string) => void;
@@ -236,6 +236,8 @@ export const GalleryTab: React.FC<GalleryTabProps> = ({ onToast }) => {
                 <img
                   src={getImageUrl(item.image)}
                   alt={item.title}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => handleImageError(e, "gallery")}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-md text-amber-600 dark:text-amber-400 border border-slate-200 dark:border-slate-800">

@@ -1,6 +1,7 @@
 import React from 'react';
+import { getImageUrl, handleImageError } from "../utils/api";
 import { 
-import { getImageUrl } from "../utils/api";
+
   Zap, 
   ArrowRight, 
   Sparkles, 
@@ -98,6 +99,7 @@ export const CatalogGuideSection: React.FC<CatalogGuideSectionProps> = ({
                   src={getImageUrl(item.image)}
                   alt={item.title}
                   referrerPolicy="no-referrer"
+                  onError={(e) => handleImageError(e, "genset")}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-85 group-hover:opacity-100"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
