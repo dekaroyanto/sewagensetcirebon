@@ -4,6 +4,8 @@ import {
   MapPin,
   Phone,
   Mail,
+  Instagram,
+  Facebook,
   Clock,
   ShieldCheck,
   ChevronRight,
@@ -89,7 +91,34 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
             <div className="flex items-center gap-2.5">
               <Mail className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-              <span>{COMPANY_INFO.email}</span>
+              <a
+                href={`mailto:${COMPANY_INFO.email}`}
+                className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              >
+                {COMPANY_INFO.email}
+              </a>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Instagram className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <a
+                href={COMPANY_INFO.instagramUrl || "https://www.instagram.com/sgc_indonesia?stkn=ZTFpbDBnMnR6dWdv"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              >
+                @sgc_indonesia
+              </a>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Facebook className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+              <a
+                href={COMPANY_INFO.facebookUrl || "https://www.facebook.com/share/1BD5ywoRuS/?mibextid=wwXIfr"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+              >
+                Sewa Genset Cirebon
+              </a>
             </div>
           </div>
         </div>
