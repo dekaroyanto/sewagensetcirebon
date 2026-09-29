@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Target upload directory
+// Target upload directories
 $uploadDir = dirname(__DIR__) . '/uploads';
 if (!is_dir($uploadDir)) {
     if (!@mkdir($uploadDir, 0755, true)) {
@@ -28,8 +28,65 @@ if (!is_dir($uploadDir)) {
     }
 }
 
-// Handle GET: list files in uploads folder
+// Persistent backup directory outside public_html (immune to git pulls/resets/cleans)
+$persistentDir = dirname(dirname(__DIR__)) . '/persistent_uploads';
+if (!is_dir($persistentDir)) {
+    @mkdir($persistentDir, 0755, true);
+}
+// Fallback persistent backup directory inside api/
+$apiBackupDir = __DIR__ . '/.persistent_uploads';
+if (!is_dir($apiBackupDir)) {
+    @mkdir($apiBackupDir, 0755, true);
+}
+
+/**
+ * Backup an uploaded file to persistent storage outside public_html
+ */
+function backupUploadedFile($filename, $sourcePath) {
+    global $persistentDir, $apiBackupDir;
+    if (file_exists($sourcePath) && is_file($sourcePath)) {
+        if (is_dir($persistentDir) && is_writable($persistentDir)) {
+            @copy($sourcePath, $persistentDir . '/' . $filename);
+        }
+        if (is_dir($apiBackupDir) && is_writable($apiBackupDir)) {
+            @copy($sourcePath, $apiBackupDir . '/' . $filename);
+        }
+    }
+}
+
+/**
+ * Bidirectional sync: restores missing public files from persistent storage
+ * and backs up any newly uploaded files
+ */
+function syncPersistentUploads() {
+    global $uploadDir, $persistentDir, $apiBackupDir;
+    $sources = array_filter([$persistentDir, $apiBackupDir], 'is_dir');
+    foreach ($sources as $source) {
+        $files = @scandir($source);
+        if ($files) {
+            foreach ($files as $f) {
+                if ($f === '.' || $f === '..' || $f === '.gitkeep' || $f === '.htaccess') continue;
+                $target = $uploadDir . '/' . $f;
+                if (!file_exists($target)) {
+                    @copy($source . '/' . $f, $target);
+                }
+            }
+        }
+    }
+    if (is_dir($uploadDir)) {
+        $uploadFiles = @scandir($uploadDir);
+        if ($uploadFiles) {
+            foreach ($uploadFiles as $f) {
+                if ($f === '.' || $f === '..' || $f === '.gitkeep' || $f === '.htaccess') continue;
+                backupUploadedFile($f, $uploadDir . '/' . $f);
+            }
+        }
+    }
+}
+
+// Handle GET: list files in uploads folder (and auto-sync from persistent backup)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    syncPersistentUploads();
     $files = [];
     if (is_dir($uploadDir)) {
         foreach (scandir($uploadDir) as $f) {
@@ -47,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     sendJsonResponse([
         'status' => 'success',
         'upload_dir' => $uploadDir,
+        'persistent_dir' => is_dir($persistentDir) ? $persistentDir : null,
         'count' => count($files),
         'files' => $files
     ]);
@@ -180,6 +238,8 @@ if ($file) {
             'message' => 'Gagal memindahkan file ke folder uploads. Periksa izin direktori di Hostinger.'
         ], 500);
     }
+    // Automatically save a persistent backup copy outside public_html
+    backupUploadedFile($savedFilename, $targetPath);
 } elseif ($base64Image) {
     // Process base64 data URI (e.g. data:image/png;base64,...)
     if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $typeMatch)) {
@@ -215,6 +275,8 @@ if ($file) {
         if (@file_put_contents($targetPath, $decoded) === false) {
             sendJsonResponse(['status' => 'error', 'message' => 'Gagal menyimpan file base64 ke disk server.'], 500);
         }
+        // Automatically save a persistent backup copy outside public_html
+        backupUploadedFile($savedFilename, $targetPath);
     } else {
         sendJsonResponse(['status' => 'error', 'message' => 'Format base64 gambar tidak sesuai.'], 400);
     }

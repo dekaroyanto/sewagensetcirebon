@@ -10,12 +10,14 @@ config.local.php
 api/config.local.php
 public/api/config.local.php
 
-# Ignore arbitrary uploaded media files, but preserve default uploaded assets
+# Persistent storage directories
+public/api/.persistent_uploads/
+api/.persistent_uploads/
+
+# Ignore uploaded media files in uploads folder (never let Git clean touch them)
 public/uploads/*
 !public/uploads/.gitkeep
 !public/uploads/.htaccess
-!public/uploads/sgc_*
 uploads/*
 !uploads/.gitkeep
 !uploads/.htaccess
-!uploads/sgc_*
