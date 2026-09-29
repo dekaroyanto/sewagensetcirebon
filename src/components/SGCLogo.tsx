@@ -138,8 +138,9 @@ export const SGCLogo: React.FC<SGCLogoProps> = ({
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       {renderEmblem()}
-      {/* <div className="flex flex-col">
-        <div className="flex items-center gap-1.5 leading-none">
+
+      <div className="flex flex-col">
+        <div className="flex items-center justify-center leading-none">
           <span
             className={`font-display font-black text-slate-900 dark:text-white uppercase tracking-tight ${textSizes[size].title}`}
           >
@@ -148,20 +149,19 @@ export const SGCLogo: React.FC<SGCLogoProps> = ({
         </div>
 
         {showSubtitle && (
-          <div className="flex items-center gap-1.5 mt-1 leading-none">
+          <div className="flex items-center justify-center gap-1.5 mt-1 leading-none">
             <span className="h-[1.5px] w-3 sm:w-5 bg-amber-600 dark:bg-amber-500 rounded-full"></span>
+
             <span
               className={`font-extrabold tracking-widest text-amber-600 dark:text-amber-500 uppercase ${textSizes[size].sub}`}
             >
               INDONESIA
             </span>
+
             <span className="h-[1.5px] w-3 sm:w-5 bg-amber-600 dark:bg-amber-500 rounded-full"></span>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 hidden sm:inline ml-1 font-medium">
-              • Rental Genset &amp; AC
-            </span>
           </div>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
