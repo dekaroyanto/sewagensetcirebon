@@ -106,7 +106,7 @@ export const Hero: React.FC<HeroProps> = ({
           speed={900}
           loop={true}
           autoplay={{
-            delay: 5500,
+            delay: 5000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
