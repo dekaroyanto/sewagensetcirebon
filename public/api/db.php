@@ -179,6 +179,10 @@ function safelyDeleteUploadedImage(?string $imageUrl, ?PDO $pdo = null): bool {
         rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/uploads',
         rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/\\') . '/public/uploads',
         dirname(__DIR__) . '/public/uploads',
+        // Also clean up persistent backup stores so files do not resurrect on sync
+        dirname(dirname(__DIR__)) . '/persistent_uploads',
+        dirname(__DIR__) . '/.persistent_uploads',
+        __DIR__ . '/.persistent_uploads',
     ];
 
     $deleted = false;
@@ -194,5 +198,66 @@ function safelyDeleteUploadedImage(?string $imageUrl, ?PDO $pdo = null): bool {
     }
 
     return $deleted;
+}
+
+/**
+ * Scans the database and returns a map of all image filenames referenced in products, blogs, gallery, etc.
+ * Returns array: [ 'filename.jpg' => ['Produk: Genset Silent 10 kVA', ...], ... ]
+ */
+function getAllReferencedMediaFiles(?PDO $pdo = null): array {
+    if (!$pdo) {
+        return [];
+    }
+    $usedMap = [];
+
+    // 1. Check products (image_url)
+    try {
+        $stmt = $pdo->query("SELECT `id`, `name`, `image_url` FROM `products` WHERE `image_url` IS NOT NULL AND `image_url` != ''");
+        while ($row = $stmt->fetch()) {
+            $url = $row['image_url'];
+            if (strpos($url, '/uploads/') !== false) {
+                $fn = basename(parse_url($url, PHP_URL_PATH));
+                if (!empty($fn)) {
+                    $usedMap[$fn][] = "Produk: " . ($row['name'] ?: $row['id']);
+                }
+            }
+        }
+    } catch (Exception $e) {}
+
+    // 2. Check blog_posts (image cover & JSON content)
+    try {
+        $stmt = $pdo->query("SELECT `id`, `title`, `image`, `content` FROM `blog_posts`");
+        while ($row = $stmt->fetch()) {
+            if (!empty($row['image']) && strpos($row['image'], '/uploads/') !== false) {
+                $fn = basename(parse_url($row['image'], PHP_URL_PATH));
+                if (!empty($fn)) {
+                    $usedMap[$fn][] = "Cover Artikel: " . ($row['title'] ?: $row['id']);
+                }
+            }
+            if (!empty($row['content'])) {
+                if (preg_match_all('/\/uploads\/([a-zA-Z0-9_\-\.]+\.(?:jpg|jpeg|png|webp|gif|svg))/i', (string)$row['content'], $matches)) {
+                    foreach ($matches[1] as $embeddedFn) {
+                        $usedMap[$embeddedFn][] = "Konten Artikel: " . ($row['title'] ?: $row['id']);
+                    }
+                }
+            }
+        }
+    } catch (Exception $e) {}
+
+    // 3. Check gallery_items (image)
+    try {
+        $stmt = $pdo->query("SELECT `id`, `title`, `image` FROM `gallery_items` WHERE `image` IS NOT NULL AND `image` != ''");
+        while ($row = $stmt->fetch()) {
+            $url = $row['image'];
+            if (strpos($url, '/uploads/') !== false) {
+                $fn = basename(parse_url($url, PHP_URL_PATH));
+                if (!empty($fn)) {
+                    $usedMap[$fn][] = "Galeri: " . ($row['title'] ?: $row['id']);
+                }
+            }
+        }
+    } catch (Exception $e) {}
+
+    return $usedMap;
 }
 

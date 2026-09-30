@@ -9,6 +9,10 @@ import {
   DashboardStats,
   AdminUser,
   CompanySettings,
+  MediaFileItem,
+  MediaStorageStats,
+  MediaScanResponse,
+  MediaCleanupResponse,
 } from "../types";
 import { COMPANY_INFO } from "../data/company";
 
@@ -1075,3 +1079,144 @@ export async function updateAdminProfile(
     return { success: false, message: err.message || "Koneksi gagal" };
   }
 }
+
+/**
+ * Memindai file media di server /uploads/ dan memeriksa status pemakaian di database
+ */
+export async function scanMediaFiles(): Promise<MediaScanResponse> {
+  const headers = getAuthHeaders();
+  try {
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE}/upload?action=scan&_t=${Date.now()}`, {
+        headers,
+        cache: "no-store",
+      });
+      if (!response.ok && response.status === 404) {
+        response = await fetch(`${API_BASE}/upload.php?action=scan&_t=${Date.now()}`, {
+          headers,
+          cache: "no-store",
+        });
+      }
+    } catch {
+      response = await fetch(`${API_BASE}/upload.php?action=scan&_t=${Date.now()}`, {
+        headers,
+        cache: "no-store",
+      });
+    }
+
+    const json = await parseResponseJson(response, "Scan media selesai.");
+    if (json && json.status === "success") {
+      return {
+        status: "success",
+        stats: json.stats || {
+          total_files: json.count || 0,
+          total_bytes: 0,
+          total_formatted: "0 B",
+          used_files: json.used_files?.length || 0,
+          used_bytes: 0,
+          used_formatted: "0 B",
+          unused_files: json.unused_files?.length || 0,
+          unused_bytes: 0,
+          unused_formatted: "0 B",
+        },
+        files: json.files || [],
+        unused_files: json.unused_files || [],
+        used_files: json.used_files || [],
+      };
+    }
+    throw new Error(json.message || "Gagal memindai direktori media.");
+  } catch (err: any) {
+    console.warn("Gagal memindai media server:", err);
+    return {
+      status: "error",
+      message: err.message || "Tidak dapat terhubung ke endpoint upload.",
+      stats: {
+        total_files: 0,
+        total_bytes: 0,
+        total_formatted: "0 B",
+        used_files: 0,
+        used_bytes: 0,
+        used_formatted: "0 B",
+        unused_files: 0,
+        unused_bytes: 0,
+        unused_formatted: "0 B",
+      },
+      files: [],
+      unused_files: [],
+      used_files: [],
+    };
+  }
+}
+
+/**
+ * Membersihkan file media tak terpakai (orphan images) secara massal dari server
+ */
+export async function cleanupMediaFiles(options: {
+  filenames?: string[];
+  allUnused?: boolean;
+}): Promise<MediaCleanupResponse> {
+  const headers = getAuthHeaders();
+  const payload = {
+    action: "cleanup",
+    all_unused: options.allUnused ?? false,
+    filenames: options.filenames ?? [],
+  };
+
+  try {
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE}/upload`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok && response.status === 404) {
+        response = await fetch(`${API_BASE}/upload.php`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(payload),
+        });
+      }
+    } catch {
+      response = await fetch(`${API_BASE}/upload.php`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+    }
+
+    const json = await parseResponseJson(response, "Pembersihan media selesai.");
+    if (json.status === "success") {
+      notifyDataChanged();
+      return {
+        status: "success",
+        message: json.message || "Pembersihan media berhasil.",
+        deleted_count: json.deleted_count || 0,
+        freed_bytes: json.freed_bytes || 0,
+        freed_formatted: json.freed_formatted || "0 B",
+        deleted_files: json.deleted_files || [],
+        skipped_count: json.skipped_count,
+        skipped_files: json.skipped_files,
+      };
+    }
+    return {
+      status: "error",
+      message: json.message || "Gagal membersihkan media server.",
+      deleted_count: 0,
+      freed_bytes: 0,
+      freed_formatted: "0 B",
+      deleted_files: [],
+    };
+  } catch (err: any) {
+    return {
+      status: "error",
+      message: err.message || "Gagal menghubungi server.",
+      deleted_count: 0,
+      freed_bytes: 0,
+      freed_formatted: "0 B",
+      deleted_files: [],
+    };
+  }
+}
+

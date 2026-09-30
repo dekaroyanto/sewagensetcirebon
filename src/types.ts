@@ -157,3 +157,46 @@ export interface CompanySettings {
   facebook?: string;
 }
 
+export interface MediaFileItem {
+  name: string;
+  size: number;
+  size_formatted: string;
+  url: string;
+  modified: string;
+  is_used: boolean;
+  used_in: string[];
+}
+
+export interface MediaStorageStats {
+  total_files: number;
+  total_bytes: number;
+  total_formatted: string;
+  used_files: number;
+  used_bytes: number;
+  used_formatted: string;
+  unused_files: number;
+  unused_bytes: number;
+  unused_formatted: string;
+}
+
+export interface MediaScanResponse {
+  status: 'success' | 'error';
+  message?: string;
+  stats: MediaStorageStats;
+  files: MediaFileItem[];
+  unused_files: MediaFileItem[];
+  used_files: MediaFileItem[];
+}
+
+export interface MediaCleanupResponse {
+  status: 'success' | 'error';
+  message: string;
+  deleted_count: number;
+  freed_bytes: number;
+  freed_formatted: string;
+  deleted_files: string[];
+  skipped_count?: number;
+  skipped_files?: string[];
+}
+
+

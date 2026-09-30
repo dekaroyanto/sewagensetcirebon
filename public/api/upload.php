@@ -84,40 +84,154 @@ function syncPersistentUploads() {
     }
 }
 
-// Handle GET: list files in uploads folder (and auto-sync from persistent backup)
+/**
+ * Helper format bytes to human readable string (KB, MB, GB)
+ */
+function formatBytes($bytes, $precision = 2) {
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+    $bytes /= pow(1024, $pow);
+    return round($bytes, $precision) . ' ' . $units[$pow];
+}
+
+// Handle GET: list files in uploads folder (and scan usage against MySQL tables)
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     syncPersistentUploads();
+    $pdo = getDbConnection();
+    $usedMap = getAllReferencedMediaFiles($pdo);
+
     $files = [];
+    $unusedFiles = [];
+    $usedFiles = [];
+
+    $totalBytes = 0;
+    $unusedBytes = 0;
+    $usedBytes = 0;
+
     if (is_dir($uploadDir)) {
         foreach (scandir($uploadDir) as $f) {
             if ($f !== '.' && $f !== '..' && $f !== '.gitkeep' && $f !== '.htaccess') {
                 $filePath = $uploadDir . '/' . $f;
-                $files[] = [
+                $size = is_file($filePath) ? filesize($filePath) : 0;
+                $modified = is_file($filePath) ? date('Y-m-d H:i:s', filemtime($filePath)) : '';
+
+                $isUsed = isset($usedMap[$f]) && count($usedMap[$f]) > 0;
+                $usedLocations = $isUsed ? $usedMap[$f] : [];
+
+                $fileItem = [
                     'name' => $f,
-                    'size' => is_file($filePath) ? filesize($filePath) : 0,
+                    'size' => $size,
+                    'size_formatted' => formatBytes($size),
                     'url' => '/uploads/' . $f,
-                    'modified' => is_file($filePath) ? date('Y-m-d H:i:s', filemtime($filePath)) : ''
+                    'modified' => $modified,
+                    'is_used' => $isUsed,
+                    'used_in' => $usedLocations
                 ];
+
+                $files[] = $fileItem;
+                $totalBytes += $size;
+
+                if ($isUsed) {
+                    $usedFiles[] = $fileItem;
+                    $usedBytes += $size;
+                } else {
+                    $unusedFiles[] = $fileItem;
+                    $unusedBytes += $size;
+                }
             }
         }
     }
+
     sendJsonResponse([
         'status' => 'success',
         'upload_dir' => $uploadDir,
         'persistent_dir' => is_dir($persistentDir) ? $persistentDir : null,
+        'stats' => [
+            'total_files' => count($files),
+            'total_bytes' => $totalBytes,
+            'total_formatted' => formatBytes($totalBytes),
+            'used_files' => count($usedFiles),
+            'used_bytes' => $usedBytes,
+            'used_formatted' => formatBytes($usedBytes),
+            'unused_files' => count($unusedFiles),
+            'unused_bytes' => $unusedBytes,
+            'unused_formatted' => formatBytes($unusedBytes),
+        ],
         'count' => count($files),
-        'files' => $files
+        'files' => $files,
+        'unused_files' => $unusedFiles,
+        'used_files' => $usedFiles
     ]);
 }
 
-// Handle DELETE: remove an uploaded image file if not in use
+// Handle DELETE: remove single or bulk uploaded image file if not in use
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     $data = getJsonInput();
+    $pdo = getDbConnection();
+
+    // Check if bulk cleanup requested
+    $isBulk = !empty($data['bulk']) || !empty($data['all_unused']) || !empty($data['filenames']);
+    if ($isBulk) {
+        $usedMap = getAllReferencedMediaFiles($pdo);
+        $targets = [];
+
+        if (!empty($data['filenames']) && is_array($data['filenames'])) {
+            $targets = $data['filenames'];
+        } elseif (!empty($data['all_unused'])) {
+            if (is_dir($uploadDir)) {
+                foreach (scandir($uploadDir) as $f) {
+                    if ($f !== '.' && $f !== '..' && $f !== '.gitkeep' && $f !== '.htaccess') {
+                        if (!isset($usedMap[$f]) || count($usedMap[$f]) === 0) {
+                            $targets[] = $f;
+                        }
+                    }
+                }
+            }
+        }
+
+        $deletedCount = 0;
+        $freedBytes = 0;
+        $deletedFiles = [];
+        $skippedFiles = [];
+
+        foreach ($targets as $rawTarget) {
+            $fn = basename(parse_url($rawTarget, PHP_URL_PATH));
+            if (empty($fn) || $fn === '.' || $fn === '..' || $fn === '.gitkeep' || $fn === '.htaccess') {
+                continue;
+            }
+            if (isset($usedMap[$fn]) && count($usedMap[$fn]) > 0) {
+                $skippedFiles[] = $fn;
+                continue;
+            }
+
+            $targetPath = $uploadDir . '/' . $fn;
+            $fSize = file_exists($targetPath) ? filesize($targetPath) : 0;
+
+            if (safelyDeleteUploadedImage('/uploads/' . $fn, $pdo)) {
+                $deletedCount++;
+                $freedBytes += $fSize;
+                $deletedFiles[] = $fn;
+            }
+        }
+
+        sendJsonResponse([
+            'status' => 'success',
+            'message' => "Berhasil membersihkan $deletedCount file gambar tak terpakai (" . formatBytes($freedBytes) . " kapasitas dibebaskan).",
+            'deleted_count' => $deletedCount,
+            'freed_bytes' => $freedBytes,
+            'freed_formatted' => formatBytes($freedBytes),
+            'deleted_files' => $deletedFiles,
+            'skipped_count' => count($skippedFiles),
+            'skipped_files' => $skippedFiles
+        ]);
+    }
+
     $targetUrl = $data['url'] ?? ($data['filename'] ?? '');
     if (!$targetUrl) {
         sendJsonResponse(['status' => 'error', 'message' => 'Sertakan URL atau nama file gambar yang ingin dihapus.'], 400);
     }
-    $pdo = getDbConnection();
     $deleted = safelyDeleteUploadedImage($targetUrl, $pdo);
     if ($deleted) {
         sendJsonResponse(['status' => 'success', 'message' => 'File gambar berhasil dihapus dari server.']);
@@ -131,6 +245,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     sendJsonResponse(['status' => 'error', 'message' => 'Hanya metode POST, GET, atau DELETE yang diizinkan.'], 405);
+}
+
+// 0. Check if POST is used for cleanup (reliable fallback for all web servers)
+$rawInput = getJsonInput();
+$action = $_GET['action'] ?? ($rawInput['action'] ?? '');
+if ($action === 'cleanup' || $action === 'delete_unused' || !empty($rawInput['all_unused']) || !empty($rawInput['filenames'])) {
+    $pdo = getDbConnection();
+    $usedMap = getAllReferencedMediaFiles($pdo);
+    $targets = [];
+
+    if (!empty($rawInput['filenames']) && is_array($rawInput['filenames'])) {
+        $targets = $rawInput['filenames'];
+    } elseif (!empty($rawInput['all_unused'])) {
+        if (is_dir($uploadDir)) {
+            foreach (scandir($uploadDir) as $f) {
+                if ($f !== '.' && $f !== '..' && $f !== '.gitkeep' && $f !== '.htaccess') {
+                    if (!isset($usedMap[$f]) || count($usedMap[$f]) === 0) {
+                        $targets[] = $f;
+                    }
+                }
+            }
+        }
+    }
+
+    $deletedCount = 0;
+    $freedBytes = 0;
+    $deletedFiles = [];
+    $skippedFiles = [];
+
+    foreach ($targets as $rawTarget) {
+        $fn = basename(parse_url($rawTarget, PHP_URL_PATH));
+        if (empty($fn) || $fn === '.' || $fn === '..' || $fn === '.gitkeep' || $fn === '.htaccess') {
+            continue;
+        }
+        if (isset($usedMap[$fn]) && count($usedMap[$fn]) > 0) {
+            $skippedFiles[] = $fn;
+            continue;
+        }
+
+        $targetPath = $uploadDir . '/' . $fn;
+        $fSize = file_exists($targetPath) ? filesize($targetPath) : 0;
+
+        if (safelyDeleteUploadedImage('/uploads/' . $fn, $pdo)) {
+            $deletedCount++;
+            $freedBytes += $fSize;
+            $deletedFiles[] = $fn;
+        }
+    }
+
+    sendJsonResponse([
+        'status' => 'success',
+        'message' => "Berhasil membersihkan $deletedCount file gambar tak terpakai (" . formatBytes($freedBytes) . " kapasitas dibebaskan).",
+        'deleted_count' => $deletedCount,
+        'freed_bytes' => $freedBytes,
+        'freed_formatted' => formatBytes($freedBytes),
+        'deleted_files' => $deletedFiles,
+        'skipped_count' => count($skippedFiles),
+        'skipped_files' => $skippedFiles
+    ]);
 }
 
 // 1. Check if a standard file was uploaded via $_FILES['image'] or $_FILES['file']

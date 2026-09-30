@@ -23,6 +23,7 @@ import {
   Info,
   Sun,
   Moon,
+  HardDrive,
 } from "lucide-react";
 import { AdminLogin } from "./AdminLogin";
 import { OverviewTab } from "./tabs/OverviewTab";
@@ -34,6 +35,7 @@ import { TestimonialsTab } from "./tabs/TestimonialsTab";
 import { FaqsTab } from "./tabs/FaqsTab";
 import { CompanyTab } from "./tabs/CompanyTab";
 import { DatabaseTab } from "./tabs/DatabaseTab";
+import { MediaTab } from "./tabs/MediaTab";
 import { ProfileTab } from "./tabs/ProfileTab";
 import { checkAdminAuth, logoutAdmin } from "../../utils/api";
 import { AdminUser } from "../../types";
@@ -139,16 +141,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: "bookings", label: "Pesanan Masuk", icon: CalendarCheck },
     { id: "blogs", label: "Artikel & Berita", icon: FileText },
     { id: "gallery", label: "Galeri Portofolio", icon: ImageIcon },
+    {
+      id: "media",
+      label: "Pembersih Gambar",
+      icon: HardDrive,
+      isHighlight: true,
+    },
     { id: "testimonials", label: "Ulasan Klien", icon: MessageSquareQuote },
     { id: "faqs", label: "Tanya Jawab (FAQ)", icon: HelpCircle },
     { id: "company", label: "Kontak Perusahaan", icon: Building },
+    { id: "database", label: "Database Hostinger", icon: Database },
     { id: "profile", label: "Pengaturan Akun", icon: User },
-    // {
-    //   id: "database",
-    //   label: "Database Hostinger",
-    //   icon: Database,
-    //   isHighlight: true,
-    // },
   ];
 
   return (
@@ -384,6 +387,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           {activeTab === "bookings" && <BookingsTab onToast={showToast} />}
           {activeTab === "blogs" && <BlogsTab onToast={showToast} />}
           {activeTab === "gallery" && <GalleryTab onToast={showToast} />}
+          {activeTab === "media" && <MediaTab onToast={showToast} />}
           {activeTab === "testimonials" && (
             <TestimonialsTab onToast={showToast} />
           )}
