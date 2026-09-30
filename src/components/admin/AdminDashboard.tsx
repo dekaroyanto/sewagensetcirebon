@@ -58,15 +58,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState<ToastItem | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('sgc_admin_theme') || 'dark';
-    setTheme(savedTheme as 'light' | 'dark');
-    if (savedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
+    const savedTheme = localStorage.getItem("sgc_admin_theme") || "dark";
+    setTheme(savedTheme as "light" | "dark");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
@@ -141,17 +141,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: "bookings", label: "Pesanan Masuk", icon: CalendarCheck },
     { id: "blogs", label: "Artikel & Berita", icon: FileText },
     { id: "gallery", label: "Galeri Portofolio", icon: ImageIcon },
+    { id: "testimonials", label: "Ulasan Klien", icon: MessageSquareQuote },
+    { id: "faqs", label: "Tanya Jawab (FAQ)", icon: HelpCircle },
+    { id: "company", label: "Kontak Perusahaan", icon: Building },
+    { id: "database", label: "Database Hostinger", icon: Database },
+    { id: "profile", label: "Pengaturan Akun", icon: User },
     {
       id: "media",
       label: "Pembersih Gambar",
       icon: HardDrive,
       isHighlight: true,
     },
-    { id: "testimonials", label: "Ulasan Klien", icon: MessageSquareQuote },
-    { id: "faqs", label: "Tanya Jawab (FAQ)", icon: HelpCircle },
-    { id: "company", label: "Kontak Perusahaan", icon: Building },
-    { id: "database", label: "Database Hostinger", icon: Database },
-    { id: "profile", label: "Pengaturan Akun", icon: User },
   ];
 
   return (
@@ -274,20 +274,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
-                const newTheme = theme === 'dark' ? 'light' : 'dark';
+                const newTheme = theme === "dark" ? "light" : "dark";
                 setTheme(newTheme);
-                if (newTheme === 'dark') {
-                  document.documentElement.classList.add('dark');
-                  localStorage.setItem('sgc_admin_theme', 'dark');
+                if (newTheme === "dark") {
+                  document.documentElement.classList.add("dark");
+                  localStorage.setItem("sgc_admin_theme", "dark");
                 } else {
-                  document.documentElement.classList.remove('dark');
-                  localStorage.setItem('sgc_admin_theme', 'light');
+                  document.documentElement.classList.remove("dark");
+                  localStorage.setItem("sgc_admin_theme", "light");
                 }
               }}
               className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
               title="Toggle Theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
             </button>
 
             <div className="hidden sm:flex flex-col text-right ml-2">

@@ -164,31 +164,6 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
         </div>
       </div> */}
 
-      {/* Quick Action & Media Storage Management Banner */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-            <HardDrive className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <span>Pembersih Gambar & Media Server</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500 text-slate-950">Fitur Baru</span>
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-              Pindai gambar tak terpakai di folder uploads server dan bebaskan ruang disk dengan 1-klik aman.
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={() => onNavigateTab("media")}
-          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-md shadow-amber-500/20 cursor-pointer self-start sm:self-auto shrink-0 transition-colors"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-          <span>Buka Pembersih Gambar</span>
-        </button>
-      </div>
-
       {/* Metric Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {/* Total Genset */}
