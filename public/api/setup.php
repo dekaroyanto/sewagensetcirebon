@@ -47,6 +47,39 @@ try {
     // Execute multiple statements
     $pdo->exec($sql);
 
+    // Auto-migrate bookings columns if table already existed prior to update
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM `bookings`")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('selected_genset_id', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_genset_id` VARCHAR(64) NULL AFTER `phone`");
+        }
+        if (!in_array('selected_genset_name', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_genset_name` VARCHAR(150) NULL AFTER `selected_genset_id`");
+        }
+        if (!in_array('genset_quantity', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `genset_quantity` INT NOT NULL DEFAULT 0 AFTER `selected_genset_name`");
+        }
+        if (!in_array('genset_duration', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `genset_duration` VARCHAR(100) NULL AFTER `genset_quantity`");
+        }
+        if (!in_array('selected_ac_id', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_ac_id` VARCHAR(64) NULL AFTER `genset_duration`");
+        }
+        if (!in_array('selected_ac_name', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_ac_name` VARCHAR(150) NULL AFTER `selected_ac_id`");
+        }
+        if (!in_array('ac_quantity', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `ac_quantity` INT NOT NULL DEFAULT 0 AFTER `selected_ac_name`");
+        }
+        if (!in_array('ac_duration', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `ac_duration` VARCHAR(100) NULL AFTER `ac_quantity`");
+        }
+        $pdo->exec("ALTER TABLE `bookings` MODIFY COLUMN `district_cirebon` VARCHAR(100) NULL DEFAULT ''");
+        $pdo->exec("ALTER TABLE `bookings` MODIFY COLUMN `package_type` VARCHAR(150) NULL DEFAULT ''");
+    } catch (Exception $eCol) {
+        // Ignored if table not ready
+    }
+
     // Hitung tabel yang berhasil dibuat
     $stmt = $pdo->query("SHOW TABLES");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);

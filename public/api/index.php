@@ -350,6 +350,12 @@ if ($resource === 'bookings') {
     // Auto-migrate table columns if not exists (Hostinger DB compatibility)
     try {
         $cols = $pdo->query("SHOW COLUMNS FROM `bookings`")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('selected_genset_id', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_genset_id` VARCHAR(64) NULL AFTER `phone`");
+        }
+        if (!in_array('selected_genset_name', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_genset_name` VARCHAR(150) NULL AFTER `selected_genset_id`");
+        }
         if (!in_array('genset_quantity', $cols)) {
             $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `genset_quantity` INT NOT NULL DEFAULT 0 AFTER `selected_genset_name`");
         }
@@ -361,6 +367,9 @@ if ($resource === 'bookings') {
         }
         if (!in_array('selected_ac_name', $cols)) {
             $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_ac_name` VARCHAR(150) NULL AFTER `selected_ac_id`");
+        }
+        if (!in_array('ac_quantity', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `ac_quantity` INT NOT NULL DEFAULT 0 AFTER `selected_ac_name`");
         }
         if (!in_array('ac_duration', $cols)) {
             $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `ac_duration` VARCHAR(100) NULL AFTER `ac_quantity`");
