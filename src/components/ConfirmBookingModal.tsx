@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   Edit3,
   Zap,
+  Wind,
   Layers,
   Sparkles,
   Loader2,
