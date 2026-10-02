@@ -40,6 +40,7 @@ import {
   matchGensetOption, 
   matchAcOption 
 } from '../../../data/rentalOptions';
+import { formatDateIndonesian } from '../../../utils/format';
 
 interface BookingsTabProps {
   onToast: (msg: string) => void;
@@ -282,7 +283,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
     }
     
     const text = encodeURIComponent(
-      `Halo Bapak/Ibu *${b.full_name}*,\n\nKami dari *Sewa Genset Cirebon (SGC)* menindaklanjuti permintaan sewa Anda dengan kode booking: *${b.booking_code}*.\n\n*Rincian Pesanan:*\n${unitLines.join('\n')}\n• Jadwal: ${b.start_date} (${b.start_time})\n• Lokasi: ${b.event_location}\n${b.notes ? `• Catatan: "${b.notes}"\n` : ''}\nUnit kami saat ini SIAP dan TERSEDIA. Apakah jadwal dan lokasi tersebut sudah sesuai untuk penerbitan invoice resmi? Terima kasih.`
+      `Halo Bapak/Ibu *${b.full_name}*,\n\nKami dari *Sewa Genset Cirebon (SGC)* menindaklanjuti permintaan sewa Anda dengan kode booking: *${b.booking_code}*.\n\n*Rincian Pesanan:*\n${unitLines.join('\n')}\n• Jadwal: ${formatDateIndonesian(b.start_date)} (${b.start_time})\n• Lokasi: ${b.event_location}\n${b.notes ? `• Catatan: "${b.notes}"\n` : ''}\nUnit kami saat ini SIAP dan TERSEDIA. Apakah jadwal dan lokasi tersebut sudah sesuai untuk penerbitan invoice resmi? Terima kasih.`
     );
     window.open(`https://wa.me/${clean}?text=${text}`, '_blank');
   };
@@ -327,7 +328,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
           <button
             onClick={loadData}
-            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
             title="Muat Ulang"
           >
             <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -354,7 +355,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                 className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all cursor-pointer ${
                   active
                     ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                    : 'bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800'
+                    : 'bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
                 }`}
               >
                 <span>{tab.label}</span>
@@ -412,7 +413,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                   const hasAc = (b.ac_quantity && b.ac_quantity > 0) || (b.selected_ac_name && !b.selected_ac_name.toLowerCase().includes('tanpa'));
 
                   return (
-                    <tr key={b.id} className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors">
+                    <tr key={b.id} className="hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition-colors">
                       <td className="py-3.5 px-4">
                         <div className="font-mono font-bold text-amber-600 dark:text-amber-400">{b.booking_code}</div>
                         <div className="text-[10px] text-slate-500 mt-0.5">#{b.id}</div>
@@ -459,7 +460,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1 font-medium text-slate-700 dark:text-slate-200">
                           <Calendar className="w-3 h-3 text-amber-500" />
-                          <span>{b.start_date}</span>
+                          <span>{formatDateIndonesian(b.start_date)}</span>
                           <span className="text-slate-500">({b.start_time})</span>
                         </div>
                         <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate max-w-[220px]" title={b.event_location}>
@@ -502,7 +503,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                           </button>
                           <button
                             onClick={() => setSelectedBooking(b)}
-                            className="p-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+                            className="p-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
                             title="Lihat Detail Lengkap"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -595,7 +596,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                 <span className="text-slate-500 block text-[10px] uppercase font-semibold">Jadwal &amp; Lokasi Acara</span>
                 <div className="p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800 space-y-1">
                   <div className="text-slate-700 dark:text-slate-200">
-                    Tanggal: <strong>{selectedBooking.start_date}</strong> (Pukul {selectedBooking.start_time} WIB)
+                    Tanggal: <strong>{formatDateIndonesian(selectedBooking.start_date)}</strong> (Pukul {selectedBooking.start_time} WIB)
                   </div>
                   <div className="text-slate-700 dark:text-slate-200 pt-1 border-t border-slate-200 dark:border-slate-800">
                     Alamat Lokasi: <strong>{selectedBooking.event_location}</strong>
@@ -958,7 +959,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                 <button
                   type="button"
                   onClick={() => setEditingBooking(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-semibold cursor-pointer"
                 >
                   Batal
                 </button>
@@ -988,7 +989,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
             <div className="flex gap-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-semibold cursor-pointer"
               >
                 Batal
               </button>

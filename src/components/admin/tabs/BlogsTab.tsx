@@ -17,6 +17,7 @@ import { BlogPost } from '../../../types';
 import { getBlogPosts, createBlogPost, updateBlogPost, deleteBlogPost } from '../../../utils/api';
 import { ImageUploadField } from '../ImageUploadField';
 import { getImageUrl, handleImageError } from "../../../utils/api";
+import { formatDateIndonesian } from "../../../utils/format";
 
 interface BlogsTabProps {
   onToast: (msg: string) => void;
@@ -223,7 +224,7 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={loadBlogs}
-            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
             title="Muat Ulang"
           >
             <RotateCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -276,7 +277,7 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-600 dark:text-slate-300">
                 {filtered.map(b => (
-                  <tr key={b.id} className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors">
+                  <tr key={b.id} className="hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition-colors">
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">
                         <div className="w-14 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 border border-slate-300 dark:border-slate-700">
@@ -301,13 +302,13 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="text-slate-700 dark:text-slate-200 font-medium">{b.author}</div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-500 mt-0.5">{b.date} • {b.readTime}</div>
+                      <div className="text-[11px] text-slate-600 dark:text-slate-500 mt-0.5">{formatDateIndonesian(b.date)} • {b.readTime}</div>
                     </td>
                     <td className="py-3.5 px-4 text-right">
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           onClick={() => openEditModal(b)}
-                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
                           title="Edit"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
@@ -340,7 +341,7 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -459,7 +460,7 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-semibold cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-semibold cursor-pointer"
                 >
                   Batal
                 </button>
@@ -488,7 +489,7 @@ export const BlogsTab: React.FC<BlogsTabProps> = ({ onToast }) => {
             <div className="flex gap-2">
               <button
                 onClick={() => setDeleteConfirmId(null)}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-semibold cursor-pointer"
               >
                 Batal
               </button>

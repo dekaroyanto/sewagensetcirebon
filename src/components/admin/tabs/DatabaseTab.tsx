@@ -103,7 +103,7 @@ define('DB_PASS', 'PasswordDatabaseAnda123!'); // Ganti dengan Password MySQL di
         <button
           onClick={checkConnection}
           disabled={dbStatus.loading}
-          className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-2 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer self-start sm:self-auto"
+          className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white text-xs font-semibold flex items-center gap-2 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer self-start sm:self-auto"
         >
           <RefreshCw className={`w-4 h-4 ${dbStatus.loading ? 'animate-spin text-amber-600 dark:text-amber-400' : ''}`} />
           <span>Tes Koneksi Sekarang</span>
@@ -274,7 +274,7 @@ define('DB_PORT', '3306');`}
             </p>
             <button
               onClick={handleDownloadSql}
-              className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700"
+              className="w-full py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-300 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700"
             >
               <Download className="w-4 h-4" />
               <span>Unduh File database.sql</span>

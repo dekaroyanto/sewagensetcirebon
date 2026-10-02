@@ -76,3 +76,63 @@ export function getProductTypeBadge(type: ProductType | string): {
       };
   }
 }
+
+const MONTHS_INDONESIAN = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
+
+/**
+ * Format string tanggal ke format standar Indonesia: "tanggal bulan tahun"
+ * Contoh: "2026-10-15" -> "15 Oktober 2026"
+ */
+export function formatDateIndonesian(dateStr?: string | null): string {
+  if (!dateStr) return "-";
+  const str = String(dateStr).trim();
+  if (!str) return "-";
+
+  // Check if string matches YYYY-MM-DD pattern at start (handles YYYY-MM-DD and YYYY-MM-DD HH:MM:SS / ISO)
+  const ymdMatch = str.match(/^(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/);
+  if (ymdMatch) {
+    const year = ymdMatch[1];
+    const monthIdx = parseInt(ymdMatch[2], 10) - 1;
+    const day = parseInt(ymdMatch[3], 10);
+    if (monthIdx >= 0 && monthIdx < 12 && !isNaN(day)) {
+      return `${day} ${MONTHS_INDONESIAN[monthIdx]} ${year}`;
+    }
+  }
+
+  // Check if string matches DD-MM-YYYY pattern
+  const dmyMatch = str.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+  if (dmyMatch) {
+    const day = parseInt(dmyMatch[1], 10);
+    const monthIdx = parseInt(dmyMatch[2], 10) - 1;
+    const year = dmyMatch[3];
+    if (monthIdx >= 0 && monthIdx < 12 && !isNaN(day)) {
+      return `${day} ${MONTHS_INDONESIAN[monthIdx]} ${year}`;
+    }
+  }
+
+  // Check standard JavaScript Date parsing if string contains separators
+  if (str.includes("-") || str.includes("/") || str.includes(",")) {
+    const parsed = new Date(str);
+    if (!isNaN(parsed.getTime())) {
+      const day = parsed.getDate();
+      const monthIdx = parsed.getMonth();
+      const year = parsed.getFullYear();
+      return `${day} ${MONTHS_INDONESIAN[monthIdx]} ${year}`;
+    }
+  }
+
+  return str;
+}

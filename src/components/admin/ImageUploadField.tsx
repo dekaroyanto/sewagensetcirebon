@@ -205,7 +205,7 @@ export const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
               <button
                 type="button"
                 onClick={() => onChange("")}
-                className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-950/40 text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
                 <span>Hapus</span>

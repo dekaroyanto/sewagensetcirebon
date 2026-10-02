@@ -212,7 +212,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             {/* Close button */}
             <button
               onClick={() => setToast(null)}
-              className="text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white p-1 rounded-lg hover:bg-slate-100 dark:bg-slate-800 transition-colors cursor-pointer shrink-0"
+              className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
               title="Tutup Notifikasi"
             >
               <X className="w-4 h-4" />
@@ -239,7 +239,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:text-white cursor-pointer"
+            className="md:hidden p-2 rounded-lg bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
           >
             {mobileMenuOpen ? (
               <X className="w-5 h-5" />
@@ -261,14 +261,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* <button
-            onClick={onBackToHome}
-            className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium flex items-center gap-1.5 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer group"
-          >
-            <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
-            <span className="hidden sm:inline">Lihat Website Utama</span>
-          </button> */}
-
           <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
 
           <div className="flex items-center gap-2">
@@ -284,7 +276,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   localStorage.setItem("sgc_admin_theme", "light");
                 }
               }}
-              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
+              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer"
               title="Toggle Theme"
             >
               {theme === "dark" ? (
@@ -305,7 +297,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <button
               onClick={handleLogout}
-              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-600 dark:text-rose-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer ml-1"
+              className="p-2 rounded-lg bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-800 transition-colors cursor-pointer ml-1"
               title="Logout Sesi Admin"
             >
               <LogOut className="w-4 h-4" />
@@ -350,12 +342,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-bold"
                       : item.isHighlight
                         ? "bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 border border-amber-500/20"
-                        : "text-slate-600 dark:text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-200 hover:bg-white/60 dark:bg-slate-900/60"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/70"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`w-4 h-4 ${active ? "text-slate-950" : item.isHighlight ? "text-amber-600 dark:text-amber-400" : "text-slate-600 dark:text-slate-500 dark:text-slate-400"}`}
+                      className={`w-4 h-4 ${active ? "text-slate-950" : item.isHighlight ? "text-amber-600 dark:text-amber-400" : "text-slate-600 dark:text-slate-400"}`}
                     />
                     <span>{item.label}</span>
                   </div>

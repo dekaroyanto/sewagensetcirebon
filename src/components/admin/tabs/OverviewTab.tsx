@@ -25,7 +25,7 @@ import {
   testDatabaseConnection,
   updateBookingStatus,
 } from "../../../utils/api";
-import { formatCurrency } from "../../../utils/format";
+import { formatCurrency, formatDateIndonesian } from "../../../utils/format";
 
 interface OverviewTabProps {
   onNavigateTab: (tabId: string) => void;
@@ -109,7 +109,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
       cleanPhone = "62" + cleanPhone.slice(1);
     }
     const message = encodeURIComponent(
-      `Halo Bapak/Ibu ${booking.full_name}, kami dari Sewa Genset Cirebon (SGC) terkait booking dengan kode *${booking.booking_code}* untuk unit *${booking.selected_genset_name || "Genset"}* pada tanggal *${booking.start_date}* di *${booking.event_location}*. Apakah ada rincian tambahan yang ingin didiskusikan? Terima kasih.`,
+      `Halo Bapak/Ibu ${booking.full_name}, kami dari Sewa Genset Cirebon (SGC) terkait booking dengan kode *${booking.booking_code}* untuk unit *${booking.selected_genset_name || "Genset"}* pada tanggal *${formatDateIndonesian(booking.start_date)}* di *${booking.event_location}*. Apakah ada rincian tambahan yang ingin didiskusikan? Terima kasih.`,
     );
     window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank");
   };
@@ -148,7 +148,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
             <button
               onClick={checkDb}
               disabled={dbStatus.loading}
-              className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:bg-slate-700/80 text-xs font-medium text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
+              className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-xs font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${dbStatus.loading ? 'animate-spin' : ''}`} />
               <span>Cek Koneksi</span>
@@ -301,14 +301,14 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
                 {recentBookings.map((b) => (
                   <tr
                     key={b.id}
-                    className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors"
+                    className="hover:bg-slate-100/80 dark:hover:bg-slate-800/50 transition-colors"
                   >
                     <td className="py-3 px-4">
                       <div className="font-mono font-bold text-amber-600 dark:text-amber-400">
                         {b.booking_code}
                       </div>
                       <div className="text-[11px] text-slate-600 dark:text-slate-500 mt-0.5">
-                        {b.start_date}
+                        {formatDateIndonesian(b.start_date)}
                       </div>
                     </td>
                     <td className="py-3 px-4">
