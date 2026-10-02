@@ -7,7 +7,6 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 import { GensetProduct } from '../types';
-import { formatPrice } from '../utils/format';
 
 interface SearchableProductSelectProps {
   products: GensetProduct[];
@@ -151,19 +150,6 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
           <div className={`text-xs sm:text-sm truncate ${isSelected ? 'font-bold text-amber-950 dark:text-amber-200' : 'font-medium text-slate-800 dark:text-slate-200'}`}>
             {product.name}
           </div>
-          {showPrice ? (
-            <div className="text-[11px] sm:text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-              {formatPrice(product.price)}
-            </div>
-          ) : (
-            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              {product.product_type === 'genset' || (!product.product_type && product.kva)
-                ? `${product.kva ? product.kva + ' kVA • ' : ''}Genset Silent Siap Pakai`
-                : product.product_type === 'ac'
-                ? `${product.pk ? product.pk + ' PK • ' : ''}Unit Pendingin Acara`
-                : 'Unit Ready Standby'}
-            </div>
-          )}
         </div>
 
         {isSelected && (
@@ -175,7 +161,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      {/* Trigger Button displaying current selected unit - Clean Name & Specifications */}
+      {/* Trigger Button displaying current selected unit - Clean Name Only */}
       <button
         type="button"
         id="searchable-product-select-trigger"
@@ -191,28 +177,6 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
           <div className="font-semibold text-slate-900 dark:text-white text-sm truncate">
             {selectedProduct?.name || (noneOptionLabel && !selectedId ? noneOptionLabel : (placeholder || 'Pilih Unit'))}
           </div>
-          {selectedProduct ? (
-            showPrice ? (
-              <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-                {formatPrice(selectedProduct.price)}
-              </div>
-            ) : (
-              <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
-                <span>
-                  {selectedProduct.product_type === 'genset' || (!selectedProduct.product_type && selectedProduct.kva)
-                    ? `${selectedProduct.kva ? selectedProduct.kva + ' kVA • ' : ''}Genset Siap Standby`
-                    : selectedProduct.product_type === 'ac'
-                    ? `${selectedProduct.pk ? selectedProduct.pk + ' PK • ' : ''}Unit Pendingin`
-                    : 'Unit Terpilih'}
-                </span>
-              </div>
-            )
-          ) : (noneOptionLabel && !selectedId) ? (
-            <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-              Tidak ada unit dipilih
-            </div>
-          ) : null}
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0 text-slate-400">
@@ -301,9 +265,6 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
                 <div className="min-w-0 flex-1">
                   <div className={`text-xs sm:text-sm truncate ${!selectedId ? 'font-bold text-amber-950 dark:text-amber-200' : 'font-medium'}`}>
                     🚫 {noneOptionLabel}
-                  </div>
-                  <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-                    Lewati / tidak memesan unit ini
                   </div>
                 </div>
                 {!selectedId && (
