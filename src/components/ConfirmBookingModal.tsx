@@ -109,7 +109,7 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
                   <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                     Pilihan Unit Genset
                   </div>
-                  {formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa genset') ? (
+                  {formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa') ? (
                     <>
                       <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
                         {formData.selectedGensetName}
@@ -138,7 +138,7 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
                   <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">
                     Pilihan Unit AC &amp; Pendingin
                   </div>
-                  {formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa ac') ? (
+                  {formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa') ? (
                     <>
                       <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
                         {formData.selectedAcName}

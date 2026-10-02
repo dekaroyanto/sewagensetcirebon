@@ -18,10 +18,28 @@ import {
   ExternalLink,
   MessageCircle,
   Eye,
-  X
+  X,
+  Edit,
+  Plus,
+  Save,
+  Wind,
+  ChevronDown
 } from 'lucide-react';
 import { BookingRecord, BookingStatus } from '../../../types';
-import { getBookings, updateBookingStatus, deleteBooking } from '../../../utils/api';
+import { 
+  getBookings, 
+  updateBookingStatus, 
+  updateBooking, 
+  deleteBooking, 
+  submitBooking 
+} from '../../../utils/api';
+import { 
+  GENSET_MANUAL_OPTIONS, 
+  AC_MANUAL_OPTIONS, 
+  RENTAL_DURATIONS, 
+  matchGensetOption, 
+  matchAcOption 
+} from '../../../data/rentalOptions';
 
 interface BookingsTabProps {
   onToast: (msg: string) => void;
@@ -35,8 +53,13 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
+  // Edit / Add modal state
+  const [editingBooking, setEditingBooking] = useState<Partial<BookingRecord> | null>(null);
+  const [isNewBooking, setIsNewBooking] = useState(false);
+  const [savingBooking, setSavingBooking] = useState(false);
+
   useEffect(() => {
-    if (selectedBooking || deleteConfirmId) {
+    if (selectedBooking || deleteConfirmId || editingBooking) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -44,7 +67,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [selectedBooking, deleteConfirmId]);
+  }, [selectedBooking, deleteConfirmId, editingBooking]);
 
   const loadData = async () => {
     setLoading(true);
@@ -66,7 +89,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
   }, []);
 
   const handleStatusChange = async (id: number, newStatus: string) => {
-    // 1. UPDATE INSTAN DI STATE LOKAL
+    // Update instan di state lokal
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status: newStatus as BookingStatus } : b));
     if (selectedBooking && selectedBooking.id === id) {
       setSelectedBooking(prev => prev ? { ...prev, status: newStatus as BookingStatus } : null);
@@ -82,7 +105,6 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
   };
 
   const handleDelete = async (id: number) => {
-    // 1. HAPUS INSTAN DI STATE LOKAL
     setBookings(prev => prev.filter(b => b.id !== id));
     setDeleteConfirmId(null);
     if (selectedBooking?.id === id) setSelectedBooking(null);
@@ -96,12 +118,157 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
     await loadData();
   };
 
+  const handleOpenEditModal = (b: BookingRecord) => {
+    const gensetOpt = matchGensetOption(b.selected_genset_name);
+    const acOpt = matchAcOption(b.selected_ac_name);
+    const hasGenset = gensetOpt !== 'Tanpa Genset';
+    const hasAc = acOpt !== 'Tanpa AC / Pendingin';
+
+    setEditingBooking({
+      ...b,
+      selected_genset_name: gensetOpt,
+      genset_quantity: b.genset_quantity !== undefined ? b.genset_quantity : (hasGenset ? 1 : 0),
+      genset_duration: b.genset_duration || '1 Hari (12 Jam Operasional)',
+      selected_ac_name: acOpt,
+      ac_quantity: b.ac_quantity !== undefined ? b.ac_quantity : (hasAc ? 1 : 0),
+      ac_duration: b.ac_duration || '1 Hari (12 Jam Operasional)',
+    });
+    setIsNewBooking(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingBooking({
+      full_name: '',
+      phone: '',
+      company_or_event: '',
+      selected_genset_name: 'Tanpa Genset',
+      selected_genset_id: '',
+      genset_quantity: 0,
+      genset_duration: '1 Hari (12 Jam Operasional)',
+      selected_ac_name: 'Tanpa AC / Pendingin',
+      selected_ac_id: '',
+      ac_quantity: 0,
+      ac_duration: '1 Hari (12 Jam Operasional)',
+      start_date: new Date().toISOString().split('T')[0],
+      start_time: '08:00',
+      event_location: '',
+      notes: '',
+      status: 'Menunggu Konfirmasi'
+    });
+    setIsNewBooking(true);
+  };
+
+  const handleSaveBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingBooking) return;
+
+    if (!editingBooking.full_name?.trim()) {
+      onToast('Nama pemesan / PIC wajib diisi.');
+      return;
+    }
+    if (!editingBooking.phone?.trim()) {
+      onToast('Nomor WhatsApp wajib diisi.');
+      return;
+    }
+
+    const hasGenset = (editingBooking.genset_quantity || 0) > 0 && 
+                      editingBooking.selected_genset_name && 
+                      !editingBooking.selected_genset_name.toLowerCase().includes('tanpa');
+
+    const hasAc = (editingBooking.ac_quantity || 0) > 0 && 
+                  editingBooking.selected_ac_name && 
+                  !editingBooking.selected_ac_name.toLowerCase().includes('tanpa');
+
+    if (!hasGenset && !hasAc) {
+      onToast('Pilih minimal 1 unit Genset atau AC untuk disewa.');
+      return;
+    }
+
+    if (!editingBooking.event_location?.trim()) {
+      onToast('Alamat / lokasi acara wajib diisi.');
+      return;
+    }
+
+    setSavingBooking(true);
+    try {
+      const gName = editingBooking.selected_genset_name || 'Tanpa Genset';
+      const aName = editingBooking.selected_ac_name || 'Tanpa AC / Pendingin';
+      const gId = gName === 'Tanpa Genset' ? '' : `genset-${gName.toLowerCase().replace(/\s+/g, '')}`;
+      const aId = aName === 'Tanpa AC / Pendingin' ? '' : 'ac-standing-5pk';
+
+      if (isNewBooking) {
+        const payload: any = {
+          fullName: editingBooking.full_name,
+          phone: editingBooking.phone,
+          companyOrEvent: editingBooking.company_or_event || '',
+          selectedGensetName: gName,
+          selectedGensetId: gId,
+          gensetQuantity: hasGenset ? (editingBooking.genset_quantity || 1) : 0,
+          gensetDuration: editingBooking.genset_duration || '1 Hari (12 Jam Operasional)',
+          selectedAcName: aName,
+          selectedAcId: aId,
+          acQuantity: hasAc ? (editingBooking.ac_quantity || 1) : 0,
+          acDuration: editingBooking.ac_duration || '1 Hari (12 Jam Operasional)',
+          startDate: editingBooking.start_date || new Date().toISOString().split('T')[0],
+          startTime: editingBooking.start_time || '08:00',
+          eventLocation: editingBooking.event_location,
+          notes: editingBooking.notes || '',
+          status: editingBooking.status || 'Menunggu Konfirmasi'
+        };
+
+        const res = await submitBooking(payload);
+        if (res.success !== false) {
+          onToast('Pesanan baru berhasil dicatat ke database!');
+          setEditingBooking(null);
+          await loadData();
+        } else {
+          onToast('Gagal menambah pesanan: ' + res.message);
+        }
+      } else if (editingBooking.id) {
+        const payload: any = {
+          full_name: editingBooking.full_name,
+          phone: editingBooking.phone,
+          company_or_event: editingBooking.company_or_event || '',
+          selected_genset_name: gName,
+          selected_genset_id: gId,
+          genset_quantity: hasGenset ? (editingBooking.genset_quantity || 1) : 0,
+          genset_duration: editingBooking.genset_duration || '1 Hari (12 Jam Operasional)',
+          selected_ac_name: aName,
+          selected_ac_id: aId,
+          ac_quantity: hasAc ? (editingBooking.ac_quantity || 1) : 0,
+          ac_duration: editingBooking.ac_duration || '1 Hari (12 Jam Operasional)',
+          start_date: editingBooking.start_date,
+          start_time: editingBooking.start_time,
+          event_location: editingBooking.event_location,
+          notes: editingBooking.notes || '',
+          status: editingBooking.status
+        };
+
+        const res = await updateBooking(editingBooking.id, payload);
+        if (res.success !== false) {
+          onToast('Perubahan data pesanan berhasil disimpan!');
+          setEditingBooking(null);
+          if (selectedBooking?.id === editingBooking.id) {
+            setSelectedBooking({ ...selectedBooking, ...payload });
+          }
+          await loadData();
+        } else {
+          onToast('Gagal menyimpan perubahan: ' + res.message);
+        }
+      }
+    } catch (err: any) {
+      onToast('Terjadi kesalahan: ' + err.message);
+    } finally {
+      setSavingBooking(false);
+    }
+  };
+
   const openWhatsApp = (b: BookingRecord) => {
     let clean = b.phone.replace(/[^0-9]/g, '');
     if (clean.startsWith('0')) clean = '62' + clean.slice(1);
 
-    const hasGenset = (b.genset_quantity && b.genset_quantity > 0) || (b.selected_genset_name && !b.selected_genset_name.toLowerCase().includes('tanpa genset'));
-    const hasAc = (b.ac_quantity && b.ac_quantity > 0) || (b.selected_ac_name && !b.selected_ac_name.toLowerCase().includes('tanpa ac'));
+    const hasGenset = (b.genset_quantity && b.genset_quantity > 0) || (b.selected_genset_name && !b.selected_genset_name.toLowerCase().includes('tanpa'));
+    const hasAc = (b.ac_quantity && b.ac_quantity > 0) || (b.selected_ac_name && !b.selected_ac_name.toLowerCase().includes('tanpa'));
 
     const unitLines: string[] = [];
     if (hasGenset) {
@@ -145,11 +312,19 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
             <span>Manajemen Pesanan &amp; Inquiry Masuk</span>
           </h2>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-            Daftar formulir sewa yang dikirimkan oleh calon pelanggan dari website
+            Daftar formulir sewa masuk dengan pilihan unit genset &amp; AC mandiri
           </p>
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleOpenAddModal}
+            className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-amber-500/20 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Tambah Pesanan</span>
+          </button>
+
           <button
             onClick={loadData}
             className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
@@ -233,8 +408,8 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-600 dark:text-slate-300">
                 {filtered.map(b => {
-                  const hasGenset = (b.genset_quantity && b.genset_quantity > 0) || (b.selected_genset_name && !b.selected_genset_name.toLowerCase().includes('tanpa genset'));
-                  const hasAc = (b.ac_quantity && b.ac_quantity > 0) || (b.selected_ac_name && !b.selected_ac_name.toLowerCase().includes('tanpa ac'));
+                  const hasGenset = (b.genset_quantity && b.genset_quantity > 0) || (b.selected_genset_name && !b.selected_genset_name.toLowerCase().includes('tanpa'));
+                  const hasAc = (b.ac_quantity && b.ac_quantity > 0) || (b.selected_ac_name && !b.selected_ac_name.toLowerCase().includes('tanpa'));
 
                   return (
                     <tr key={b.id} className="hover:bg-slate-100 dark:bg-slate-800/30 transition-colors">
@@ -275,8 +450,8 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                             </div>
                           )}
                           {!hasGenset && !hasAc && (
-                            <div className="text-slate-500">
-                              {b.selected_genset_name || 'Unit'} ({b.unit_quantity} unit)
+                            <div className="text-slate-500 italic">
+                              Tidak ada unit sewa
                             </div>
                           )}
                         </div>
@@ -331,6 +506,13 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                             title="Lihat Detail Lengkap"
                           >
                             <Eye className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleOpenEditModal(b)}
+                            className="p-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-colors cursor-pointer"
+                            title="Edit Data Pesanan"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => setDeleteConfirmId(b.id)}
@@ -388,7 +570,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                   ⚡ Pilihan Unit Genset
                 </span>
                 <div className="font-bold text-slate-900 dark:text-white text-sm">
-                  {selectedBooking.selected_genset_name || 'Tidak Sewa Genset'}
+                  {selectedBooking.selected_genset_name || 'Tanpa Genset'}
                 </div>
                 <div className="text-slate-600 dark:text-slate-400 text-xs">
                   Jumlah: <strong>{selectedBooking.genset_quantity !== undefined ? selectedBooking.genset_quantity : selectedBooking.unit_quantity} Unit</strong> • Durasi: <strong>{selectedBooking.genset_duration || selectedBooking.duration || '-'}</strong>
@@ -401,7 +583,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
                   ❄️ Pilihan Unit AC &amp; Pendingin
                 </span>
                 <div className="font-bold text-slate-900 dark:text-white text-sm">
-                  {selectedBooking.selected_ac_name || 'Tidak Sewa AC'}
+                  {selectedBooking.selected_ac_name || 'Tanpa AC / Pendingin'}
                 </div>
                 <div className="text-slate-600 dark:text-slate-400 text-xs">
                   Jumlah: <strong>{selectedBooking.ac_quantity || 0} Unit</strong> • Durasi: <strong>{selectedBooking.ac_duration || '-'}</strong>
@@ -434,7 +616,18 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
             <div className="flex items-center justify-between px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 backdrop-blur-sm shrink-0">
               <div className="flex items-center gap-2">
-                <span className="text-slate-600 dark:text-slate-500 dark:text-slate-400 text-xs">Ubah Status:</span>
+                <button
+                  onClick={() => {
+                    const b = selectedBooking;
+                    setSelectedBooking(null);
+                    handleOpenEditModal(b);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                >
+                  <Edit className="w-3.5 h-3.5" />
+                  <span>Edit Data</span>
+                </button>
+
                 <select
                   value={selectedBooking.status}
                   onChange={(e) => handleStatusChange(selectedBooking.id, e.target.value)}
@@ -450,7 +643,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
 
               <button
                 onClick={() => openWhatsApp(selectedBooking)}
-                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-500 dark:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20"
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-lg shadow-emerald-500/20"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Chat WhatsApp</span>
@@ -460,12 +653,336 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
         </div>
       )}
 
+      {/* Edit / Add Booking Modal */}
+      {editingBooking && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col text-left shadow-2xl relative my-auto overflow-hidden">
+            
+            {/* Modal Header */}
+            <div className="flex justify-between items-center px-6 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center">
+                  <CalendarCheck className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    {isNewBooking ? 'Tambah Pesanan Booking Manual' : `Edit Pesanan #${editingBooking.id}`}
+                  </h3>
+                  {editingBooking.booking_code && (
+                    <span className="text-[11px] font-mono text-amber-600 dark:text-amber-400">
+                      {editingBooking.booking_code}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={() => setEditingBooking(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form Body */}
+            <form onSubmit={handleSaveBooking} className="p-6 overflow-y-auto flex-1 space-y-4 text-xs overscroll-contain">
+              
+              {/* Data PIC */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Data Pemesan (PIC)</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Nama Lengkap <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingBooking.full_name || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, full_name: e.target.value })}
+                      placeholder="Contoh: Bpk. Bambang"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      No. WhatsApp / HP <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={editingBooking.phone || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, phone: e.target.value })}
+                      placeholder="Contoh: 081234567890"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Nama Perusahaan / Acara (Opsional)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingBooking.company_or_event || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, company_or_event: e.target.value })}
+                      placeholder="Contoh: Wedding di Gedung Negara / PT Maju"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Unit Genset Section */}
+              <div className="p-3.5 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 space-y-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>Pilihan Unit Genset (Manual)</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Kapasitas Genset
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={editingBooking.selected_genset_name || 'Tanpa Genset'}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const isNone = val === 'Tanpa Genset';
+                          setEditingBooking({
+                            ...editingBooking,
+                            selected_genset_name: val,
+                            genset_quantity: isNone ? 0 : ((editingBooking.genset_quantity || 0) > 0 ? editingBooking.genset_quantity : 1)
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none appearance-none pr-8 cursor-pointer"
+                      >
+                        {GENSET_MANUAL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-slate-400">
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Jumlah Unit
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={editingBooking.genset_quantity !== undefined ? editingBooking.genset_quantity : 0}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, genset_quantity: parseInt(e.target.value, 10) || 0 })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Durasi Pemakaian
+                    </label>
+                    <select
+                      value={editingBooking.genset_duration || '1 Hari (12 Jam Operasional)'}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, genset_duration: e.target.value })}
+                      disabled={editingBooking.selected_genset_name === 'Tanpa Genset' || editingBooking.genset_quantity === 0}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-50 cursor-pointer"
+                    >
+                      {RENTAL_DURATIONS.map((dur, i) => (
+                        <option key={i} value={dur}>{dur}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Unit AC Section */}
+              <div className="p-3.5 rounded-xl bg-cyan-50/50 dark:bg-cyan-950/20 border border-cyan-200/60 dark:border-cyan-900/40 space-y-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400 flex items-center gap-1.5">
+                  <Wind className="w-3.5 h-3.5" />
+                  <span>Pilihan Unit AC &amp; Pendingin (Manual)</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="sm:col-span-1">
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Tipe Unit AC
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={editingBooking.selected_ac_name || 'Tanpa AC / Pendingin'}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const isNone = val === 'Tanpa AC / Pendingin';
+                          setEditingBooking({
+                            ...editingBooking,
+                            selected_ac_name: val,
+                            ac_quantity: isNone ? 0 : ((editingBooking.ac_quantity || 0) > 0 ? editingBooking.ac_quantity : 1)
+                          });
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white font-medium text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none appearance-none pr-8 cursor-pointer"
+                      >
+                        {AC_MANUAL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-slate-400">
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Jumlah Unit
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      value={editingBooking.ac_quantity !== undefined ? editingBooking.ac_quantity : 0}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, ac_quantity: parseInt(e.target.value, 10) || 0 })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Durasi Pemakaian
+                    </label>
+                    <select
+                      value={editingBooking.ac_duration || '1 Hari (12 Jam Operasional)'}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, ac_duration: e.target.value })}
+                      disabled={editingBooking.selected_ac_name === 'Tanpa AC / Pendingin' || editingBooking.ac_quantity === 0}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none disabled:opacity-50 cursor-pointer"
+                    >
+                      {RENTAL_DURATIONS.map((dur, i) => (
+                        <option key={i} value={dur}>{dur}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Jadwal & Lokasi */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 space-y-3">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Jadwal &amp; Lokasi Acara</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Tanggal Mulai
+                    </label>
+                    <input
+                      type="date"
+                      value={editingBooking.start_date || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, start_date: e.target.value })}
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Jam Mulai (WIB)
+                    </label>
+                    <input
+                      type="text"
+                      value={editingBooking.start_time || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, start_time: e.target.value })}
+                      placeholder="08:00 WIB"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Alamat / Patokan Lokasi Acara <span className="text-rose-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={editingBooking.event_location || ''}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, event_location: e.target.value })}
+                      placeholder="Contoh: Jl. Tuparev No. 12, Cirebon"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Status & Catatan */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Status Pemesanan
+                  </label>
+                  <select
+                    value={editingBooking.status || 'Menunggu Konfirmasi'}
+                    onChange={(e) => setEditingBooking({ ...editingBooking, status: e.target.value as BookingStatus })}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer"
+                  >
+                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                    <option value="Dikonfirmasi">Dikonfirmasi</option>
+                    <option value="Sedang Berjalan">Sedang Berjalan</option>
+                    <option value="Selesai">Selesai</option>
+                    <option value="Dibatalkan">Dibatalkan</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Catatan Tambahan (Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingBooking.notes || ''}
+                    onChange={(e) => setEditingBooking({ ...editingBooking, notes: e.target.value })}
+                    placeholder="Contoh: Butuh teknisi standby malam..."
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingBooking(null)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingBooking}
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 cursor-pointer disabled:opacity-50"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>{savingBooking ? 'Menyimpan...' : 'Simpan Data'}</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {deleteConfirmId && (
-        <div className="fixed inset-0 z-50 bg-white dark:bg-slate-900/20 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-sm w-full text-center my-auto shadow-2xl">
             <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">Hapus Data Booking?</h3>
-            <p className="text-xs text-slate-600 dark:text-slate-500 dark:text-slate-400 mb-6">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-6">
               Data pemesanan ini akan dihapus dari database. Tindakan ini tidak dapat dibatalkan.
             </p>
             <div className="flex gap-2">
@@ -477,7 +994,7 @@ export const BookingsTab: React.FC<BookingsTabProps> = ({ onToast }) => {
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirmId)}
-                className="flex-1 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-slate-900 dark:text-white text-xs font-bold cursor-pointer"
+                className="flex-1 py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold cursor-pointer"
               >
                 Hapus
               </button>

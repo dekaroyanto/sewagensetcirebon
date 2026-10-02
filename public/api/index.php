@@ -484,13 +484,77 @@ if ($resource === 'bookings') {
 
     if ($method === 'PUT' && $id) {
         $data = getJsonInput();
-        $status = $data['status'] ?? null;
-        if (!$status) {
-            sendJsonResponse(['status' => 'error', 'message' => 'Status diperlukan.'], 400);
+        
+        // Cek jika hanya ingin update status
+        if (isset($data['status']) && count($data) === 1) {
+            $status = $data['status'];
+            $stmt = $pdo->prepare("UPDATE `bookings` SET `status` = ? WHERE `id` = ? OR `booking_code` = ?");
+            $stmt->execute([$status, $id, $id]);
+            sendJsonResponse(['status' => 'success', 'message' => 'Status booking berhasil diperbarui.']);
         }
-        $stmt = $pdo->prepare("UPDATE `bookings` SET `status` = ? WHERE `id` = ? OR `booking_code` = ?");
-        $stmt->execute([$status, $id, $id]);
-        sendJsonResponse(['status' => 'success', 'message' => 'Status booking berhasil diperbarui.']);
+
+        // Update penuh field booking (untuk Admin Dashboard edit)
+        $allowedKeys = [
+            'full_name' => 'full_name',
+            'fullName' => 'full_name',
+            'company_or_event' => 'company_or_event',
+            'companyOrEvent' => 'company_or_event',
+            'phone' => 'phone',
+            'selected_genset_id' => 'selected_genset_id',
+            'selectedGensetId' => 'selected_genset_id',
+            'selected_genset_name' => 'selected_genset_name',
+            'selectedGensetName' => 'selected_genset_name',
+            'genset_quantity' => 'genset_quantity',
+            'gensetQuantity' => 'genset_quantity',
+            'genset_duration' => 'genset_duration',
+            'gensetDuration' => 'genset_duration',
+            'selected_ac_id' => 'selected_ac_id',
+            'selectedAcId' => 'selected_ac_id',
+            'selected_ac_name' => 'selected_ac_name',
+            'selectedAcName' => 'selected_ac_name',
+            'ac_quantity' => 'ac_quantity',
+            'acQuantity' => 'ac_quantity',
+            'ac_duration' => 'ac_duration',
+            'acDuration' => 'ac_duration',
+            'unit_quantity' => 'unit_quantity',
+            'unitQuantity' => 'unit_quantity',
+            'start_date' => 'start_date',
+            'startDate' => 'start_date',
+            'start_time' => 'start_time',
+            'startTime' => 'start_time',
+            'duration' => 'duration',
+            'event_location' => 'event_location',
+            'eventLocation' => 'event_location',
+            'notes' => 'notes',
+            'status' => 'status'
+        ];
+
+        $fields = [];
+        $params = [];
+        $updatedCols = [];
+
+        foreach ($data as $key => $val) {
+            if (isset($allowedKeys[$key])) {
+                $col = $allowedKeys[$key];
+                if (!isset($updatedCols[$col])) {
+                    $fields[] = "`$col` = ?";
+                    $params[] = $val;
+                    $updatedCols[$col] = true;
+                }
+            }
+        }
+
+        if (empty($fields)) {
+            sendJsonResponse(['status' => 'error', 'message' => 'Tidak ada field yang valid untuk diperbarui.'], 400);
+        }
+
+        $params[] = $id;
+        $params[] = $id;
+        $sql = "UPDATE `bookings` SET " . implode(', ', $fields) . " WHERE `id` = ? OR `booking_code` = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        sendJsonResponse(['status' => 'success', 'message' => 'Data booking berhasil diperbarui.']);
     }
 
     if ($method === 'DELETE' && $id) {

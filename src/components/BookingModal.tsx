@@ -18,18 +18,25 @@ import {
   MessageSquare,
   Fuel,
   Info,
-  Wind
+  Wind,
+  ChevronDown
 } from 'lucide-react';
 import { BookingFormData, GensetProduct } from '../types';
 import { COMPANY_INFO } from '../data/company';
-import { SearchableProductSelect } from './SearchableProductSelect';
+import { 
+  GENSET_MANUAL_OPTIONS, 
+  AC_MANUAL_OPTIONS, 
+  RENTAL_DURATIONS, 
+  matchGensetOption, 
+  matchAcOption 
+} from '../data/rentalOptions';
 import { 
   generateBookingWhatsAppMessage, 
   getWhatsAppBookingUrl, 
   copyToClipboard 
 } from '../utils/whatsapp';
 import { useBodyScrollLock } from '../utils/scrollLock';
-import { submitBooking, getProducts } from '../utils/api';
+import { submitBooking } from '../utils/api';
 import { ConfirmBookingModal } from './ConfirmBookingModal';
 
 interface BookingModalProps {
@@ -44,34 +51,26 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   onToast
 }) => {
   const isInitialAc = product?.product_type === 'ac';
+  const initialGensetName = product && !isInitialAc ? matchGensetOption(product.kva || product.name) : 'Tanpa Genset';
+  const initialAcName = isInitialAc ? 'AC Standing 5 PK' : 'Tanpa AC / Pendingin';
 
   const [formData, setFormData] = useState<BookingFormData>({
     fullName: '',
     companyOrEvent: '',
     phone: '',
-    selectedGensetId: product && !isInitialAc ? product.id : (isInitialAc ? '' : 'sgc-20kva'),
-    selectedGensetName: product && !isInitialAc ? product.name : (isInitialAc ? 'Tanpa Genset' : 'Genset Silent 20 kVA (16 kW)'),
-    gensetQuantity: isInitialAc ? 0 : 1,
+    selectedGensetId: initialGensetName !== 'Tanpa Genset' ? `genset-${initialGensetName.toLowerCase().replace(/\s+/g, '')}` : '',
+    selectedGensetName: initialGensetName,
+    gensetQuantity: initialGensetName !== 'Tanpa Genset' ? 1 : 0,
     gensetDuration: '1 Hari (12 Jam Operasional)',
-    selectedAcId: isInitialAc && product ? product.id : '',
-    selectedAcName: isInitialAc && product ? product.name : 'Tanpa AC',
-    acQuantity: isInitialAc ? 1 : 0,
+    selectedAcId: initialAcName !== 'Tanpa AC / Pendingin' ? 'ac-standing-5pk' : '',
+    selectedAcName: initialAcName,
+    acQuantity: initialAcName !== 'Tanpa AC / Pendingin' ? 1 : 0,
     acDuration: '1 Hari (12 Jam Operasional)',
     startDate: '',
     startTime: '08:00',
     eventLocation: '',
     notes: ''
   });
-
-  const [dynamicProducts, setDynamicProducts] = useState<GensetProduct[]>(product ? [product] : []);
-
-  useEffect(() => {
-    getProducts().then((data) => {
-      if (Array.isArray(data)) {
-        setDynamicProducts(data);
-      }
-    });
-  }, []);
 
   const [copied, setCopied] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -82,21 +81,32 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       if (product.product_type === 'ac') {
         setFormData(prev => ({
           ...prev,
-          selectedAcId: product.id,
-          selectedAcName: product.name,
+          selectedAcId: 'ac-standing-5pk',
+          selectedAcName: 'AC Standing 5 PK',
           acQuantity: Math.max(1, prev.acQuantity || 1),
           selectedGensetId: '',
           selectedGensetName: 'Tanpa Genset',
           gensetQuantity: 0
         }));
-      } else {
+      } else if (product.product_type === 'paket') {
         setFormData(prev => ({
           ...prev,
-          selectedGensetId: product.id,
-          selectedGensetName: product.name,
-          gensetQuantity: Math.max(1, prev.gensetQuantity || 1),
+          selectedGensetId: 'genset-60kva',
+          selectedGensetName: '60 KVA',
+          gensetQuantity: 1,
+          selectedAcId: 'ac-standing-5pk',
+          selectedAcName: 'AC Standing 5 PK',
+          acQuantity: 4
+        }));
+      } else {
+        const matched = matchGensetOption(product.kva || product.name);
+        setFormData(prev => ({
+          ...prev,
+          selectedGensetId: matched !== 'Tanpa Genset' ? `genset-${matched.toLowerCase().replace(/\s+/g, '')}` : '',
+          selectedGensetName: matched,
+          gensetQuantity: matched !== 'Tanpa Genset' ? Math.max(1, prev.gensetQuantity || 1) : 0,
           selectedAcId: '',
-          selectedAcName: 'Tanpa AC',
+          selectedAcName: 'Tanpa AC / Pendingin',
           acQuantity: 0
         }));
       }
@@ -117,44 +127,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   // Prevent background body scroll while modal is open (reference-counted)
   useBodyScrollLock(true);
 
-  // Handle Genset select
-  const handleSelectGenset = (selected: GensetProduct) => {
-    if (!selected.id || selected.name.toLowerCase().includes('tanpa genset')) {
-      setFormData(prev => ({
-        ...prev,
-        selectedGensetId: '',
-        selectedGensetName: 'Tanpa Genset',
-        gensetQuantity: 0
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        selectedGensetId: selected.id,
-        selectedGensetName: selected.name,
-        gensetQuantity: prev.gensetQuantity > 0 ? prev.gensetQuantity : 1
-      }));
-    }
-  };
-
-  // Handle AC select
-  const handleSelectAc = (selected: GensetProduct) => {
-    if (!selected.id || selected.name.toLowerCase().includes('tanpa ac')) {
-      setFormData(prev => ({
-        ...prev,
-        selectedAcId: '',
-        selectedAcName: 'Tanpa AC',
-        acQuantity: 0
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        selectedAcId: selected.id,
-        selectedAcName: selected.name,
-        acQuantity: prev.acQuantity > 0 ? prev.acQuantity : 1
-      }));
-    }
-  };
-
   // Open confirmation modal with validation
   const handleOpenBookingConfirm = () => {
     if (!formData.fullName.trim()) {
@@ -165,8 +137,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       onToast('Mohon isi nomor telepon / WhatsApp yang bisa dihubungi.');
       return;
     }
-    const hasGenset = formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa genset');
-    const hasAc = formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa ac');
+    const hasGenset = formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa');
+    const hasAc = formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa');
 
     if (!hasGenset && !hasAc) {
       onToast('Mohon pilih minimal 1 unit Genset atau AC untuk disewa.');
@@ -210,19 +182,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     }
   };
 
-  if (!product) return null;
-
-  const durations = [
-    '1 Hari (8 Jam Operasional)',
-    '1 Hari (12 Jam Operasional)',
-    '1 Hari (24 Jam Standby Penuh)',
-    '2 Hari Acara',
-    '3 Hari Acara',
-    '1 Minggu (7 Hari)',
-    '2 Minggu',
-    '1 Bulan (Kontrak Bulanan)',
-    'Kontrak Proyek Jangka Panjang'
-  ];
+  const durations = RENTAL_DURATIONS;
 
   return (
     <div 
@@ -333,16 +293,33 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <div className="space-y-2">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Pilih Tipe / Kapasitas Genset
+                      Pilih Kapasitas Genset
                     </label>
-                    <SearchableProductSelect
-                      products={dynamicProducts}
-                      targetType="genset"
-                      noneOptionLabel="Tanpa Genset (Tidak Butuh Genset)"
-                      placeholder="Cari atau pilih tipe genset..."
-                      selectedId={formData.selectedGensetId}
-                      onSelect={handleSelectGenset}
-                    />
+                    <div className="relative">
+                      <select
+                        value={formData.selectedGensetName}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const isNone = val === 'Tanpa Genset';
+                          setFormData(prev => ({
+                            ...prev,
+                            selectedGensetName: val,
+                            selectedGensetId: isNone ? '' : `genset-${val.toLowerCase().replace(/\s+/g, '')}`,
+                            gensetQuantity: isNone ? 0 : (prev.gensetQuantity > 0 ? prev.gensetQuantity : 1)
+                          }));
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs sm:text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer appearance-none pr-9"
+                      >
+                        {GENSET_MANUAL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="text-slate-900 font-medium">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -373,11 +350,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                           type="button"
                           onClick={() => {
                             const next = formData.gensetQuantity + 1;
+                            const nextName = (!formData.selectedGensetName || formData.selectedGensetName === 'Tanpa Genset') ? '10 KVA' : formData.selectedGensetName;
                             setFormData({
                               ...formData,
                               gensetQuantity: next,
-                              selectedGensetId: formData.selectedGensetId || 'sgc-20kva',
-                              selectedGensetName: (!formData.selectedGensetName || formData.selectedGensetName === 'Tanpa Genset') ? 'Genset Silent 20 kVA (16 kW)' : formData.selectedGensetName
+                              selectedGensetName: nextName,
+                              selectedGensetId: `genset-${nextName.toLowerCase().replace(/\s+/g, '')}`
                             });
                           }}
                           className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 flex items-center justify-center cursor-pointer"
@@ -394,7 +372,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       <select
                         value={formData.gensetDuration}
                         onChange={(e) => setFormData({ ...formData, gensetDuration: e.target.value })}
-                        disabled={formData.gensetQuantity === 0}
+                        disabled={formData.gensetQuantity === 0 || formData.selectedGensetName === 'Tanpa Genset'}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {durations.map((dur, i) => (
@@ -416,16 +394,33 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <div className="space-y-2">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                      Pilih Tipe AC / Pendingin
+                      Pilih Unit AC / Pendingin
                     </label>
-                    <SearchableProductSelect
-                      products={dynamicProducts}
-                      targetType="ac"
-                      noneOptionLabel="Tanpa AC (Tidak Butuh AC)"
-                      placeholder="Cari atau pilih tipe AC standing / Misty Fan..."
-                      selectedId={formData.selectedAcId}
-                      onSelect={handleSelectAc}
-                    />
+                    <div className="relative">
+                      <select
+                        value={formData.selectedAcName}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const isNone = val === 'Tanpa AC / Pendingin';
+                          setFormData(prev => ({
+                            ...prev,
+                            selectedAcName: val,
+                            selectedAcId: isNone ? '' : 'ac-standing-5pk',
+                            acQuantity: isNone ? 0 : (prev.acQuantity > 0 ? prev.acQuantity : 1)
+                          }));
+                        }}
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs sm:text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer appearance-none pr-9"
+                      >
+                        {AC_MANUAL_OPTIONS.map((opt) => (
+                          <option key={opt} value={opt} className="text-slate-900 font-medium">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -442,7 +437,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                               ...formData,
                               acQuantity: next,
                               selectedAcId: next === 0 ? '' : formData.selectedAcId,
-                              selectedAcName: next === 0 ? 'Tanpa AC' : formData.selectedAcName
+                              selectedAcName: next === 0 ? 'Tanpa AC / Pendingin' : formData.selectedAcName
                             });
                           }}
                           className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 flex items-center justify-center cursor-pointer"
@@ -459,8 +454,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                             setFormData({
                               ...formData,
                               acQuantity: next,
-                              selectedAcId: formData.selectedAcId || 'sgc-ac-5pk',
-                              selectedAcName: (!formData.selectedAcName || formData.selectedAcName === 'Tanpa AC') ? 'AC Standing Floor 5 PK (45.000 BTU)' : formData.selectedAcName
+                              selectedAcName: 'AC Standing 5 PK',
+                              selectedAcId: 'ac-standing-5pk'
                             });
                           }}
                           className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-bold hover:bg-slate-200 flex items-center justify-center cursor-pointer"
@@ -477,7 +472,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       <select
                         value={formData.acDuration}
                         onChange={(e) => setFormData({ ...formData, acDuration: e.target.value })}
-                        disabled={formData.acQuantity === 0}
+                        disabled={formData.acQuantity === 0 || formData.selectedAcName === 'Tanpa AC / Pendingin'}
                         className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {durations.map((dur, i) => (

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   BlogPost,
   FAQItem,
@@ -697,6 +698,27 @@ export async function updateBookingStatus(
     const json = await parseResponseJson(
       res,
       "Status pesanan berhasil diubah.",
+    );
+    if (json.success !== false) notifyDataChanged();
+    return json;
+  } catch (err: any) {
+    return { success: false, message: err.message || "Koneksi gagal" };
+  }
+}
+
+export async function updateBooking(
+  id: number | string,
+  data: Record<string, any>,
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/bookings/${id}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+    const json = await parseResponseJson(
+      res,
+      "Data pesanan berhasil disimpan.",
     );
     if (json.success !== false) notifyDataChanged();
     return json;

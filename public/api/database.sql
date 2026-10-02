@@ -94,8 +94,8 @@ CREATE TABLE IF NOT EXISTS `bookings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `bookings` (`booking_code`, `full_name`, `company_or_event`, `phone`, `selected_genset_id`, `selected_genset_name`, `genset_quantity`, `genset_duration`, `selected_ac_id`, `selected_ac_name`, `ac_quantity`, `ac_duration`, `unit_quantity`, `rental_type`, `start_date`, `start_time`, `duration`, `event_location`, `district_cirebon`, `package_type`, `notes`, `status`) VALUES
-('SGC-2026-001', 'Hj. Siti Rohmah', 'Pernikahan Putri Pertama', '081234567890', 'sgc-60kva', 'Genset Silent 60 kVA (48 kW)', 1, '1 Hari (12 Jam)', 'sgc-ac-5pk', 'AC Standing Floor 5 PK (45.000 BTU)', 4, '1 Hari (12 Jam)', 1, 'Harian / Acara', '2026-10-15', '08:00 WIB', '1 Hari (12 Jam)', 'Gedung Islamic Centre Cirebon', '', '', 'Mohon standby H-1 malam untuk instalasi kabel.', 'Dikonfirmasi'),
-('SGC-2026-002', 'Bpk. Fajar Ramadhan', 'Konser Musik Akustik Kampus', '081987654321', 'sgc-30kva', 'Genset Silent 30 kVA (24 kW)', 1, '1 Hari (8 Jam)', NULL, 'Tanpa AC', 0, '', 1, 'Harian / Acara', '2026-10-20', '13:00 WIB', '1 Hari (8 Jam)', 'Kampus UGJ Cirebon', '', '', 'Butuh kabel power 40 meter menuju panggung.', 'Menunggu Konfirmasi')
+('SGC-2026-001', 'Hj. Siti Rohmah', 'Pernikahan Putri Pertama', '081234567890', 'genset-60kva', '60 KVA', 1, '1 Hari (12 Jam Operasional)', 'ac-standing-5pk', 'AC Standing 5 PK', 4, '1 Hari (12 Jam Operasional)', 1, 'Harian / Acara', '2026-10-15', '08:00 WIB', '1 Hari (12 Jam Operasional)', 'Gedung Islamic Centre Cirebon', '', '', 'Mohon standby H-1 malam untuk instalasi kabel.', 'Dikonfirmasi'),
+('SGC-2026-002', 'Bpk. Fajar Ramadhan', 'Konser Musik Akustik Kampus', '081987654321', 'genset-30kva', '30 KVA', 1, '1 Hari (8 Jam Operasional)', '', 'Tanpa AC / Pendingin', 0, '', 1, 'Harian / Acara', '2026-10-20', '13:00 WIB', '1 Hari (8 Jam Operasional)', 'Kampus UGJ Cirebon', '', '', 'Butuh kabel power 40 meter menuju panggung.', 'Menunggu Konfirmasi')
 ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`);
 
 -- ------------------------------------------------------------------------------
