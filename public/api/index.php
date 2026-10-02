@@ -229,6 +229,22 @@ if ($resource === 'stats' && $method === 'GET') {
 // 5. PRODUCTS CRUD (/products)
 // -----------------------------------------------------------------------------
 if ($resource === 'products') {
+    // Auto-migrate products columns if needed
+    try {
+        $pCols = $pdo->query("SHOW COLUMNS FROM `products`")->fetchAll(PDO::FETCH_COLUMN);
+        if ($pCols && !in_array('kva', $pCols)) {
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `kva` INT NULL AFTER `description`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `kw` INT NULL AFTER `kva`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `pk` INT NULL AFTER `kw`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `phase` VARCHAR(50) NULL AFTER `pk`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `tag` VARCHAR(100) NULL AFTER `phase`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `category_label` VARCHAR(100) NULL AFTER `tag`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `starting_price_estimate` DECIMAL(12,2) NULL AFTER `category_label`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `is_available` TINYINT(1) NOT NULL DEFAULT 1 AFTER `starting_price_estimate`");
+            $pdo->exec("ALTER TABLE `products` ADD COLUMN `sort_order` INT NOT NULL DEFAULT 0 AFTER `is_available`");
+        }
+    } catch (Exception $eP) {}
+
     if ($method === 'GET') {
         if ($id) {
             $stmt = $pdo->prepare("SELECT * FROM `products` WHERE id = ?");
