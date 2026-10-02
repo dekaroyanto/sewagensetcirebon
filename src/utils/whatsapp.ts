@@ -5,9 +5,17 @@ import { COMPANY_INFO } from '../data/company';
  * Builds a structured, professional WhatsApp message from the booking form.
  */
 export function generateBookingWhatsAppMessage(data: BookingFormData): string {
-  const needsText = data.additionalNeeds.length > 0 
-    ? data.additionalNeeds.map(item => `  - ${item}`).join('\n')
-    : '  - Tidak ada (Paket Standar)';
+  // Genset unit details
+  const hasGenset = data.gensetQuantity > 0 && data.selectedGensetName && !data.selectedGensetName.toLowerCase().includes('tanpa genset');
+  const gensetText = hasGenset
+    ? `• Unit Genset: *${data.selectedGensetName}*\n• Jumlah Unit: *${data.gensetQuantity} Unit*\n• Durasi Pemakaian: *${data.gensetDuration || '-'}*`
+    : `• Unit Genset: *Tidak Sewa Genset*`;
+
+  // AC unit details
+  const hasAc = data.acQuantity > 0 && data.selectedAcName && !data.selectedAcName.toLowerCase().includes('tanpa ac');
+  const acText = hasAc
+    ? `• Unit AC: *${data.selectedAcName}*\n• Jumlah Unit: *${data.acQuantity} Unit*\n• Durasi Pemakaian: *${data.acDuration || '-'}*`
+    : `• Unit AC: *Tidak Sewa AC*`;
 
   const message = `*FORMULIR PEMESANAN SEWA GENSET & AC*
 *${COMPANY_INFO.name.toUpperCase()}*
@@ -19,27 +27,22 @@ Halo Admin Sewa Genset & AC Cirebon, saya ingin melakukan pemesanan sewa dengan 
 • Instansi / Acara: *${data.companyOrEvent || '-'}*
 • No. WhatsApp / HP: *${data.phone || '-'}*
 
-⚡ *DETAIL UNIT & LAYANAN:*
-• Pilihan Unit / Paket: *${data.selectedGensetName || 'Genset Silent / AC'}*
-• Jumlah Unit: *${data.unitQuantity} Unit*
-• Jenis Sewa: *${data.rentalType}*
-• Durasi Pemakaian: *${data.duration || '-'}*
-• Paket Layanan: *${data.packageType}*
+⚡ *PILIHAN UNIT GENSET:*
+${gensetText}
 
-📍 *LOKASI & JADWAL ACARA:*
+❄️ *PILIHAN UNIT AC:*
+${acText}
+
+📍 *JADWAL & LOKASI ACARA:*
 • Tanggal Mulai: *${data.startDate || '-'}*
 • Jam Mulai: *${data.startTime || '-'} WIB*
-• Wilayah / Kecamatan: *${data.districtCirebon || '-'}*
-• Alamat Lengkap: ${data.eventLocation || '-'}
+• Alamat Lokasi: ${data.eventLocation || '-'}
 
-🛠️ *KEBUTUHAN TAMBAHAN:*
-${needsText}
-
-📝 *CATATAN / PERMINTAAN KHUSUS:*
+📝 *CATATAN TAMBAHAN:*
 ${data.notes ? `"${data.notes}"` : '-'}
 
 --------------------------------------------------
-Mohon konfirmasi ketersediaan unit dan rincian total penawaran resminya. Terima kasih! 🙏`;
+Mohon konfirmasi ketersediaan unit dan rincian penawaran resminya. Terima kasih! 🙏`;
 
   return message;
 }

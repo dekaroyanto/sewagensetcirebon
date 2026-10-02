@@ -41,54 +41,87 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     fullName: '',
     companyOrEvent: '',
     phone: '',
-    selectedGensetId: 'genset-20kva',
+    selectedGensetId: 'sgc-20kva',
     selectedGensetName: 'Genset Silent 20 kVA (16 kW)',
-    unitQuantity: 1,
-    rentalType: 'Harian / Acara',
+    gensetQuantity: 1,
+    gensetDuration: '1 Hari (12 Jam Operasional)',
+    selectedAcId: '',
+    selectedAcName: 'Tanpa AC',
+    acQuantity: 0,
+    acDuration: '1 Hari (12 Jam Operasional)',
     startDate: '',
     startTime: '08:00',
-    duration: '1 Hari (12 Jam)',
     eventLocation: '',
-    districtCirebon: 'Kejaksan - Kota Cirebon',
-    packageType: 'Include BBM Solar & Operator',
-    additionalNeeds: [],
     notes: ''
   });
 
   const [copied, setCopied] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  // Synchronize when a product is preselected from catalog
+  // Synchronize when a product is preselected from catalog or teaser
   useEffect(() => {
     if (preselectedProduct) {
-      setFormData(prev => ({
-        ...prev,
-        selectedGensetId: preselectedProduct.id,
-        selectedGensetName: preselectedProduct.name,
-        packageType: preselectedProduct.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
-      }));
+      if (preselectedProduct.product_type === 'ac') {
+        setFormData(prev => ({
+          ...prev,
+          selectedAcId: preselectedProduct.id,
+          selectedAcName: preselectedProduct.name,
+          acQuantity: Math.max(1, prev.acQuantity || 1),
+          // Set genset to Tanpa Genset if user specifically clicked an AC
+          selectedGensetId: '',
+          selectedGensetName: 'Tanpa Genset',
+          gensetQuantity: 0
+        }));
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          selectedGensetId: preselectedProduct.id,
+          selectedGensetName: preselectedProduct.name,
+          gensetQuantity: Math.max(1, prev.gensetQuantity || 1),
+          selectedAcId: '',
+          selectedAcName: 'Tanpa AC',
+          acQuantity: 0
+        }));
+      }
     }
   }, [preselectedProduct]);
 
-  // Handle product select from searchable dropdown
-  const handleSelectProduct = (selected: GensetProduct) => {
-    setFormData(prev => ({
-      ...prev,
-      selectedGensetId: selected.id,
-      selectedGensetName: selected.name,
-      packageType: selected.product_type === 'ac' ? 'Paket Sewa AC + Instalasi Dingin' : prev.packageType
-    }));
+  // Handle genset selection
+  const handleSelectGenset = (selected: GensetProduct) => {
+    if (!selected.id || selected.name.toLowerCase().includes('tanpa genset')) {
+      setFormData(prev => ({
+        ...prev,
+        selectedGensetId: '',
+        selectedGensetName: 'Tanpa Genset',
+        gensetQuantity: 0
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        selectedGensetId: selected.id,
+        selectedGensetName: selected.name,
+        gensetQuantity: prev.gensetQuantity > 0 ? prev.gensetQuantity : 1
+      }));
+    }
   };
 
-  // Handle additional needs checkbox
-  const handleNeedToggle = (need: string) => {
-    setFormData(prev => {
-      const exists = prev.additionalNeeds.includes(need);
-      const updated = exists
-        ? prev.additionalNeeds.filter(item => item !== need)
-        : [...prev.additionalNeeds, need];
-      return { ...prev, additionalNeeds: updated };
-    });
+  // Handle AC selection
+  const handleSelectAc = (selected: GensetProduct) => {
+    if (!selected.id || selected.name.toLowerCase().includes('tanpa ac')) {
+      setFormData(prev => ({
+        ...prev,
+        selectedAcId: '',
+        selectedAcName: 'Tanpa AC',
+        acQuantity: 0
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        selectedAcId: selected.id,
+        selectedAcName: selected.name,
+        acQuantity: prev.acQuantity > 0 ? prev.acQuantity : 1
+      }));
+    }
   };
 
   // Open confirmation modal with validation
@@ -102,6 +135,15 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
       onToast('Mohon isi nomor telepon / WhatsApp yang bisa dihubungi.');
       return;
     }
+
+    const hasGenset = formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa genset');
+    const hasAc = formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa ac');
+
+    if (!hasGenset && !hasAc) {
+      onToast('Mohon pilih minimal 1 unit Genset atau AC untuk disewa.');
+      return;
+    }
+
     if (!formData.eventLocation.trim()) {
       onToast('Mohon isi alamat / lokasi pelaksanaan acara di Cirebon.');
       return;
@@ -134,24 +176,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     }
   };
 
-  const cirebonDistricts = [
-    'Kejaksan - Kota Cirebon',
-    'Kesambi - Kota Cirebon',
-    'Lemahwungkuk - Kota Cirebon',
-    'Harjamukti - Kota Cirebon',
-    'Pekalipan - Kota Cirebon',
-    'Sumber - Kab. Cirebon',
-    'Kedawung - Kab. Cirebon',
-    'Weru / Plered - Kab. Cirebon',
-    'Palimanan - Kab. Cirebon',
-    'Arjawinangun - Kab. Cirebon',
-    'Losari / Ciledug - Kab. Cirebon',
-    'Kabupaten Kuningan',
-    'Kabupaten Majalengka (termasuk Kertajati)',
-    'Kabupaten Indramayu',
-    'Lainnya / Luar Kota'
-  ];
-
   const durations = [
     '1 Hari (8 Jam Operasional)',
     '1 Hari (12 Jam Operasional)',
@@ -162,16 +186,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     '2 Minggu',
     '1 Bulan (Kontrak Bulanan)',
     'Kontrak Proyek Jangka Panjang'
-  ];
-
-  const availableNeeds = [
-    'Kabel Power Tambahan (+50 Meter)',
-    'Pipa Freon & Kabel Ekstra AC Standing',
-    'Panel Otomatis ATS (Auto Switch PLN)',
-    'Box Distribusi / Sub-Panel Listrik',
-    'Grounding Rod Proteksi Petir/Listrik',
-    'Cadangan Solar Tambahan 1 Drum',
-    'Kipas Misty Fan Blower Tambahan'
   ];
 
   const [allProducts, setAllProducts] = useState<GensetProduct[]>([]);
@@ -189,12 +203,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
     return () => window.removeEventListener('sgc_data_changed', handleSync);
   }, []);
 
-  // Grouped products
-  const gensetItems = allProducts.filter(p => p.product_type === 'genset' || !p.product_type);
-  const acItems = allProducts.filter(p => p.product_type === 'ac');
-  const paketItems = allProducts.filter(p => p.product_type === 'paket');
-  const aksesorisItems = allProducts.filter(p => p.product_type === 'aksesoris');
-
   return (
     <section id="booking" className="py-16 sm:py-20 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 relative overflow-hidden transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -208,7 +216,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
           className="text-center max-w-3xl mx-auto mb-12"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Formulir Pemesanan Sewa Genset & AC Cirebon
+            Formulir Pemesanan Sewa Genset &amp; AC Cirebon
           </h2>
           <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
             Isi formulir di bawah ini. Sistem kami akan otomatis membuat draf pesan rapi dan meneruskannya ke WhatsApp admin <strong className="text-slate-900 dark:text-white">{COMPANY_INFO.whatsappFormatted}</strong>.
@@ -279,44 +287,62 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
                 </div>
               </div>
 
-              {/* Step 2: Product & Duration */}
+              {/* Step 2: Pilihan Unit Genset */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
                   <Zap className="w-4 h-4 text-amber-500" />
-                  <span>2. Pilihan Unit Genset / AC & Durasi Sewa</span>
+                  <span>2. Pilihan Unit Genset</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2 space-y-1">
-                    <div className="flex items-center justify-between">
-                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                        Pilihan Unit / Paket Sewa <span className="text-rose-500">*</span>
-                      </label>
-                      <span className="text-[11px] text-slate-400 dark:text-slate-500">Pencarian interaktif</span>
-                    </div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Pilih Tipe / Kapasitas Genset
+                    </label>
                     <SearchableProductSelect
                       products={allProducts}
+                      targetType="genset"
+                      noneOptionLabel="Tanpa Genset (Tidak Butuh Genset)"
+                      placeholder="Cari atau pilih tipe genset..."
                       selectedId={formData.selectedGensetId}
-                      onSelect={handleSelectProduct}
+                      onSelect={handleSelectGenset}
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Jumlah Unit
+                      Jumlah Unit Genset
                     </label>
                     <div className="flex items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => setFormData({ ...formData, unitQuantity: Math.max(1, formData.unitQuantity - 1) })}
+                        onClick={() => {
+                          const next = Math.max(0, formData.gensetQuantity - 1);
+                          setFormData({
+                            ...formData,
+                            gensetQuantity: next,
+                            selectedGensetId: next === 0 ? '' : formData.selectedGensetId,
+                            selectedGensetName: next === 0 ? 'Tanpa Genset' : formData.selectedGensetName
+                          });
+                        }}
                         className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer"
                       >
                         -
                       </button>
-                      <span className="font-bold text-slate-900 dark:text-white text-sm">{formData.unitQuantity} Unit</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">
+                        {formData.gensetQuantity} Unit
+                      </span>
                       <button
                         type="button"
-                        onClick={() => setFormData({ ...formData, unitQuantity: formData.unitQuantity + 1 })}
+                        onClick={() => {
+                          const next = formData.gensetQuantity + 1;
+                          setFormData({
+                            ...formData,
+                            gensetQuantity: next,
+                            selectedGensetId: formData.selectedGensetId || 'sgc-20kva',
+                            selectedGensetName: (!formData.selectedGensetName || formData.selectedGensetName === 'Tanpa Genset') ? 'Genset Silent 20 kVA (16 kW)' : formData.selectedGensetName
+                          });
+                        }}
                         className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer"
                       >
                         +
@@ -326,84 +352,108 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Durasi Pemakaian
+                      Durasi Pemakaian Genset
                     </label>
                     <select
-                      value={formData.duration}
-                      onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer"
+                      value={formData.gensetDuration}
+                      onChange={(e) => setFormData({ ...formData, gensetDuration: e.target.value })}
+                      disabled={formData.gensetQuantity === 0}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {durations.map((dur, i) => (
                         <option key={i} value={dur}>{dur}</option>
                       ))}
                     </select>
                   </div>
+                </div>
+              </div>
 
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Paket Layanan
+              {/* Step 3: Pilihan Unit AC */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
+                  <Wind className="w-4 h-4 text-cyan-500" />
+                  <span>3. Pilihan Unit AC &amp; Pendingin</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2 space-y-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Pilih Tipe AC / Pendingin
                     </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                      <label className={`p-3 rounded-xl border cursor-pointer flex items-start gap-2.5 transition-all ${formData.packageType === 'Include BBM Solar & Operator'
-                        ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/40 text-slate-900 dark:text-white font-semibold'
-                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'
-                        }`}>
-                        <input
-                          type="radio"
-                          name="packageType"
-                          checked={formData.packageType === 'Include BBM Solar & Operator'}
-                          onChange={() => setFormData({ ...formData, packageType: 'Include BBM Solar & Operator' })}
-                          className="mt-0.5 text-amber-500"
-                        />
-                        <div>
-                          <span className="block font-bold">Include BBM & Operator</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">All-In siap pakai tanpa repot.</span>
-                        </div>
-                      </label>
+                    <SearchableProductSelect
+                      products={allProducts}
+                      targetType="ac"
+                      noneOptionLabel="Tanpa AC (Tidak Butuh AC)"
+                      placeholder="Cari atau pilih tipe AC standing / Misty Fan..."
+                      selectedId={formData.selectedAcId}
+                      onSelect={handleSelectAc}
+                    />
+                  </div>
 
-                      <label className={`p-3 rounded-xl border cursor-pointer flex items-start gap-2.5 transition-all ${formData.packageType === 'Paket Sewa AC + Instalasi Dingin'
-                        ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/40 text-slate-900 dark:text-white font-semibold'
-                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'
-                        }`}>
-                        <input
-                          type="radio"
-                          name="packageType"
-                          checked={formData.packageType === 'Paket Sewa AC + Instalasi Dingin'}
-                          onChange={() => setFormData({ ...formData, packageType: 'Paket Sewa AC + Instalasi Dingin' })}
-                          className="mt-0.5 text-cyan-500"
-                        />
-                        <div>
-                          <span className="block font-bold">Paket AC & Teknisi</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">Instalasi rapi & standby suhu.</span>
-                        </div>
-                      </label>
-
-                      <label className={`p-3 rounded-xl border cursor-pointer flex items-start gap-2.5 transition-all ${formData.packageType === 'Include Operator Saja (BBM dari Penyewa)'
-                        ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/40 text-slate-900 dark:text-white font-semibold'
-                        : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'
-                        }`}>
-                        <input
-                          type="radio"
-                          name="packageType"
-                          checked={formData.packageType === 'Include Operator Saja (BBM dari Penyewa)'}
-                          onChange={() => setFormData({ ...formData, packageType: 'Include Operator Saja (BBM dari Penyewa)' })}
-                          className="mt-0.5 text-amber-500"
-                        />
-                        <div>
-                          <span className="block font-bold">Operator Standby</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400">BBM disediakan penyewa.</span>
-                        </div>
-                      </label>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Jumlah Unit AC
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = Math.max(0, formData.acQuantity - 1);
+                          setFormData({
+                            ...formData,
+                            acQuantity: next,
+                            selectedAcId: next === 0 ? '' : formData.selectedAcId,
+                            selectedAcName: next === 0 ? 'Tanpa AC' : formData.selectedAcName
+                          });
+                        }}
+                        className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer"
+                      >
+                        -
+                      </button>
+                      <span className="font-bold text-slate-900 dark:text-white text-sm">
+                        {formData.acQuantity} Unit
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = formData.acQuantity + 1;
+                          setFormData({
+                            ...formData,
+                            acQuantity: next,
+                            selectedAcId: formData.selectedAcId || 'sgc-ac-5pk',
+                            selectedAcName: (!formData.selectedAcName || formData.selectedAcName === 'Tanpa AC') ? 'AC Standing Floor 5 PK (45.000 BTU)' : formData.selectedAcName
+                          });
+                        }}
+                        className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center cursor-pointer"
+                      >
+                        +
+                      </button>
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Durasi Pemakaian AC
+                    </label>
+                    <select
+                      value={formData.acDuration}
+                      onChange={(e) => setFormData({ ...formData, acDuration: e.target.value })}
+                      disabled={formData.acQuantity === 0}
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {durations.map((dur, i) => (
+                        <option key={i} value={dur}>{dur}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
 
-              {/* Step 3: Location & Time */}
+              {/* Step 4: Jadwal & Lokasi Acara (Tanpa Kecamatan) */}
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
                   <MapPin className="w-4 h-4 text-amber-500" />
-                  <span>3. Jadwal & Lokasi Acara di Cirebon</span>
+                  <span>4. Jadwal &amp; Lokasi Acara</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -431,89 +481,43 @@ export const BookingForm: React.FC<BookingFormProps> = ({ preselectedProduct, on
                     />
                   </div>
 
-                  <div>
+                  <div className="sm:col-span-2">
                     <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Kecamatan / Wilayah
-                    </label>
-                    <select
-                      value={formData.districtCirebon}
-                      onChange={(e) => setFormData({ ...formData, districtCirebon: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none cursor-pointer"
-                    >
-                      {cirebonDistricts.map((d, i) => (
-                        <option key={i} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Alamat / Tempat Acara
+                      Alamat / Tempat Acara <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
+                      required
                       value={formData.eventLocation}
                       onChange={(e) => setFormData({ ...formData, eventLocation: e.target.value })}
-                      placeholder="Nama gedung, jalan, atau patokan lokasi"
+                      placeholder="Nama gedung, jalan, atau patokan lokasi acara di Cirebon"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Step 4: Additional Needs & Notes */}
-              <div className="space-y-4">
+              {/* Direct Catatan Tambahan (Tanpa Checklist No. 4) */}
+              <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-2">
-                  <Layers className="w-4 h-4 text-amber-500" />
-                  <span>4. Perlengkapan Tambahan & Catatan</span>
+                  <FileText className="w-4 h-4 text-amber-500" />
+                  <span>Catatan Tambahan (Opsional)</span>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                    Kebutuhan Tambahan (Opsional)
-                  </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    {availableNeeds.map((need, idx) => {
-                      const isChecked = formData.additionalNeeds.includes(need);
-                      return (
-                        <label
-                          key={idx}
-                          className={`p-2.5 rounded-lg border flex items-center gap-2 cursor-pointer transition-colors ${isChecked
-                            ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700 text-slate-900 dark:text-white font-semibold'
-                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
-                            }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleNeedToggle(need)}
-                            className="rounded text-amber-500 focus:ring-amber-400"
-                          />
-                          <span>{need}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Catatan Tambahan / Spesifikasi Khusus (Opsional)
-                  </label>
                   <textarea
-                    rows={2}
+                    rows={3}
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    placeholder="Contoh: Lokasi genset di luar tenda, butuh 2 unit AC standing di area pelaminan..."
-                    className="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                    placeholder="Contoh: Lokasi genset di area luar gedung, butuh teknisi standby jam 7 pagi..."
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
                   />
                 </div>
 
                 {/* Form Action Button */}
                 <div className="pt-2">
                   <button
-                    type="button"
-                    onClick={handleOpenBookingConfirm}
+                    type="submit"
                     className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-500 hover:from-amber-400 hover:to-amber-500 active:from-amber-600 active:to-amber-600 text-slate-950 font-display font-extrabold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 transition-all cursor-pointer"
                   >
                     <Send className="w-5 h-5 text-slate-950" />

@@ -99,28 +99,63 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
           {/* Body Content - Scrollable */}
           <div className="p-5 sm:p-6 overflow-y-auto flex-1 overscroll-contain space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
             
-            {/* Unit Info Highlight Banner */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-amber-100/60 dark:from-amber-950/30 dark:to-slate-800/50 border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-3">
-              <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
-                  Unit & Paket Dipilih
+            {/* Unit Info Highlight - Genset & AC */}
+            <div className="space-y-2.5">
+              {/* Genset Card */}
+              <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/50 flex items-start gap-3">
+                <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    Pilihan Unit Genset
+                  </div>
+                  {formData.gensetQuantity > 0 && formData.selectedGensetName && !formData.selectedGensetName.toLowerCase().includes('tanpa genset') ? (
+                    <>
+                      <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+                        {formData.selectedGensetName}
+                      </div>
+                      <div className="flex flex-wrap gap-2 mt-1.5">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold text-xs">
+                          {formData.gensetQuantity} Unit
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs">
+                          {formData.gensetDuration || '1 Hari'}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                      Tidak Sewa Genset
+                    </div>
+                  )}
                 </div>
-                <div className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
-                  {formData.selectedGensetName}
-                </div>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-800 dark:text-amber-300 font-bold text-xs">
-                    {formData.unitQuantity} Unit
-                  </span>
-                  {formData.acQuantity && formData.acQuantity > 0 ? (
-                    <span className="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 font-bold text-xs">
-                      + {formData.acQuantity} Unit AC
-                    </span>
-                  ) : null}
-                  <span className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs">
-                    {formData.rentalType}
-                  </span>
+              </div>
+
+              {/* AC Card */}
+              <div className="p-3.5 rounded-2xl bg-cyan-50/70 dark:bg-cyan-950/30 border border-cyan-200/80 dark:border-cyan-800/50 flex items-start gap-3">
+                <Wind className="w-5 h-5 text-cyan-500 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">
+                    Pilihan Unit AC &amp; Pendingin
+                  </div>
+                  {formData.acQuantity > 0 && formData.selectedAcName && !formData.selectedAcName.toLowerCase().includes('tanpa ac') ? (
+                    <>
+                      <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+                        {formData.selectedAcName}
+                      </div>
+                      <div className="flex flex-wrap gap-2 mt-1.5">
+                        <span className="px-2.5 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-800 dark:text-cyan-300 font-bold text-xs">
+                          {formData.acQuantity} Unit
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs">
+                          {formData.acDuration || '1 Hari'}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
+                      Tidak Sewa AC
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -160,76 +195,44 @@ export const ConfirmBookingModal: React.FC<ConfirmBookingModalProps> = ({
               </div>
 
               {/* Jadwal Pelaksanaan */}
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-1 sm:col-span-2">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                   <Calendar className="w-3.5 h-3.5 text-blue-500" />
-                  <span>Tanggal & Waktu Acara</span>
+                  <span>Tanggal &amp; Waktu Acara</span>
                 </div>
                 <div className="font-bold text-slate-900 dark:text-white">
                   {formData.startDate || 'Tanggal belum ditentukan'}
                 </div>
                 <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  <span>Pukul {formData.startTime || '08:00'} WIB ({formData.duration})</span>
+                  <span>Pukul {formData.startTime || '08:00'} WIB</span>
                 </div>
               </div>
 
-              {/* Wilayah Layanan */}
-              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-1">
+              {/* Lokasi Acara */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-1 sm:col-span-2">
                 <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-rose-500" />
-                  <span>Wilayah Cirebon</span>
+                  <span>Alamat &amp; Tempat Acara</span>
                 </div>
                 <div className="font-bold text-slate-900 dark:text-white">
-                  {formData.districtCirebon}
-                </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                  {formData.eventLocation}
+                  {formData.eventLocation || '-'}
                 </div>
               </div>
 
             </div>
 
-            {/* Paket & Tambahan */}
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Pilihan Paket:
+            {/* Catatan Tambahan (jika ada) */}
+            {formData.notes && (
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-1">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Catatan Tambahan:
                 </span>
-                <span className="font-bold text-amber-600 dark:text-amber-400">
-                  {formData.packageType}
-                </span>
+                <p className="text-xs italic text-slate-700 dark:text-slate-300">
+                  "{formData.notes}"
+                </p>
               </div>
-
-              {formData.additionalNeeds && formData.additionalNeeds.length > 0 && (
-                <div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-1">
-                    Kebutuhan Tambahan:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {formData.additionalNeeds.map((need, i) => (
-                      <span
-                        key={i}
-                        className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-[11px]"
-                      >
-                        ✓ {need}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {formData.notes && (
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-700/60">
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 block mb-0.5">
-                    Catatan Khusus:
-                  </span>
-                  <p className="text-xs italic text-slate-600 dark:text-slate-300">
-                    "{formData.notes}"
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
 
             {/* Information Notice */}
             <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 text-[11px] text-emerald-900 dark:text-emerald-300 flex items-start gap-2.5">

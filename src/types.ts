@@ -23,19 +23,30 @@ export interface BookingFormData {
   fullName: string;
   companyOrEvent: string;
   phone: string;
+  // Genset unit selection
   selectedGensetId: string;
   selectedGensetName: string;
-  unitQuantity: number;
-  acQuantity?: number; // Optional count for AC units
-  rentalType: 'Harian / Acara' | 'Mingguan' | 'Bulanan' | 'Kontrak Proyek' | 'Darurat / Emergency 24 Jam';
+  gensetQuantity: number;
+  gensetDuration: string;
+  // AC unit selection
+  selectedAcId: string;
+  selectedAcName: string;
+  acQuantity: number;
+  acDuration: string;
+  // Event & Schedule
   startDate: string;
   startTime: string;
-  duration: string;
   eventLocation: string;
-  districtCirebon: string; // e.g. "Kejaksan", "Kesambi", "Sumber", etc.
-  packageType: 'Include BBM Solar & Operator' | 'Include Operator Saja (BBM dari Penyewa)' | 'Unit Only (Lepas Kunci - S&K Berlaku)' | 'Paket Sewa AC + Instalasi Dingin';
-  additionalNeeds: string[];
+  // Notes
   notes: string;
+
+  // Legacy / optional fields for backwards compatibility
+  unitQuantity?: number;
+  rentalType?: string;
+  duration?: string;
+  districtCirebon?: string;
+  packageType?: string;
+  additionalNeeds?: string[];
 }
 
 export interface BlogPost {
@@ -126,15 +137,20 @@ export interface BookingRecord {
   phone: string;
   selected_genset_id?: string;
   selected_genset_name?: string;
-  unit_quantity: number;
+  genset_quantity?: number;
+  genset_duration?: string;
+  selected_ac_id?: string;
+  selected_ac_name?: string;
   ac_quantity?: number;
-  rental_type: string;
+  ac_duration?: string;
+  unit_quantity: number;
+  rental_type?: string;
   start_date: string;
   start_time: string;
-  duration: string;
+  duration?: string;
   event_location: string;
-  district_cirebon: string;
-  package_type: string;
+  district_cirebon?: string;
+  package_type?: string;
   additional_needs?: string[];
   notes?: string;
   status: BookingStatus;

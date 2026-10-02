@@ -72,15 +72,20 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   `phone` VARCHAR(50) NOT NULL,
   `selected_genset_id` VARCHAR(64) NULL,
   `selected_genset_name` VARCHAR(150) NULL,
-  `unit_quantity` INT NOT NULL DEFAULT 1,
+  `genset_quantity` INT NOT NULL DEFAULT 0,
+  `genset_duration` VARCHAR(100) NULL,
+  `selected_ac_id` VARCHAR(64) NULL,
+  `selected_ac_name` VARCHAR(150) NULL,
   `ac_quantity` INT NOT NULL DEFAULT 0,
-  `rental_type` VARCHAR(100) NOT NULL,
+  `ac_duration` VARCHAR(100) NULL,
+  `unit_quantity` INT NOT NULL DEFAULT 1,
+  `rental_type` VARCHAR(100) NULL DEFAULT 'Harian / Acara',
   `start_date` VARCHAR(50) NOT NULL,
   `start_time` VARCHAR(50) NOT NULL,
-  `duration` VARCHAR(50) NOT NULL,
+  `duration` VARCHAR(100) NULL,
   `event_location` TEXT NOT NULL,
-  `district_cirebon` VARCHAR(100) NOT NULL,
-  `package_type` VARCHAR(150) NOT NULL,
+  `district_cirebon` VARCHAR(100) NULL DEFAULT '',
+  `package_type` VARCHAR(150) NULL DEFAULT '',
   `additional_needs` TEXT NULL,
   `notes` TEXT NULL,
   `status` ENUM('Menunggu Konfirmasi', 'Dikonfirmasi', 'Sedang Berjalan', 'Selesai', 'Dibatalkan') NOT NULL DEFAULT 'Menunggu Konfirmasi',
@@ -88,9 +93,9 @@ CREATE TABLE IF NOT EXISTS `bookings` (
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `bookings` (`booking_code`, `full_name`, `company_or_event`, `phone`, `selected_genset_id`, `selected_genset_name`, `unit_quantity`, `ac_quantity`, `rental_type`, `start_date`, `start_time`, `duration`, `event_location`, `district_cirebon`, `package_type`, `notes`, `status`) VALUES
-('SGC-2026-001', 'Hj. Siti Rohmah', 'Pernikahan Putri Pertama', '081234567890', 'sgc-60kva', 'Genset Silent 60 kVA (48 kW)', 1, 4, 'Harian / Acara', '2026-10-15', '08:00 WIB', '1 Hari Penuh', 'Gedung Islamic Centre Cirebon', 'Kejaksan', 'Include BBM Solar & Operator', 'Mohon standby H-1 malam untuk instalasi kabel.', 'Dikonfirmasi'),
-('SGC-2026-002', 'Bpk. Fajar Ramadhan', 'Konser Musik Akustik Kampus', '081987654321', 'sgc-30kva', 'Genset Silent 30 kVA (24 kW)', 1, 0, 'Harian / Acara', '2026-10-20', '13:00 WIB', '1 Hari', 'Kampus UGJ Cirebon', 'Kesambi', 'Include BBM Solar & Operator', 'Butuh kabel power 40 meter menuju panggung.', 'Menunggu Konfirmasi')
+INSERT INTO `bookings` (`booking_code`, `full_name`, `company_or_event`, `phone`, `selected_genset_id`, `selected_genset_name`, `genset_quantity`, `genset_duration`, `selected_ac_id`, `selected_ac_name`, `ac_quantity`, `ac_duration`, `unit_quantity`, `rental_type`, `start_date`, `start_time`, `duration`, `event_location`, `district_cirebon`, `package_type`, `notes`, `status`) VALUES
+('SGC-2026-001', 'Hj. Siti Rohmah', 'Pernikahan Putri Pertama', '081234567890', 'sgc-60kva', 'Genset Silent 60 kVA (48 kW)', 1, '1 Hari (12 Jam)', 'sgc-ac-5pk', 'AC Standing Floor 5 PK (45.000 BTU)', 4, '1 Hari (12 Jam)', 1, 'Harian / Acara', '2026-10-15', '08:00 WIB', '1 Hari (12 Jam)', 'Gedung Islamic Centre Cirebon', '', '', 'Mohon standby H-1 malam untuk instalasi kabel.', 'Dikonfirmasi'),
+('SGC-2026-002', 'Bpk. Fajar Ramadhan', 'Konser Musik Akustik Kampus', '081987654321', 'sgc-30kva', 'Genset Silent 30 kVA (24 kW)', 1, '1 Hari (8 Jam)', NULL, 'Tanpa AC', 0, '', 1, 'Harian / Acara', '2026-10-20', '13:00 WIB', '1 Hari (8 Jam)', 'Kampus UGJ Cirebon', '', '', 'Butuh kabel power 40 meter menuju panggung.', 'Menunggu Konfirmasi')
 ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`);
 
 -- ------------------------------------------------------------------------------

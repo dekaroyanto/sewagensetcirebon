@@ -347,6 +347,31 @@ if ($resource === 'products') {
 // 6. BOOKINGS CRUD (/bookings)
 // -----------------------------------------------------------------------------
 if ($resource === 'bookings') {
+    // Auto-migrate table columns if not exists (Hostinger DB compatibility)
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM `bookings`")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('genset_quantity', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `genset_quantity` INT NOT NULL DEFAULT 0 AFTER `selected_genset_name`");
+        }
+        if (!in_array('genset_duration', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `genset_duration` VARCHAR(100) NULL AFTER `genset_quantity`");
+        }
+        if (!in_array('selected_ac_id', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_ac_id` VARCHAR(64) NULL AFTER `genset_duration`");
+        }
+        if (!in_array('selected_ac_name', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `selected_ac_name` VARCHAR(150) NULL AFTER `selected_ac_id`");
+        }
+        if (!in_array('ac_duration', $cols)) {
+            $pdo->exec("ALTER TABLE `bookings` ADD COLUMN `ac_duration` VARCHAR(100) NULL AFTER `ac_quantity`");
+        }
+        // Ensure legacy fields allow empty strings without error
+        $pdo->exec("ALTER TABLE `bookings` MODIFY COLUMN `district_cirebon` VARCHAR(100) NULL DEFAULT ''");
+        $pdo->exec("ALTER TABLE `bookings` MODIFY COLUMN `package_type` VARCHAR(150) NULL DEFAULT ''");
+    } catch (Exception $e) {
+        // Table might not exist yet or user lacks ALTER privilege
+    }
+
     if ($method === 'GET') {
         $status = isset($_GET['status']) ? $_GET['status'] : null;
         $sql = "SELECT * FROM `bookings`";
@@ -379,22 +404,48 @@ if ($resource === 'bookings') {
         $fullName = $data['fullName'] ?? ($data['full_name'] ?? '');
         $company = $data['companyOrEvent'] ?? ($data['company_or_event'] ?? '');
         $phone = $data['phone'] ?? '';
+
+        // Genset Fields
         $gensetId = $data['selectedGensetId'] ?? ($data['selected_genset_id'] ?? '');
         $gensetName = $data['selectedGensetName'] ?? ($data['selected_genset_name'] ?? '');
-        $unitQty = (int)($data['unitQuantity'] ?? ($data['unit_quantity'] ?? 1));
+        $gensetQty = (int)($data['gensetQuantity'] ?? ($data['genset_quantity'] ?? 0));
+        $gensetDuration = $data['gensetDuration'] ?? ($data['genset_duration'] ?? '');
+
+        // AC Fields
+        $acId = $data['selectedAcId'] ?? ($data['selected_ac_id'] ?? '');
+        $acName = $data['selectedAcName'] ?? ($data['selected_ac_name'] ?? '');
         $acQty = (int)($data['acQuantity'] ?? ($data['ac_quantity'] ?? 0));
-        $rentalType = $data['rentalType'] ?? ($data['rental_type'] ?? 'Harian / Acara');
+        $acDuration = $data['acDuration'] ?? ($data['ac_duration'] ?? '');
+
+        // Event & Location
         $startDate = $data['startDate'] ?? ($data['start_date'] ?? date('Y-m-d'));
         $startTime = $data['startTime'] ?? ($data['start_time'] ?? '08:00 WIB');
-        $duration = $data['duration'] ?? '1 Hari';
         $location = $data['eventLocation'] ?? ($data['event_location'] ?? '');
-        $district = $data['districtCirebon'] ?? ($data['district_cirebon'] ?? 'Kota Cirebon');
-        $pkgType = $data['packageType'] ?? ($data['package_type'] ?? 'Include BBM Solar & Operator');
-        $needs = isset($data['additionalNeeds']) ? json_encode($data['additionalNeeds'], JSON_UNESCAPED_UNICODE) : (isset($data['additional_needs']) ? json_encode($data['additional_needs']) : '[]');
         $notes = $data['notes'] ?? '';
 
-        $stmt = $pdo->prepare("INSERT INTO `bookings` (`booking_code`, `full_name`, `company_or_event`, `phone`, `selected_genset_id`, `selected_genset_name`, `unit_quantity`, `ac_quantity`, `rental_type`, `start_date`, `start_time`, `duration`, `event_location`, `district_cirebon`, `package_type`, `additional_needs`, `notes`, `status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Konfirmasi')");
-        $stmt->execute([$code, $fullName, $company, $phone, $gensetId, $gensetName, $unitQty, $acQty, $rentalType, $startDate, $startTime, $duration, $location, $district, $pkgType, $needs, $notes]);
+        // Backwards compatibility fallbacks
+        $unitQty = $gensetQty > 0 ? $gensetQty : ($acQty > 0 ? $acQty : (int)($data['unitQuantity'] ?? ($data['unit_quantity'] ?? 1)));
+        $mainDuration = $gensetDuration ?: ($acDuration ?: ($data['duration'] ?? '1 Hari'));
+        $rentalType = $data['rentalType'] ?? ($data['rental_type'] ?? 'Harian / Acara');
+        $district = $data['districtCirebon'] ?? ($data['district_cirebon'] ?? '');
+        $pkgType = $data['packageType'] ?? ($data['package_type'] ?? '');
+        $needs = isset($data['additionalNeeds']) ? json_encode($data['additionalNeeds'], JSON_UNESCAPED_UNICODE) : (isset($data['additional_needs']) ? json_encode($data['additional_needs']) : '[]');
+
+        $stmt = $pdo->prepare("INSERT INTO `bookings` (
+            `booking_code`, `full_name`, `company_or_event`, `phone`,
+            `selected_genset_id`, `selected_genset_name`, `genset_quantity`, `genset_duration`,
+            `selected_ac_id`, `selected_ac_name`, `ac_quantity`, `ac_duration`,
+            `unit_quantity`, `rental_type`, `start_date`, `start_time`, `duration`,
+            `event_location`, `district_cirebon`, `package_type`, `additional_needs`, `notes`, `status`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Menunggu Konfirmasi')");
+
+        $stmt->execute([
+            $code, $fullName, $company, $phone,
+            $gensetId, $gensetName, $gensetQty, $gensetDuration,
+            $acId, $acName, $acQty, $acDuration,
+            $unitQty, $rentalType, $startDate, $startTime, $mainDuration,
+            $location, $district, $pkgType, $needs, $notes
+        ]);
 
         sendJsonResponse([
             'status' => 'success',
