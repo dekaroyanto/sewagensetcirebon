@@ -17,6 +17,7 @@ interface SearchableProductSelectProps {
   targetType?: 'genset' | 'ac';
   noneOptionLabel?: string;
   placeholder?: string;
+  showPrice?: boolean;
 }
 
 export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = ({
@@ -26,7 +27,8 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
   className = '',
   targetType,
   noneOptionLabel,
-  placeholder
+  placeholder,
+  showPrice = false
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -149,9 +151,19 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
           <div className={`text-xs sm:text-sm truncate ${isSelected ? 'font-bold text-amber-950 dark:text-amber-200' : 'font-medium text-slate-800 dark:text-slate-200'}`}>
             {product.name}
           </div>
-          <div className="text-[11px] sm:text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-            {formatPrice(product.price)}
-          </div>
+          {showPrice ? (
+            <div className="text-[11px] sm:text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
+              {formatPrice(product.price)}
+            </div>
+          ) : (
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              {product.product_type === 'genset' || (!product.product_type && product.kva)
+                ? `${product.kva ? product.kva + ' kVA • ' : ''}Genset Silent Siap Pakai`
+                : product.product_type === 'ac'
+                ? `${product.pk ? product.pk + ' PK • ' : ''}Unit Pendingin Acara`
+                : 'Unit Ready Standby'}
+            </div>
+          )}
         </div>
 
         {isSelected && (
@@ -163,7 +175,7 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      {/* Trigger Button displaying current selected unit - Clean Name & Price Only */}
+      {/* Trigger Button displaying current selected unit - Clean Name & Specifications */}
       <button
         type="button"
         id="searchable-product-select-trigger"
@@ -180,9 +192,22 @@ export const SearchableProductSelect: React.FC<SearchableProductSelectProps> = (
             {selectedProduct?.name || (noneOptionLabel && !selectedId ? noneOptionLabel : (placeholder || 'Pilih Unit'))}
           </div>
           {selectedProduct ? (
-            <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
-              {formatPrice(selectedProduct.price)}
-            </div>
+            showPrice ? (
+              <div className="text-xs font-semibold text-amber-600 dark:text-amber-400 mt-0.5">
+                {formatPrice(selectedProduct.price)}
+              </div>
+            ) : (
+              <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+                <span>
+                  {selectedProduct.product_type === 'genset' || (!selectedProduct.product_type && selectedProduct.kva)
+                    ? `${selectedProduct.kva ? selectedProduct.kva + ' kVA • ' : ''}Genset Siap Standby`
+                    : selectedProduct.product_type === 'ac'
+                    ? `${selectedProduct.pk ? selectedProduct.pk + ' PK • ' : ''}Unit Pendingin`
+                    : 'Unit Terpilih'}
+                </span>
+              </div>
+            )
           ) : (noneOptionLabel && !selectedId) ? (
             <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
               Tidak ada unit dipilih
