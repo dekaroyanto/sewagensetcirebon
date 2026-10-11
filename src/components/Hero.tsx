@@ -20,7 +20,7 @@ import "swiper/css/pagination";
 
 // Images
 import slideWarehouseImg from "../assets/images/slide1.jpg";
-import slideFleetImg from "../assets/images/slide2.jpg";
+import slideFleetImg from "../assets/images/slide4.jpg";
 import slideTeamImg from "../assets/images/slide3.jpg";
 
 interface HeroProps {
