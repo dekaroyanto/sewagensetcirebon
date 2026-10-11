@@ -19,9 +19,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 // Images
-import slideWarehouseImg from "../assets/images/HERO1fix.jpg";
-import slideFleetImg from "../assets/images/hero_slide_fleet.jpg";
-import slideTeamImg from "../assets/images/hero_slide_team.jpg";
+import slideWarehouseImg from "../assets/images/slide1.jpg";
+import slideFleetImg from "../assets/images/slide2.jpg";
+import slideTeamImg from "../assets/images/slide3.jpg";
 
 interface HeroProps {
   onExploreCatalog: () => void;
